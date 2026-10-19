@@ -343,9 +343,14 @@ CREATE TABLE `operation_log` (
 INSERT INTO `tag` (`name`, `sort`, `status`) VALUES
 ('职场', 1, 1),
 ('感情', 2, 1),
-('消费', 3, 1),
-('学业', 4, 1),
-('生活', 5, 1);
+('婚姻', 3, 1),
+('消费', 4, 1),
+('理财', 5, 1),
+('房产', 6, 1),
+('学业', 7, 1),
+('健康', 8, 1),
+('家庭', 9, 1),
+('生活', 10, 1);
 
 -- 订阅消息模板配置（template_id 上线后替换为实际申请的模板 ID）
 INSERT INTO `subscribe_template` (`type`, `template_id`, `remark`) VALUES
