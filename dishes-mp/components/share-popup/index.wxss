@@ -1,0 +1,72 @@
+.share-popup__options {
+  display: flex;
+  gap: 24rpx;
+  padding: 8rpx 36rpx 0;
+}
+
+.share-popup__option {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4rpx;
+  padding: 28rpx 12rpx;
+  background: #FFFFFF;
+  border: 2rpx solid #E6DDD3;
+  border-radius: 24rpx;
+  box-shadow: 0 2rpx 8rpx rgba(60, 45, 35, 0.06);
+  /* 重置 button 默认样式 */
+  margin: 0;
+  line-height: normal;
+  font-size: inherit;
+  overflow: visible;
+}
+
+.share-popup__option::after {
+  border: none;
+}
+
+.share-popup__option--hover {
+  background: rgba(212, 160, 23, 0.08);
+  border-color: #D4A017;
+}
+
+.share-popup__option-icon {
+  font-size: 56rpx;
+  line-height: 1;
+}
+
+.share-popup__option-label {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #3D352E;
+  margin-top: 8rpx;
+}
+
+.share-popup__option-desc {
+  font-size: 20rpx;
+  color: #8C7E72;
+}
+
+.share-popup__option-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 2rpx 12rpx;
+  background: #C86D51;
+  color: #FFFFFF;
+  font-size: 18rpx;
+  font-weight: bold;
+  border-bottom-left-radius: 16rpx;
+  border-top-right-radius: 22rpx;
+}
+
+.share-popup__tip {
+  margin-top: 28rpx;
+  padding: 0 36rpx;
+  text-align: center;
+  font-size: 20rpx;
+  color: #A29486;
+}

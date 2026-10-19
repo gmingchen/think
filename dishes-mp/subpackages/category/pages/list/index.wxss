@@ -1,0 +1,133 @@
+/* 顶部分类容量进度条（header 插槽固定）：数量+进度条居左、看视频按钮居右 */
+.category__capacity {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding: 16rpx 32rpx;
+  background: var(--bg-base);
+}
+.category__capacity-info {
+  flex: 1;
+  min-width: 0;
+}
+.category__capacity-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12rpx;
+}
+/* 不限时进度条整行不渲染，拿掉为它留的下间距，否则容量条白空一截 */
+.category__capacity-top--flat {
+  margin-bottom: 0;
+}
+.category__capacity-count {
+  font-size: 22rpx;
+  color: #b79466;
+}
+.category__capacity-warn {
+  flex-shrink: 0;
+  font-size: 20rpx;
+  color: #d14937;
+  font-weight: 600;
+}
+.category__capacity-btn {
+  flex-shrink: 0;
+  padding: 6rpx 18rpx;
+  font-size: 22rpx;
+  line-height: 1.5;
+  color: #fff;
+  background: #b79466;
+  border-radius: 20rpx;
+}
+.category__capacity-btn--disabled {
+  opacity: 0.6;
+}
+.category__capacity-meter {
+  height: 8rpx;
+  background: #e5dbd0;
+  border-radius: 8rpx;
+  overflow: hidden;
+}
+.category__capacity-bar {
+  height: 100%;
+  border-radius: 8rpx;
+  background: #b79466;
+  transition: width 0.4s ease;
+}
+.category__capacity-bar--alert {
+  background: #d14937;
+}
+/* 会员引导行（§4 入口 4）：弱文字小字，不做按钮（与 📺 按钮并列会把转化位做成第二个广告位） */
+.category__capacity-vip {
+  margin-top: 8rpx;
+  font-size: 20rpx;
+  color: var(--font-color-weak);
+}
+
+/* 列表卡片 */
+.category__list-card {
+  margin: 24rpx 32rpx;
+  padding: 8rpx 32rpx;
+}
+.category__cat-item {
+  padding: 28rpx 0;
+  border-bottom: var(--border-dashed);
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+.category__cat-item--last {
+  border-bottom: none;
+}
+.category__cat-item--dragging {
+  background: var(--bg-section);
+  border-radius: 8rpx;
+  opacity: 0.9;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.1);
+}
+.category__cat-drag {
+  font-size: 32rpx;
+  color: var(--font-color-weak);
+  flex-shrink: 0;
+}
+.category__cat-info {
+  flex: 1;
+  display: flex;
+  align-items: baseline;
+  gap: 12rpx;
+}
+.category__cat-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--font-color);
+}
+.category__cat-count {
+  font-size: 22rpx;
+  color: var(--font-color-sub);
+}
+.category__cat-edit {
+  font-size: 24rpx;
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+/* 新增按钮 */
+.category__add-btn-wrap {
+  padding: 24rpx 32rpx;
+}
+.category__add-btn {
+  padding: 20rpx 0;
+  font-size: 26rpx;
+}
+
+/* 提示文字 */
+.category__tip-text {
+  text-align: center;
+  font-size: 22rpx;
+  color: var(--font-color-weak);
+  padding: 0 0 40rpx;
+}
+/* Banner 广告：左右间距由外层 view（p_h-32）承担，原生 ad 只加上下 margin */
+.page__ad {
+  margin: 0 0 32rpx;
+}

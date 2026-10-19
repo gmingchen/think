@@ -1,0 +1,245 @@
+/* 宽度 */
+.w-f    { width: 100%; }
+.w-f_i  { width: 100% !important; }
+.w-u    { width: unset; }
+.w-u_i  { width: unset !important; }
+.w-fc   { width: fit-content; }
+.w-fc_i { width: fit-content !important; }
+/* 高度 */
+.h-f    { height: 100%; }
+.h-f_i  { height: 100% !important; }
+.h-u    { height: unset; }
+.h-u_i  { height: unset !important; }
+/* 外间距 */
+.m-8    { margin: 8rpx; }
+.m-12   { margin: 12rpx; }
+.m-16   { margin: 16rpx; }
+.m-20   { margin: 20rpx; }
+.m-24   { margin: 24rpx; }
+.m-28   { margin: 28rpx; }
+.m-32   { margin: 32rpx; }
+/* 垂直外边距 */
+.m_v-8  { margin-top: 8rpx; margin-bottom: 8rpx; }
+.m_v-12 { margin-top: 12rpx; margin-bottom: 12rpx; }
+.m_v-16 { margin-top: 16rpx; margin-bottom: 16rpx; }
+.m_v-20 { margin-top: 20rpx; margin-bottom: 20rpx; }
+.m_v-24 { margin-top: 24rpx; margin-bottom: 24rpx; }
+.m_v-28 { margin-top: 28rpx; margin-bottom: 28rpx; }
+.m_v-32 { margin-top: 32rpx; margin-bottom: 32rpx; }
+/* 水平外边距 */
+.m_h-8  { margin-left: 8rpx;   margin-right: 8rpx; }
+.m_h-12 { margin-left: 12rpx;   margin-right: 12rpx; }
+.m_h-16 { margin-left: 16rpx;   margin-right: 16rpx; }
+.m_h-20 { margin-left: 20rpx; margin-right: 20rpx; }
+.m_h-24 { margin-left: 24rpx; margin-right: 24rpx; }
+.m_h-28 { margin-left: 28rpx; margin-right: 28rpx; }
+.m_h-32 { margin-left: 32rpx; margin-right: 32rpx; }
+/* 单向外边距 */
+.m_t-8  { margin-top: 8rpx; }
+.m_t-10 { margin-top: 10rpx; }
+.m_t-12 { margin-top: 12rpx; }
+.m_t-16 { margin-top: 16rpx; }
+.m_t-20 { margin-top: 20rpx; }
+.m_t-24 { margin-top: 24rpx; }
+.m_t-28 { margin-top: 28rpx; }
+.m_t-32 { margin-top: 32rpx; }
+.m_r-8  { margin-right: 8rpx; }
+.m_r-10 { margin-right: 10rpx; }
+.m_r-12 { margin-right: 12rpx; }
+.m_r-20 { margin-right: 20rpx; }
+.m_r-24 { margin-right: 24rpx; }
+.m_r-28 { margin-right: 28rpx; }
+.m_r-32 { margin-right: 32rpx; } 
+.m_b-8  { margin-bottom: 8rpx; }
+.m_b-10 { margin-bottom: 10rpx; }
+.m_b-12 { margin-bottom: 12rpx; }
+.m_b-20 { margin-bottom: 20rpx; }
+.m_b-24 { margin-bottom: 24rpx; }
+.m_b-28 { margin-bottom: 28rpx; }
+.m_b-32 { margin-bottom: 32rpx; }
+.m_l-8  { margin-left: 8rpx; }
+.m_l-10 { margin-left: 10rpx; }
+.m_l-12 { margin-left: 12rpx; }
+.m_l-20 { margin-left: 20rpx; }
+.m_l-24 { margin-left: 24rpx; }
+.m_l-28 { margin-left: 28rpx; }
+.m_l-32 { margin-left: 32rpx; }
+.m_s    { margin-bottom: env(safe-area-inset-bottom); }
+/* 内边距 */
+.p-8    { padding: 8rpx; }
+.p-12   { padding: 12rpx; }
+.p-16   { padding: 16rpx; }
+.p-20   { padding: 20rpx; }
+.p-24   { padding: 24rpx; }
+.p-28   { padding: 28rpx; }
+.p-32   { padding: 32rpx; }
+/* 垂直内边距 */
+.p_v-8  { padding-top: 8rpx; padding-bottom: 8rpx; }
+.p_v-12 { padding-top: 12rpx; padding-bottom: 12rpx; }
+.p_v-20 { padding-top: 20rpx; padding-bottom: 20rpx; }
+.p_v-24 { padding-top: 24rpx; padding-bottom: 24rpx; }
+.p_v-28 { padding-top: 28rpx; padding-bottom: 28rpx; }
+.p_v-32 { padding-top: 32rpx; padding-bottom: 32rpx; }
+/* 水平内边距 */ 
+.p_h-8  { padding-left: 8rpx; padding-right: 8rpx; }
+.p_h-12 { padding-left: 12rpx; padding-right: 12rpx; }
+.p_h-20 { padding-left: 20rpx; padding-right: 20rpx; }
+.p_h-24 { padding-left: 24rpx; padding-right: 24rpx; }
+.p_h-28 { padding-left: 28rpx; padding-right: 28rpx; }
+.p_h-32 { padding-left: 32rpx; padding-right: 32rpx; }
+.p_h-70 { padding-left: 70rpx; padding-right: 70rpx; }
+/* 单向内边距 */
+.p_t-8  { padding-top: 8rpx; }
+.p_t-12 { padding-top: 12rpx; }
+.p_t-20 { padding-top: 20rpx; }
+.p_t-24 { padding-top: 24rpx; }
+.p_t-28 { padding-top: 28rpx; }
+.p_t-32 { padding-top: 32rpx; }
+.p_r-8  { padding-right: 8rpx; }
+.p_r-12 { padding-right: 12rpx; }
+.p_r-20 { padding-right: 20rpx; }
+.p_r-24 { padding-right: 24rpx; }
+.p_r-28 { padding-right: 28rpx; }
+.p_r-32 { padding-right: 32rpx; }
+.p_b-8  { padding-bottom: 8rpx; }
+.p_b-12 { padding-bottom: 12rpx; }
+.p_b-20 { padding-bottom: 20rpx; }
+.p_b-24 { padding-bottom: 24rpx; }
+.p_b-28 { padding-bottom: 28rpx; }
+.p_b-32 { padding-bottom: 32rpx; }
+.p_l-8  { padding-left: 8rpx; }
+.p_l-12 { padding-left: 12rpx; }
+.p_l-20 { padding-left: 20rpx; }
+.p_l-24 { padding-left: 24rpx; }
+.p_l-28 { padding-left: 28rpx; }
+.p_l-32 { padding-left: 32rpx; }
+.p_s    { padding-bottom: env(safe-area-inset-bottom); }
+/* 文字 */
+.t_a-l  { text-align: left !important; }
+.t_a-c  { text-align: center; }
+.t_a-r  { text-align: right; }
+.f_w-4  { font-weight: 400 !important; }
+.f_w-5  { font-weight: 500; }
+.f_w-6  { font-weight: 600; }
+.f_w-b  { font-weight: bold; }
+.e      { line-clamp: 1; -webkit-line-clamp: 1; word-break: break-all; text-overflow: ellipsis; display: -webkit-box; overflow: hidden; -webkit-box-orient: vertical; }
+.e-2    { line-clamp: 2; -webkit-line-clamp: 2; word-break: break-all; text-overflow: ellipsis; display: -webkit-box; overflow: hidden; -webkit-box-orient: vertical; }
+/* 边框 */
+.b_t    { border-top: var(--border); }
+.b_r    { border-right: var(--border); }
+.b_b    { border-bottom: var(--border); }
+.b_l    { border-left: var(--border); }
+/* flex */
+.f        { display: flex; }
+.f_d-c    { display: flex; flex-direction: column;}
+.f_j_c-c  { display: flex; justify-content: center; }
+.f_j_c-sb { display: flex; justify-content: space-between; }
+.f_j_c-sa { display: flex; justify-content: space-around; }
+.f_j_c-fe { display: flex; justify-content: flex-end; }
+.f_a_i-c  { display: flex; align-items: center; }
+.f_a_i-b  { display: flex; align-items: baseline; }
+.f_a_i-fe { display: flex; align-items: flex-end; }
+.f-i_f-1  { flex: 1; }
+.f-i_fs-0 { flex-shrink: 0; }
+.f-center { display: flex; justify-content: center; align-items: center; }
+
+/* ===== 日系手账风公共类 ===== */
+/* 页面底色 */
+.page__bg {
+  background: var(--bg-base);
+}
+/* 页面主内容区 */
+.page__content {
+  padding: 0 32rpx;
+}
+/* 手账贴纸卡片 */
+.zk__card {
+  background: var(--bg-card);
+  border-radius: var(--radius-card);
+  border: var(--card-border);
+  box-shadow: var(--card-shadow);
+  position: relative;
+}
+/* 纸胶带装饰 */
+.zk__tape {
+  position: absolute;
+  top: -18rpx;
+  left: 50%;
+  transform: translateX(-50%) rotate(-2deg);
+  width: 136rpx;
+  height: 36rpx;
+  background: var(--tape-yellow);
+  box-shadow: 0 2rpx 4rpx rgba(0,0,0,0.06);
+  clip-path: polygon(4% 0%, 96% 0%, 100% 100%, 0% 100%);
+}
+.zk__tape--green {
+  position: absolute;
+  top: -14rpx;
+  left: 24rpx;
+  width: 92rpx;
+  height: 32rpx;
+  background: var(--tape-green);
+  transform: rotate(-5deg);
+  box-shadow: 0 2rpx 4rpx rgba(0,0,0,0.05);
+}
+/* 便签分割线（虚线） */
+.zk__dashed {
+  border-bottom: var(--border-dashed);
+}
+/* 主按钮 */
+.btn--primary {
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-color);
+  border-radius: 12rpx;
+  box-shadow: var(--btn-primary-shadow);
+  border: none;
+  font-weight: 500;
+  text-align: center;
+}
+.btn--primary::after { border: none; }
+/* 抹茶绿按钮 */
+.btn--matcha {
+  background: var(--color-secondary);
+  color: #FFFFFF;
+  border-radius: 12rpx;
+  border: none;
+  font-weight: 500;
+  text-align: center;
+}
+.btn--matcha::after { border: none; }
+/* 标签 */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 4rpx 16rpx;
+  border-radius: var(--radius-tag);
+  font-size: var(--font-size-small-2);
+}
+.tag--primary {
+  background: rgba(200, 109, 81, 0.12);
+  color: var(--color-primary);
+}
+.tag--success {
+  background: #E8EFE5;
+  color: var(--color-secondary);
+  font-weight: bold;
+}
+.tag--default {
+  background: #EFE6DC;
+  color: var(--font-color-sub);
+}
+/* 印章标记 */
+.stamp__circle {
+  width: 116rpx;
+  height: 116rpx;
+  border: 4rpx solid var(--color-danger);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-small-3);
+  font-weight: bold;
+  color: var(--color-danger);
+  transform: rotate(-12deg);
+  opacity: 0.85;
+}

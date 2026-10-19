@@ -1,0 +1,10 @@
+<view class="confirm-mask" wx:if="{{ visible }}" catch:tap="onCancel">
+  <view class="confirm-dialog" catch:tap="">
+    <text class="confirm-title" wx:if="{{ title }}">{{ title }}</text>
+    <text class="confirm-content" wx:if="{{ content }}">{{ content }}</text>
+    <view class="confirm-actions">
+      <view class="confirm-btn confirm-btn--cancel" catch:tap="onCancel">{{ cancelText }}</view>
+      <view class="confirm-btn confirm-btn--confirm" catch:tap="onConfirm">{{ confirmText }}</view>
+    </view>
+  </view>
+</view>

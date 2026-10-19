@@ -1,0 +1,30 @@
+.container {
+  box-sizing: border-box;
+  position: relative;
+  background: var(--bg-base);
+}
+.container__scroll {
+  flex: 1;
+  overflow: auto;
+}
+.container__body {
+  overflow: hidden;
+  box-sizing: border-box;
+  min-height: 100%;
+  padding-bottom: env(safe-area-inset-bottom);
+  position: relative;
+  background-color: transparent;
+}
+
+.container.is-use-scroll .container__body {
+  min-height: auto;
+}
+
+.container.is-tabbar {
+  padding-bottom: calc(var(--tabbar-height) + env(safe-area-inset-bottom));
+}
+
+.container.is-tabbar .container__body,
+.container.is-use-footer .container__body {
+  padding-bottom: 0;
+}

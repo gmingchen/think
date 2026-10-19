@@ -1,0 +1,29 @@
+<view class="zk__card member member--{{ loading ? 'skeleton' : card.tone }}" bind:tap="onActionTap">
+  <!-- 纸胶带：设计稿方案 A（和纸手账卡），与项目 zk__card 的手账语言同源 -->
+  <view class="member__tape" />
+
+  <!-- ① 骨架态：同高度占位、无任何文案（§4.1：不能兜底成「未开通」卡） -->
+  <block wx:if="{{ loading }}">
+    <view class="member__left member__left--skeleton">
+      <view class="member__sk member__sk--title"></view>
+      <view class="member__sk member__sk--desc"></view>
+      <view class="member__sk member__sk--note"></view>
+    </view>
+    <view class="member__sk member__sk--btn"></view>
+  </block>
+
+  <!-- ② 其余各态：严格同一版式，只换文案、火印与按钮色调（设计稿「同一版式填充」） -->
+  <block wx:else>
+    <view class="member__left">
+      <view class="member__title-line">
+        <text class="member__title">{{ card.title }}</text>
+        <text wx:if="{{ card.price }}" class="member__price">{{ card.price }}</text>
+        <text wx:if="{{ card.stamp }}" class="member__stamp">{{ card.stamp }}</text>
+      </view>
+      <text class="member__desc">{{ card.desc }}</text>
+      <view wx:if="{{ card.remainDays }}" class="member__note">{{ card.expireAt }} 到期（<text class="{{ urgent ? 'member__urgent' : '' }}">剩余 {{ card.remainDays }} 天</text>）</view>
+      <view wx:elif="{{ card.expireAt }}" class="member__note">已于 {{ card.expireAt }} 到期</view>
+    </view>
+    <view class="member__btn member__btn--{{ actionTone }}">{{ card.action }}</view>
+  </block>
+</view>

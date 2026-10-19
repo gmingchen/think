@@ -1,0 +1,32 @@
+<!-- 入口：标题右侧 link 跳采购清单，无订单时隐藏 -->
+<section title="{{ title }}{{ period ? ' (' + period + ')' : '' }}" link="{{ orders.length > 0 ? '🛒 采购清单' : '' }}" bind:tap="onGoShopping" />
+<view class="zk__card latest">
+  <view class="zk__tape--green"></view>
+  <view wx:if="{{ orders.length > 0 }}">
+    <view
+      class="latest__order {{ index === orders.length - 1 ? 'latest__order--last' : '' }}"
+      wx:for="{{ orders }}"
+      wx:key="id"
+      data-id="{{ item.id }}"
+      bind:tap="onOrderTap">
+      <text class="latest__orderer">{{ item.ordererName }} 的点餐</text>
+      <text wx:if="{{ item.remark }}" class="latest__remark">{{ item.remark }}</text>
+      <view class="latest__dishes">
+        <view class="latest__dish" wx:for="{{ item.dishes }}" wx:for-item="dish" wx:key="dishId"
+          data-dish-id="{{ dish.dishId }}" catchtap="onDishTap">
+          <image class="latest__dish-img" wx:if="{{ dish.cover }}" src="{{ dish.cover }}" mode="aspectFill" />
+          <image class="latest__dish-img" wx:else src="{{ DEFAULT_DISH_COVER }}" mode="aspectFill" />
+          <view class="latest__dish-info">
+            <text class="latest__dish-name">{{ dish.name }}</text>
+            <text class="latest__dish-qty">×{{ dish.quantity }}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <view wx:else class="latest__empty">
+    <text class="latest__empty-icon">🍳</text>
+    <text class="latest__empty-text">还没有点餐记录</text>
+    <text class="latest__empty-hint">去菜谱里选几道菜开火吧</text>
+  </view>
+</view>

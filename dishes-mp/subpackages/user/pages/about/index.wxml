@@ -1,0 +1,26 @@
+<container use-scroll title="关于厨菜记" use-back>
+  <!-- Logo 区域 -->
+  <view class="about__top">
+    <view class="about__logo-box"><image src="/common/images/logo.png" mode="aspectFit" class="about__logo-img" /></view>
+    <text class="about__name">厨菜记</text>
+    <text class="about__version">v{{ system.version }}</text>
+    <text class="about__slogan">用心做好每一餐，认真记录每一天</text>
+  </view>
+
+  <!-- 协议列表 -->
+  <view class="zk__card about__list">
+    <view class="about__item" bind:tap="onAgreement">
+      <text>📄 用户协议</text>
+      <iconfont name="arrow-right" size="28" color="#8C7E72" />
+    </view>
+    <view class="about__item about__item--last" bind:tap="onPrivacy">
+      <text>🔒 隐私政策</text>
+      <iconfont name="arrow-right" size="28" color="#8C7E72" />
+    </view>
+  </view>
+
+  <!-- Banner 广告（协议列表卡片之后、页面末尾；本页卡片用 margin 0 32rpx，故用 p_h-32 包裹对齐；无 loading 态常驻展示，受 store.ad.enabled 总开关控制，无填充自动隐藏） -->
+  <view class="p_h-32">
+    <ad-unit ad-unit-id="{{ AD_UNIT_ABOUT_BANNER }}" cls="page__ad" />
+  </view>
+</container>

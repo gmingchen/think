@@ -1,0 +1,61 @@
+<popup show="{{ visible }}" title="欢迎使用厨菜记！" subtitle="先选几个喜欢的方向吧" bind:close="onClose">
+
+  <!-- 分类 -->
+  <view class="guide__section">
+    <text class="guide__label">── 分类 ──</text>
+    <view class="guide__options">
+      <view
+        class="guide__option {{ item.selected ? 'guide__option--active' : '' }}"
+        wx:for="{{ categories }}"
+        wx:key="id"
+        data-type="categories"
+        data-id="{{ item.id }}"
+        bind:tap="onToggle">
+        {{ item.name }}
+      </view>
+    </view>
+  </view>
+
+  <!-- 常见食材（按分类） -->
+  <view class="guide__section">
+    <text class="guide__label">── 常见食材 ──</text>
+    <view class="guide__group" wx:for="{{ ingredientGroups }}" wx:key="name" wx:for-item="group">
+      <text class="guide__group-title">{{ group.name }}</text>
+      <view class="guide__options">
+        <view
+          class="guide__option {{ item.selected ? 'guide__option--active' : '' }}"
+          wx:for="{{ group.items }}"
+          wx:key="id"
+          data-type="ingredients"
+          data-id="{{ item.id }}"
+          bind:tap="onToggle">
+          {{ item.name }}
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 常用调料（按分类） -->
+  <view class="guide__section">
+    <text class="guide__label">── 常用调料 ──</text>
+    <view class="guide__group" wx:for="{{ seasoningGroups }}" wx:key="name" wx:for-item="group">
+      <text class="guide__group-title">{{ group.name }}</text>
+      <view class="guide__options">
+        <view
+          class="guide__option {{ item.selected ? 'guide__option--active' : '' }}"
+          wx:for="{{ group.items }}"
+          wx:key="id"
+          data-type="seasonings"
+          data-id="{{ item.id }}"
+          bind:tap="onToggle">
+          {{ item.name }}
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="guide__footer" slot="footer">
+    <text class="guide__skip" bind:tap="onSkip">跳过</text>
+    <view class="btn--primary guide__confirm" bind:tap="onConfirm">进入厨房 <iconfont name="arrow-right" size="28" color="#fff" /></view>
+  </view>
+</popup>

@@ -1,0 +1,84 @@
+page {
+  /* ===== 日系手账风 (Zakka Style) ===== */
+  /* 风格定位：温暖、手写感、棉麻质感 */
+
+  /* 主题色 */
+  --color-primary: #C86D51;              /* 陶土砖红（手账主色） */
+  --color-primary-deep: #A85A42;         /* 深砖红（按压态） */
+  --color-secondary: #688B58;            /* 抹茶青绿 */
+  --color-accent: #E0A94F;               /* 芥末黄（高亮/印章） */
+
+  /* 背景色 */
+  --bg-base: #F5EFEB;                    /* 水洗牛皮纸底 */
+  --bg-card: #FAF6F0;                    /* 手账内页贴纸白 */
+  --bg-section: #EDE4D8;                 /* 侧栏/分区底色 */
+
+  /* 文字颜色 */
+  --font-color: #3D352E;                 /* 墨水深棕黑 */
+  --font-color-sub: #8C7E72;             /* 铅笔灰棕 */
+  --font-color-weak: #B5A99C;            /* 弱文字/占位符 */
+  --font-color-white: #FFFFFF;
+  --font-color-black: #000000;
+  --font-color-primary: var(--color-primary);
+  --font-color-secondary: var(--color-secondary);
+
+  /* 语义色 */
+  --color-white: #FFFFFF;
+  --color-black: #000000;
+  --color-info: #8C7E72;
+  --color-success: #688B58;
+  --color-danger: #B84A39;
+  --color-warning: #E0A94F;
+
+  /* 卡片令牌 */
+  --card-bg: #FAF6F0;
+  --card-radius: 24rpx;
+  --card-shadow: 4rpx 6rpx 16rpx rgba(100, 80, 60, 0.05);
+  --card-border: 1rpx solid #E5DBD0;
+
+  /* 按钮令牌 */
+  --btn-primary-bg: var(--color-primary);
+  --btn-primary-color: #FFFFFF;
+  --btn-primary-shadow: 2rpx 2rpx 6rpx rgba(200, 109, 81, 0.3);
+
+  /* 边框 */
+  --border-width: 1rpx;
+  --border-width-large: 2rpx;
+  --border-style: solid;
+  --border-color: #DDD3C8;
+  --border-dashed: 1rpx dashed #DDD3C8;
+  --border: var(--border-width) var(--border-style) var(--border-color);
+
+  /* 纸胶带 */
+  --tape-yellow: rgba(224, 169, 79, 0.45);
+  --tape-green: rgba(104, 139, 88, 0.4);
+
+  /* 字体大小 */
+  --font-size: 28rpx;
+  --font-size-small-1: 26rpx;
+  --font-size-small-2: 24rpx;
+  --font-size-small-3: 22rpx;
+  --font-size-small-4: 20rpx;
+  --font-size-large-1: 30rpx;
+  --font-size-large-2: 32rpx;
+  --font-size-large-3: 34rpx;
+  --font-size-large-4: 36rpx;
+  --font-size-large-5: 38rpx;
+  --font-size-large-6: 40rpx;
+  /* 字重 */
+  --font-weight-5: 500;
+  --font-weight-6: 600;
+  --font-weight-bold: bold;
+  /* 圆角 */
+  --border-radius: 16rpx;
+  --border-radius-small: 12rpx;
+  --border-radius-smaller: 8rpx;
+  --border-radius-large: 24rpx;
+  --border-radius-larger: 40rpx;
+  --radius-card: 24rpx;
+  --radius-tag: 8rpx;
+  --radius-pill: 999rpx;
+
+  /* 顶部导航高度 */
+  --tabbar-height: 88rpx;
+}

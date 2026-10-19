@@ -1,0 +1,174 @@
+/* 状态卡片 */
+.order-detail__status-card {
+  margin: 24rpx 32rpx 0;
+  padding: 40rpx 32rpx;
+  text-align: center;
+}
+.order-detail__status-tag {
+  display: inline-block;
+  font-size: 36rpx;
+  font-weight: bold;
+  color: var(--font-color-sub);
+}
+.order-detail__status-tag--primary {
+  color: var(--color-primary);
+}
+.order-detail__status-tag--success {
+  color: var(--color-secondary);
+}
+.order-detail__status-tag--danger {
+  color: var(--color-danger);
+}
+.order-detail__status-meta {
+  margin-top: 16rpx;
+  font-size: 24rpx;
+  color: var(--font-color-sub);
+  display: flex;
+  justify-content: center;
+  gap: 16rpx;
+}
+
+/* 便签小节标题 */
+.order-detail__section-tag {
+  margin: 32rpx 40rpx 16rpx;
+  font-size: 28rpx;
+  font-weight: 700;
+  color: var(--font-color);
+}
+
+/* 菜谱列表 */
+.order-detail__dish-card {
+  margin: 0 32rpx;
+  padding: 8rpx 32rpx;
+}
+.order-detail__dish-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 20rpx 0;
+  border-bottom: var(--border-dashed);
+  gap: 20rpx;
+}
+.order-detail__dish-item:last-child {
+  border-bottom: none;
+}
+.order-detail__dish-cover {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 12rpx;
+  background: #F2E8DC;
+  flex-shrink: 0;
+}
+.order-detail__dish-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+.order-detail__dish-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.order-detail__dish-name {
+  font-size: 28rpx;
+  color: var(--font-color);
+  font-weight: 500;
+}
+.order-detail__dish-qty {
+  font-size: 26rpx;
+  color: var(--font-color-sub);
+  flex-shrink: 0;
+}
+.order-detail__dish-review {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+.order-detail__dish-content {
+  font-size: 22rpx;
+  color: var(--font-color-sub);
+}
+
+/* 备注 */
+.order-detail__remark-card {
+  margin: 0 32rpx;
+  padding: 24rpx 32rpx;
+  font-size: 24rpx;
+  color: #7D6855;
+  background: #F6EDE4;
+  border-radius: 16rpx;
+  line-height: 1.6;
+}
+
+/* 订单信息 */
+.order-detail__info-card {
+  margin: 0 32rpx;
+  padding: 8rpx 32rpx;
+}
+.order-detail__info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 0;
+  border-bottom: var(--border-dashed);
+}
+.order-detail__info-row:last-child {
+  border-bottom: none;
+}
+.order-detail__info-label {
+  font-size: 26rpx;
+  color: var(--font-color-sub);
+}
+.order-detail__info-value {
+  font-size: 26rpx;
+  color: var(--font-color);
+}
+
+/* Banner 广告：左右间距由页面侧 p_h-32 包裹承担，原生 ad 只加上下 margin */
+.page__ad {
+  margin: 32rpx 0 24rpx;
+}
+
+/* 底部操作栏：footer 插槽固定底栏，安全区避让同 confirm 页 */
+.order-detail__bottom-bar {
+  padding: 24rpx 32rpx;
+  padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
+}
+.order-detail__bottom-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+/* 左右分组：组内gap、组间通栏两端分布 */
+.order-detail__actions-group {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+/* 右侧状态主操作：实底色区分层级，尺寸与 ghost 统一 scale，不 flex 撑满 */
+.order-detail__bottom-btn {
+  flex-shrink: 0;
+  padding: 10rpx 24rpx;
+  font-size: 22rpx;
+  font-weight: 500;
+}
+/* 左侧次要操作（取消/采购清单）：描边小按钮，尺寸同菜谱页 recipe__cart-btn 轻按钮 scale */
+.order-detail__ghost-btn {
+  flex-shrink: 0;
+  padding: 10rpx 20rpx;
+  font-size: 22rpx;
+  color: var(--color-primary);
+  border: 1rpx solid var(--color-primary);
+  border-radius: 10rpx;
+}
+.order-detail__ghost-btn:active {
+  background: rgba(200, 109, 81, 0.12);
+}
+/* 取消：中性灰弱化，不占主题色（主题色留给正向操作） */
+.order-detail__ghost-btn--cancel {
+  color: var(--font-color-sub);
+  border-color: var(--border-color);
+}
+.order-detail__ghost-btn--cancel:active {
+  background: rgba(0, 0, 0, 0.05);
+}

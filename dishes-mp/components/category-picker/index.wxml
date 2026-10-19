@@ -1,0 +1,19 @@
+<popup show="{{ visible }}" title="选择分类" bind:close="onClose">
+  <view
+    class="category-picker__item {{ value === item.id ? 'category-picker__item--active' : '' }}"
+    wx:for="{{ list }}"
+    wx:key="id"
+    data-id="{{ item.id }}"
+    data-name="{{ item.name }}"
+    catch:tap="onSelect">
+    <text>{{ item.name }}</text>
+    <text wx:if="{{ value === item.id }}" class="category-picker__check">✓</text>
+  </view>
+  <view class="category-picker__empty" wx:if="{{ loaded && !list.length }}">
+    <view>还没有分类</view>
+    <view class="category-picker__empty-link" catch:tap="onGoManage">
+      <text>去「分类管理」添加</text>
+      <iconfont name="arrow-right" size="24" color="#C86D51" />
+    </view>
+  </view>
+</popup>

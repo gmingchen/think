@@ -1,0 +1,87 @@
+<container use-scroll use-footer use-back title="确认订单">
+
+  <!-- 菜谱清单 -->
+  <view class="confirm__section-header">
+    <text class="confirm__section-title">🍽️ 已选菜谱</text>
+    <text class="confirm__section-count">共 {{ cart.quantity }} 道</text>
+  </view>
+  <view class="zk__card confirm__dish-card">
+    <view class="confirm__dish-item" wx:for="{{ cart.list }}" wx:key="dishId">
+      <view class="confirm__dish-photo">
+        <image wx:if="{{ item.photo }}" src="{{ item.photo }}" mode="aspectFill" class="confirm__dish-img" />
+        <image wx:else src="{{ DEFAULT_DISH_COVER }}" mode="aspectFit" class="confirm__dish-img" />
+      </view>
+      <view class="confirm__dish-info">
+        <text class="confirm__dish-name">{{ item.name }}</text>
+      </view>
+      <stepper value="{{ item.quantity }}" min="1" bind:change="onStepperChange" data-id="{{ item.dishId }}" />
+    </view>
+  </view>
+
+  <!-- 日期选择 -->
+  <view class="confirm__section-header">
+    <text class="confirm__section-title">📅 日期</text>
+  </view>
+  <view class="zk__card confirm__field-card" bind:tap="onOpenCalendar">
+    <view class="confirm__field">
+      <text class="confirm__field-label">订单日期</text>
+      <view class="confirm__field-value">
+        <text class="confirm__field-text">{{ dateLabel }}</text>
+        <iconfont name="arrow-right" size="28" color="#8C7E72" />
+      </view>
+    </view>
+  </view>
+
+  <!-- 时段选择 -->
+  <view class="confirm__section-header">
+    <text class="confirm__section-title">🕐 时段</text>
+  </view>
+  <view class="confirm__meal-list">
+    <view
+      class="confirm__meal-item {{ activeMeal === item ? 'confirm__meal-item--active' : '' }} {{ disabledMealMap[item] ? 'confirm__meal-item--disabled' : '' }}"
+      wx:for="{{ mealList }}"
+      wx:key="*this"
+      data-meal="{{ item }}"
+      bind:tap="onSelectMeal">
+      {{ item }}
+    </view>
+  </view>
+
+  <!-- 备注 -->
+  <view class="confirm__section-header">
+    <text class="confirm__section-title">✏️ 备注</text>
+    <text class="confirm__section-hint">选填</text>
+  </view>
+  <view class="zk__card confirm__remark-card">
+    <textarea
+      class="confirm__remark-textarea"
+      placeholder="口味要求、特殊说明..."
+      value="{{ remark }}"
+      bindinput="onRemarkInput"
+      auto-height
+      maxlength="500" />
+  </view>
+
+  <!-- Banner 广告（备注卡片之后、内容末尾；本页卡片用 margin 0 32rpx，故用 p_h-32 包裹对齐；受 store.ad.enabled 总开关控制，无填充自动隐藏） -->
+  <view class="p_h-32">
+    <ad-unit ad-unit-id="{{ AD_UNIT_CONFIRM_BANNER }}" cls="page__ad" />
+  </view>
+
+  <!-- 底部间距 -->
+  <view class="confirm__bottom-spacer"></view>
+
+  <!-- 日历弹窗 -->
+  <date-picker
+    show="{{ showCalendar }}"
+    date="{{ selectedDate }}"
+    min-date="{{ minDate }}"
+    bind:close="onCloseCalendar"
+    bind:confirm="onDateConfirm" />
+
+  <!-- 底部提交栏 -->
+  <view slot="footer" class="confirm__footer">
+    <view class="confirm__submit-btn {{ submitting ? 'confirm__submit-btn--disabled' : '' }}" bind:tap="onSubmit">
+      {{ submitting ? '提交中...' : '确认下单' }}
+    </view>
+  </view>
+</container>

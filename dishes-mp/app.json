@@ -1,0 +1,92 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/recipe/index",
+    "pages/cook/index",
+    "pages/mine/index"
+  ],
+  "subpackages": [
+    {
+      "root": "subpackages/kitchen",
+      "pages": ["pages/list/index", "pages/settings/index", "pages/member/index"]
+    },
+    {
+      "root": "subpackages/food",
+      "pages": ["pages/list/index"]
+    },
+    {
+      "root": "subpackages/category",
+      "pages": ["pages/list/index"]
+    },
+    {
+      "root": "subpackages/seasoning",
+      "pages": ["pages/list/index"]
+    },
+    {
+      "root": "subpackages/dish",
+      "pages": ["pages/detail/index", "pages/review/index", "pages/add-edit/index", "pages/share/index", "pages/draw/index", "pages/shopping/index", "pages/ai-recommend/index", "pages/sort/index"]
+    },
+    {
+      "root": "subpackages/poster",
+      "pages": ["pages/draw/index"]
+    },
+    {
+      "root": "subpackages/cookorder",
+      "pages": ["pages/list/index", "pages/confirm/index", "pages/detail/index"]
+    },
+    {
+      "root": "subpackages/member",
+      "pages": ["pages/vip/index"]
+    },
+    {
+      "root": "subpackages/user",
+      "pages": ["pages/edit/index", "pages/about/index", "pages/agreement/index", "pages/privacy/index"]
+    },
+    {
+      "root": "subpackages/feedback",
+      "pages": ["pages/merchant/index"]
+    }
+  ],
+  "tabBar": {
+    "custom": true,
+    "color": "#8C7E72",
+    "selectedColor": "#C86D51",
+    "backgroundColor": "#FAF5EE",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "小舍"
+      },
+      {
+        "pagePath": "pages/recipe/index",
+        "text": "菜谱"
+      },
+      {
+        "pagePath": "pages/cook/index",
+        "text": "下厨"
+      },
+      {
+        "pagePath": "pages/mine/index",
+        "text": "我的"
+      }
+    ]
+  },
+  "usingComponents": {
+    "container": "components/container/index",
+    "iconfont": "components/iconfont/iconfont",
+    "tabbar": "components/tabbar/index",
+    "ad-unit": "components/ad-unit/index"
+  },
+  "window": {
+    "navigationStyle": "custom",
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "厨菜记",
+    "navigationBarBackgroundColor": "#F5EFEB",
+    "backgroundColor": "#F5EFEB"
+  },
+  "style": "v2",
+  "componentFramework": "glass-easel",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

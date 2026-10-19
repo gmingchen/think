@@ -1,0 +1,21 @@
+@import '../../../../common/style/index.wxss';
+
+/* 评价列表 */
+.review-list__content {
+  padding: 24rpx 32rpx 0;
+}
+.review-list__item {
+  padding: 24rpx 32rpx;
+  margin-bottom: 16rpx;
+}
+.review-list__item:last-child {
+  border-bottom: none;
+}
+
+/* 加载状态 */
+.review-list__status {
+  text-align: center;
+  padding: 32rpx 0;
+  font-size: 24rpx;
+  color: var(--font-color-sub);
+}

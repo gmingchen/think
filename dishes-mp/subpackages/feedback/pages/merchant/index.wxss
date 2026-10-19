@@ -1,0 +1,113 @@
+/* 收集用意说明 */
+.merchant__intro {
+  margin: 24rpx 32rpx 0;
+  padding: 32rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+.merchant__intro-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--font-color);
+}
+.merchant__intro-text {
+  font-size: 26rpx;
+  line-height: 1.6;
+  color: var(--font-color-sub);
+}
+.merchant__intro-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  margin-top: 8rpx;
+}
+.merchant__intro-item {
+  font-size: 24rpx;
+  line-height: 1.5;
+  color: var(--font-color-sub);
+}
+
+/* 通用表单卡片 */
+.merchant__card {
+  margin: 24rpx 32rpx 0;
+  padding: 32rpx;
+}
+.merchant__label {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--font-color);
+  margin-bottom: 24rpx;
+}
+
+/* 选项 chip（单选 / 多选共用，选中态由 --active 区分） */
+.merchant__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+.merchant__chip {
+  padding: 12rpx 24rpx;
+  font-size: 24rpx;
+  border-radius: 99rpx;
+  background: var(--bg-base);
+  color: var(--font-color-sub);
+  border: 1rpx solid var(--border-color);
+}
+.merchant__chip--active {
+  background: rgba(200, 109, 81, 0.12);
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+/* 长文本 */
+.merchant__textarea {
+  width: 100%;
+  min-height: 160rpx;
+  font-size: 26rpx;
+  line-height: 1.6;
+  color: var(--font-color);
+  box-sizing: border-box;
+}
+
+/* 单行输入（微信号 / 手机号） */
+.merchant__form-item {
+  padding: 20rpx 0;
+  border-bottom: var(--border-dashed);
+  display: flex;
+  align-items: center;
+}
+.merchant__form-item--last {
+  border-bottom: none;
+}
+.merchant__form-label {
+  font-size: 28rpx;
+  color: var(--font-color);
+  flex-shrink: 0;
+  width: 120rpx;
+}
+.merchant__form-input {
+  flex: 1;
+  font-size: 28rpx;
+  color: var(--font-color);
+}
+
+/* 提交 */
+.merchant__submit-section {
+  padding: 48rpx 32rpx;
+}
+.merchant__submit-btn {
+  padding: 24rpx 0;
+  font-size: 28rpx;
+  font-weight: bold;
+  text-align: center;
+}
+.merchant__submit-btn--disabled {
+  opacity: 0.6;
+}
+
+/* Banner 广告：左右间距由页面侧 p_h-32 包裹承担，上方间距由 submit-section 自带 48rpx 下内边距承担，原生 ad 只加底部 margin */
+.page__ad {
+  margin: 0 0 32rpx;
+}

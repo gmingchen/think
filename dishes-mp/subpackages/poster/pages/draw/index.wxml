@@ -1,0 +1,14 @@
+<container use-back use-footer title="晒晒今天吃什么">
+  <view class="poster-draw__stage" style="min-height: {{ stageH }}px;">
+    <canvas-poster id="posterCanvas" />
+  </view>
+
+  <view wx:if="{{ loading }}" class="poster-draw__loading">
+    <text>海报生成中…</text>
+  </view>
+
+  <view class="poster-draw__footer" slot="footer">
+    <button class="poster-draw__btn poster-draw__btn--sub" catch:tap="onSave">📥 保存到相册</button>
+    <button class="poster-draw__btn poster-draw__btn--pri" catch:tap="onShare">🚀 分享给朋友</button>
+  </view>
+</container>

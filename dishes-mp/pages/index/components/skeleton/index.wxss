@@ -1,0 +1,139 @@
+/* 骨架屏：文档流写法（适配带 use-scroll 的 container，避免绝对定位被塌陷压扁） */
+.skeleton {
+  padding-top: 16rpx;
+  overflow: hidden;
+}
+/* 顶部内容区，对应 .page__content 的左右内边距 */
+.skeleton__content {
+  padding: 0 32rpx;
+}
+/* 功能入口图 */
+.skeleton__banner {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+  padding: 16rpx 0;
+}
+.skeleton__banner-row {
+  display: flex;
+  gap: 24rpx;
+}
+/* 区块标题 */
+.skeleton__section {
+  margin: 32rpx 0 16rpx;
+}
+.skeleton__section--bleed {
+  padding-left: 32rpx;
+}
+/* 最近一餐 卡片 */
+.skeleton__card {
+  position: relative;
+  background: var(--bg-card, #FAF6F0);
+  border-radius: 24rpx;
+  border: 1rpx solid #ECE3D9;
+  box-shadow: 2rpx 6rpx 16rpx rgba(0,0,0,0.06);
+  padding: 24rpx 36rpx;
+}
+.skeleton__tape {
+  position: absolute;
+  top: -14rpx;
+  left: 24rpx;
+  width: 92rpx;
+  height: 32rpx;
+  background: #CFE0C0;
+  opacity: .7;
+  border-radius: 2rpx;
+  transform: rotate(-2deg);
+}
+.skeleton__order {
+  padding: 20rpx 0;
+}
+.skeleton__order:last-child {
+  border-bottom: none;
+}
+.skeleton__dish {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-top: 16rpx;
+}
+.skeleton__dish-info {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+/* 拿手好菜 横滑 */
+.skeleton__best {
+  white-space: nowrap;
+  padding: 8rpx 0 40rpx;
+  overflow: hidden;
+}
+.skeleton__best-card {
+  display: inline-block;
+  width: 280rpx;
+  background: #FFF;
+  border-radius: 8rpx;
+  border: 1rpx solid #ECE3D9;
+  box-shadow: 2rpx 6rpx 12rpx rgba(0,0,0,0.08);
+  padding: 16rpx 16rpx 24rpx;
+  margin-right: 24rpx;
+  vertical-align: top;
+}
+.skeleton__best-card:first-child {
+  margin-left: 32rpx;
+}
+/* 骨架块（统一微光动画） */
+.skeleton__block {
+  background: linear-gradient(90deg, #f0e6d8 25%, #f7efe4 50%, #f0e6d8 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s infinite;
+  border-radius: 6rpx;
+}
+/* 尺寸：与真实版式对齐，避免数据到达后跳动 */
+.skeleton__block--banner-half {
+  width: calc(50% - 12rpx);
+  height: 220rpx;
+  border-radius: 16rpx;
+}
+.skeleton__block--section-title {
+  width: 46%;
+  height: 28rpx;
+}
+.skeleton__block--orderer {
+  width: 220rpx;
+  height: 26rpx;
+}
+.skeleton__block--img {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 12rpx;
+  flex-shrink: 0;
+}
+.skeleton__block--name {
+  width: 240rpx;
+  height: 26rpx;
+}
+.skeleton__block--qty {
+  width: 48rpx;
+  height: 24rpx;
+}
+.skeleton__block--photo {
+  width: 100%;
+  height: 248rpx;
+  border-radius: 4rpx;
+}
+.skeleton__block--caption {
+  width: 60%;
+  height: 24rpx;
+  margin: 16rpx auto 0;
+}
+.skeleton__block--note {
+  width: 40%;
+  height: 20rpx;
+  margin: 8rpx auto 0;
+}
+@keyframes skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

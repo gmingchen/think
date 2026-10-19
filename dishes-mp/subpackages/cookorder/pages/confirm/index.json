@@ -1,0 +1,6 @@
+{
+  "usingComponents": {
+    "date-picker": "/components/date-picker/index",
+    "stepper": "/components/stepper/index"
+  }
+}

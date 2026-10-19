@@ -1,0 +1,16 @@
+<view class="zk__card menu">
+  <block wx:for="{{ list }}" wx:key="label">
+    <button wx:if="{{ item.type === 'contact' }}" class="menu__item menu__btn" open-type="contact">
+      <view class="menu__icon-wrap">
+        <text class="menu__icon">{{ item.icon }}</text>
+      </view>
+      <text class="menu__label">{{ item.label }}</text>
+    </button>
+    <view wx:else class="menu__item" data-row="{{ item }}" bind:tap="onTap">
+      <view class="menu__icon-wrap">
+        <text class="menu__icon">{{ item.icon }}</text>
+      </view>
+      <text class="menu__label">{{ item.label }}</text>
+    </view>
+  </block>
+</view>

@@ -1,0 +1,24 @@
+<wxs src="../../wxs/index.wxs" module="utils" />
+<popup show="{{ visible }}" title="选择食材" bind:close="onClose">
+  <!-- 食材列表（标签流式） -->
+  <scroll-view scroll-y class="food-picker__list">
+    <view class="food-picker__tags">
+      <view
+        class="food-picker__tag {{ utils.listIncludes(item.id, tempSelected) ? 'food-picker__tag--selected' : '' }}"
+        wx:for="{{ list }}"
+        wx:key="id"
+        data-id="{{ item.id }}"
+        catch:tap="onToggleSelect">
+        {{ item.name }}
+      </view>
+      <!-- 新增按钮 -->
+      <view class="food-picker__tag food-picker__tag--add" catch:tap="onOpenCreate">+ 新增</view>
+    </view>
+    <view class="food-picker__empty" wx:if="{{ !list.length }}">还没有食材，点上方「+ 新增」添加一个吧～</view>
+  </scroll-view>
+  <!-- 确认按钮 -->
+  <view class="food-picker__confirm" catch:tap="onConfirm">确认选择 ({{ tempSelected.length }})</view>
+</popup>
+
+<!-- 新增食材弹窗 -->
+<food-popup id="foodPopup" bind:confirm="onFoodCreated" />

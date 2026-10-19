@@ -1,0 +1,45 @@
+.step-popup__form {
+  padding: 0 48rpx;
+}
+.step-popup__textarea {
+  width: 100%;
+  min-height: 160rpx;
+  font-size: 28rpx;
+  color: var(--font-color);
+  line-height: 1.6;
+  padding: 20rpx;
+  background: #FAF6F1;
+  border-radius: 12rpx;
+  border: 1rpx solid #EDE4D8;
+  box-sizing: border-box;
+}
+.step-popup__actions {
+  display: flex;
+  gap: 20rpx;
+  padding: 40rpx 48rpx 0;
+}
+.step-popup__cancel,
+.step-popup__next,
+.step-popup__confirm {
+  flex: 1;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--border-radius);
+  font-size: 28rpx;
+}
+.step-popup__cancel {
+  background: var(--bg-section);
+  color: var(--font-color-sub);
+}
+.step-popup__next {
+  border: 2rpx solid var(--color-primary);
+  color: var(--color-primary);
+  background: transparent;
+}
+/* 组件样式隔离，全局 btn--primary 不生效，改用局部主色 */
+.step-popup__confirm {
+  background: var(--color-primary);
+  color: #FFF;
+}

@@ -1,0 +1,157 @@
+/* 骨架屏遮罩（底色取 --bg-base，与页面真实底色同源，否则撤遮罩那一瞬整页会白一下） */
+.skeleton {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
+  background: var(--bg-base);
+  /* 顶部 28rpx = 真实 .user 的 margin-top，让头像从同一个位置起 */
+  padding: 28rpx 32rpx 0;
+  overflow: hidden;
+}
+
+/* 骨架块基础 */
+.skeleton__block {
+  background: linear-gradient(90deg, #f0e6d8 25%, #f7efe4 50%, #f0e6d8 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s infinite;
+  border-radius: 6rpx;
+}
+
+/* 用户区（与真实 .user 同构：不做卡片，尺寸逐项对齐 user/index.wxss） */
+.skeleton__user {
+  display: flex;
+  align-items: center;
+  gap: 28rpx;
+  padding: 8rpx 12rpx;
+  /* 真实 .user 的 margin-bottom 是 24rpx */
+  margin-bottom: 24rpx;
+}
+.skeleton__block--avatar {
+  width: 124rpx;
+  height: 124rpx;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.skeleton__user-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  /* 真实 .user__info 的 gap 是 10rpx */
+  gap: 10rpx;
+}
+.skeleton__name-row {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+/* 昵称 38rpx 字号、编辑入口 24rpx 字号（会员角标只有会员才有，不画） */
+.skeleton__block--name {
+  width: 160rpx;
+  height: 40rpx;
+}
+.skeleton__block--tip {
+  width: 120rpx;
+  height: 26rpx;
+}
+/* 加入天数是个带 padding: 4rpx 16rpx 的胶囊，比纯文本高出一截 */
+.skeleton__block--join {
+  width: 240rpx;
+  height: 34rpx;
+  border-radius: var(--border-radius-smaller);
+}
+
+/* 会员卡（卡面交给 .zk__card，与真实卡永远同色同圆同阴影；尺寸对齐 member/index.wxss） */
+.skeleton__member {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 208rpx;
+  padding: 0 32rpx;
+  box-sizing: border-box;
+  margin-bottom: 24rpx;
+}
+/* 纸胶带：与真实 .member__tape 同几何（member 组件的骨架态也带着胶带，这里不画就会闪一次） */
+.skeleton__member-tape {
+  position: absolute;
+  top: -16rpx;
+  left: 48rpx;
+  width: 108rpx;
+  height: 32rpx;
+  background: var(--tape-yellow);
+  transform: rotate(-3deg);
+  clip-path: polygon(4% 0%, 96% 0%, 100% 100%, 0% 100%);
+}
+.skeleton__member-left {
+  display: flex;
+  flex-direction: column;
+  /* 真实 .member__left--skeleton 的 gap 是 16rpx */
+  gap: 16rpx;
+}
+/* 三行宽高与 .member__sk--title / --desc / --note 逐字相同 */
+.skeleton__block--vip-title { width: 216rpx; height: 32rpx; }
+.skeleton__block--vip-desc { width: 360rpx; height: 24rpx; }
+.skeleton__block--vip-note { width: 260rpx; height: 20rpx; }
+.skeleton__block--vip-btn { width: 136rpx; height: 60rpx; border-radius: 36rpx; flex-shrink: 0; }
+
+/* 菜单（卡面同样走 .zk__card，padding 与真实 .menu 一致） */
+.skeleton__menu {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 24rpx 12rpx 20rpx;
+  margin-bottom: 24rpx;
+}
+.skeleton__menu-item {
+  width: 25%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10rpx;
+  padding: 16rpx 0;
+}
+.skeleton__block--icon {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 28rpx;
+}
+/* 真实标签是 24rpx 字号（行高≈ 34rpx），写 20rpx 会让每行矮一截、loaded 后内容往上顶 */
+.skeleton__block--label {
+  width: 48rpx;
+  height: 34rpx;
+}
+
+/* 链接 */
+.skeleton__link {
+  /* 与真实 .link 的 padding 一致（行高由内部 item 自己撑） */
+  padding: 8rpx 32rpx;
+}
+.skeleton__link-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* 与真实行同高（真实 link__item 是 padding: 28rpx 0），否则 loaded 后列表会往上顶 */
+  padding: 28rpx 0;
+}
+.skeleton__link-item + .skeleton__link-item {
+  border-top: var(--border-dashed);
+}
+/* 行左是「🌿 推荐给朋友」这类六七个字的标签，行右还有一个箭头图标 */
+.skeleton__block--link {
+  width: 200rpx;
+  height: 26rpx;
+}
+.skeleton__block--link-icon {
+  width: 28rpx;
+  height: 28rpx;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+@keyframes skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

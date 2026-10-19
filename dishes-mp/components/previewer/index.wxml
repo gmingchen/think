@@ -1,0 +1,35 @@
+<view
+  class="previewer {{ cls }}"
+  style="grid-template-columns: repeat(auto-fill, minmax({{ width }}, {{ width }})); gap: calc({{ gap }} + {{ deletable ? '20rpx' : '0rpx' }});">
+  <view
+    class="previewer__item"
+    wx:for="{{ list }}"
+    wx:key="index"
+    data-row="{{ item }}"
+    data-index="{{ index }}"
+    catch:tap="onTouch">
+    <img
+      wx:if="{{ item.type === FILE_TYPE_ENUM.IMAGE }}"
+      value="{{ item.url }}"
+      width="{{ width }}"
+      height="{{ height }}"
+      radius="{{ radius }}"
+      fit="{{ fit }}">
+    </img>
+    <vid
+      wx:if="{{ item.type === FILE_TYPE_ENUM.VIDEO }}"
+      value="{{ item.url }}"
+      width="{{ width }}"
+      height="{{ height }}"
+      radius="{{ radius }}"
+      fit="{{ fit }}">
+    </vid>
+    <view
+      wx:if="{{ deletable }}"
+      class="previewer__delete"
+      data-row="{{ item }}"
+      data-index="{{ index }}"
+      catch:tap="onDelete">×</view>
+  </view>
+  <slot></slot>
+</view>

@@ -1,0 +1,34 @@
+<container use-scroll title="调料库" use-back>
+
+  <!-- 骨架屏 -->
+  <skeleton wx:if="{{ loading }}" />
+
+  <!-- 调料列表 -->
+  <view class="zk__card seasoning__list-card" wx:if="{{ list.length }}">
+    <view
+      class="seasoning__item {{ index === list.length - 1 ? 'seasoning__item--last' : '' }}"
+      wx:for="{{ list }}"
+      wx:key="id">
+      <view class="seasoning__info" data-item="{{ item }}" bindlongpress="onDelete">
+        <text class="seasoning__name">{{ item.name }}</text>
+        <text class="seasoning__count">用过{{ item.usageCount || 0 }}次</text>
+      </view>
+      <text class="seasoning__edit" data-item="{{ item }}" bind:tap="onEdit">编辑</text>
+    </view>
+  </view>
+  <empty wx:elif="{{ !loading }}" />
+
+  <!-- 新增按钮 -->
+  <view class="seasoning__add-btn-wrap">
+    <view class="btn--primary seasoning__add-btn" bind:tap="onAdd">+ 新增调料</view>
+  </view>
+
+  <view class="seasoning__tip-text">提示：长按名称可删除</view>
+
+  <!-- Banner 广告（页面末尾；加载完成即展示，无数据也展示、加载中不展示；受 store.ad.enabled 总开关控制，无填充自动隐藏） -->
+  <view class="p_h-32">
+    <ad-unit wx:if="{{ !loading }}" ad-unit-id="{{ AD_UNIT_SEASONING_LIST_CUSTOM }}" cls="page__ad" />
+  </view>
+</container>
+
+<seasoning-popup id="seasoningPopup" bind:confirm="onConfirm" />

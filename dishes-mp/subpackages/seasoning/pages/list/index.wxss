@@ -1,0 +1,57 @@
+/* 列表卡片 */
+.seasoning__list-card {
+  margin: 24rpx 32rpx;
+  padding: 8rpx 32rpx;
+}
+.seasoning__item {
+  padding: 28rpx 0;
+  border-bottom: var(--border-dashed);
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+.seasoning__item--last {
+  border-bottom: none;
+}
+.seasoning__info {
+  flex: 1;
+  display: flex;
+  align-items: baseline;
+  gap: 12rpx;
+}
+.seasoning__name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--font-color);
+}
+.seasoning__count {
+  font-size: 22rpx;
+  color: var(--font-color-sub);
+}
+.seasoning__edit {
+  font-size: 24rpx;
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+/* 新增按钮 */
+.seasoning__add-btn-wrap {
+  padding: 24rpx 32rpx;
+}
+.seasoning__add-btn {
+  padding: 20rpx 0;
+  font-size: 26rpx;
+}
+
+/* 提示文字 */
+.seasoning__tip-text {
+  text-align: center;
+  font-size: 22rpx;
+  color: var(--font-color-weak);
+  padding: 0 0 40rpx;
+}
+
+/* 原生模板广告：左右间距由外层 p_h-32 承担，只加上下 margin */
+.page__ad {
+  margin: 0 0 24rpx;
+}

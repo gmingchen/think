@@ -1,0 +1,31 @@
+<view class="skeleton">
+  <block wx:for="{{ [1, 2, 3] }}" wx:key="*this">
+    <!-- 时段标签 -->
+    <view class="skeleton__section-tag">
+      <view class="skeleton__block skeleton__block--section"></view>
+    </view>
+    <!-- 卡片 -->
+    <view class="skeleton__card">
+      <view class="skeleton__person" wx:for="{{ [1, 2] }}" wx:for-item="p" wx:key="*this">
+        <view class="skeleton__divider" wx:if="{{ p > 1 }}"></view>
+        <!-- 人物头部：名称 + 状态 -->
+        <view class="skeleton__person-header">
+          <view class="skeleton__block skeleton__block--name"></view>
+          <view class="skeleton__block skeleton__block--tag"></view>
+          <view class="skeleton__block skeleton__block--status"></view>
+        </view>
+        <!-- 菜谱行 -->
+        <view class="skeleton__dish" wx:for="{{ [1, 2] }}" wx:for-item="d" wx:key="*this">
+          <view class="skeleton__block skeleton__block--cover"></view>
+          <view class="skeleton__block skeleton__block--dish-name"></view>
+          <view class="skeleton__block skeleton__block--qty"></view>
+        </view>
+        <!-- 按钮 -->
+        <view class="skeleton__actions">
+          <view class="skeleton__block skeleton__block--btn"></view>
+          <view class="skeleton__block skeleton__block--btn skeleton__block--btn-short"></view>
+        </view>
+      </view>
+    </view>
+  </block>
+</view>

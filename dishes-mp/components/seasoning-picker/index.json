@@ -1,0 +1,7 @@
+{
+  "component": true,
+  "usingComponents": {
+    "popup": "../popup/index",
+    "seasoning-popup": "../seasoning-popup/index"
+  }
+}

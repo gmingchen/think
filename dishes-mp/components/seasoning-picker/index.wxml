@@ -1,0 +1,24 @@
+<wxs src="../../wxs/index.wxs" module="utils" />
+<popup show="{{ visible }}" title="选择调料" bind:close="onClose">
+  <!-- 调料列表（标签流式） -->
+  <scroll-view scroll-y class="seasoning-picker__list">
+    <view class="seasoning-picker__tags">
+      <view
+        class="seasoning-picker__tag {{ utils.listIncludes(item.id, tempSelected) ? 'seasoning-picker__tag--selected' : '' }}"
+        wx:for="{{ list }}"
+        wx:key="id"
+        data-id="{{ item.id }}"
+        catch:tap="onToggleSelect">
+        {{ item.name }}
+      </view>
+      <!-- 新增按钮 -->
+      <view class="seasoning-picker__tag seasoning-picker__tag--add" catch:tap="onOpenCreate">+ 新增</view>
+    </view>
+    <view class="seasoning-picker__empty" wx:if="{{ !list.length }}">还没有调料，点上方「+ 新增」添加一个吧～</view>
+  </scroll-view>
+  <!-- 确认按钮 -->
+  <view class="seasoning-picker__confirm" catch:tap="onConfirm">确认选择 ({{ tempSelected.length }})</view>
+</popup>
+
+<!-- 新增调料弹窗 -->
+<seasoning-popup id="seasoningPopup" bind:confirm="onSeasoningCreated" />

@@ -1,0 +1,30 @@
+<view class="best__wrapper">
+  <view class="best__header">
+    <section title="🏆 拿手好菜" />
+  </view>
+  <scroll-view class="best__strip" scroll-x enhanced show-scrollbar="{{ false }}">
+  <view class="best__strip-inner" wx:if="{{ list.length > 0 }}">
+    <view class="best__card {{ item.rating >= 4.5 ? 'best__card--star' : '' }}" wx:for="{{ list }}" wx:key="id" data-item="{{ item }}" bind:tap="onTapItem">
+      <view class="best__badge" wx:if="{{ item.rating >= 4.5 }}">
+        <van-rate value="{{ 1 }}" count="{{ 1 }}" color="#E8A87C" void-color="#D8CCBE" size="12px" readonly />
+        <text>推荐</text>
+      </view>
+      <image class="best__photo" wx:if="{{ item.cover }}" src="{{ item.cover }}" mode="aspectFill" />
+      <image class="best__photo" wx:else src="{{ DEFAULT_DISH_COVER }}" mode="aspectFill" />
+      <text class="best__caption">{{ item.name }}</text>
+      <view class="best__note">
+        <text>做过{{ item.cookCount }}次</text>
+        <block wx:if="{{ item.rating }}">
+          <text> · {{ item.rating }}</text>
+          <van-rate value="{{ 1 }}" count="{{ 1 }}" color="#E8A87C" void-color="#D8CCBE" size="12px" readonly />
+        </block>
+      </view>
+    </view>
+  </view>
+  <view wx:else class="best__empty">
+    <text class="best__empty-icon">🍳</text>
+    <text class="best__empty-text">还没有拿手好菜</text>
+    <text class="best__empty-hint">多做几次，评选你的招牌菜</text>
+  </view>
+  </scroll-view>
+</view>

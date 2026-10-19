@@ -1,0 +1,217 @@
+/* 骨架屏：结构、间距、描边全部照搬清单页真实票面（.shopping__*），
+   只把文字换成微光条；胶带/穿孔线/撕齿/打孔圈这类装饰保持静态原色，不做闪烁
+   纸面/胶带色走页面的 --zakka-* 变量（自定义组件可继承 page 上的变量），并留 fallback */
+.skeleton {
+  padding: 16rpx 28rpx 40rpx;
+}
+
+.skeleton__block {
+  background: linear-gradient(90deg, #EAE0D5 25%, #F4ECE3 50%, #EAE0D5 75%);
+  background-size: 200% 100%;
+  animation: shoppingSkeletonShimmer 1.4s infinite;
+  border-radius: 8rpx;
+}
+
+@keyframes shoppingSkeletonShimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ── 顶部采买进度胶囊（同 .shopping__progress） ── */
+.skeleton__progress {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  background: var(--zakka-card-white, #FFFDF9);
+  border: 2rpx solid #DCD0C3;
+  border-radius: 40rpx;
+  padding: 10rpx 24rpx;
+  width: fit-content;
+  margin: 0 auto 16rpx;
+  box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.04);
+}
+.skeleton__block--progress-label {
+  width: 44rpx;
+  height: 22rpx;
+}
+.skeleton__block--progress-num {
+  width: 56rpx;
+  height: 24rpx;
+}
+.skeleton__progress-track {
+  width: 140rpx;
+  height: 12rpx;
+  background: #ECE1D4;
+  border-radius: 8rpx;
+  overflow: hidden;
+}
+.skeleton__block--progress-fill {
+  width: 35%;
+  height: 100%;
+}
+
+/* ── 小票卡片（同 .shopping__receipt） ── */
+.skeleton__receipt {
+  position: relative;
+  background: var(--zakka-card-white, #FFFDF9);
+  border: 2rpx solid #E4D9CE;
+  border-radius: 28rpx 28rpx 4rpx 4rpx;
+  padding: 32rpx 28rpx 40rpx;
+  box-shadow: 0 16rpx 48rpx rgba(70, 50, 35, 0.08);
+  margin-top: 32rpx;
+}
+
+/* 和纸胶带、顶部穿孔线（静态装饰） */
+.skeleton__tape {
+  position: absolute;
+  top: -18rpx;
+  left: 50%;
+  transform: translateX(-50%) rotate(-1deg);
+  width: 280rpx;
+  height: 40rpx;
+  background: var(--zakka-tape, rgba(224, 169, 79, 0.6));
+  box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.1);
+  clip-path: polygon(3% 0%, 97% 0%, 100% 100%, 0% 100%);
+  z-index: 20;
+}
+.skeleton__perf {
+  position: absolute;
+  top: 12rpx;
+  left: 24rpx;
+  right: 24rpx;
+  border-top: 2rpx dashed #D6C8B8;
+}
+
+/* 便签头（同 .shopping__receipt-head：居中两行 + 底部虚线） */
+.skeleton__head {
+  padding: 8rpx 0 24rpx;
+  border-bottom: 2rpx dashed #D8CABE;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.skeleton__block--title {
+  width: 280rpx;
+  height: 34rpx;
+}
+.skeleton__block--sub {
+  width: 380rpx;
+  height: 22rpx;
+  margin-top: 6rpx;
+}
+
+/* 来源菜条（同 .shopping__source：图标 + 汇总句 + 箭头） */
+.skeleton__source {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  padding-top: 24rpx;
+}
+.skeleton__block--source-icon {
+  width: 28rpx;
+  height: 28rpx;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.skeleton__block--source-label {
+  flex: 1;
+  min-width: 0;
+  height: 24rpx;
+}
+.skeleton__block--source-arrow {
+  width: 20rpx;
+  height: 20rpx;
+  flex-shrink: 0;
+}
+
+/* ── 三档分组（同 .shopping__group / __group-head） ── */
+.skeleton__group {
+  margin-top: 24rpx;
+  border-top: 2rpx dashed #D8CABE;
+}
+.skeleton__group-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 24rpx;
+  padding-bottom: 8rpx;
+}
+.skeleton__block--group-title {
+  width: 148rpx;
+  height: 26rpx;
+}
+.skeleton__group-status {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+.skeleton__block--group-ratio {
+  width: 84rpx;
+  height: 22rpx;
+}
+.skeleton__block--group-arrow {
+  width: 20rpx;
+  height: 20rpx;
+}
+
+/* ── 条目行（同 .shopping__item：48rpx 内容高 + 12rpx 上下留白 + dotted 分隔） ── */
+.skeleton__row {
+  display: flex;
+  align-items: flex-start;
+  gap: 20rpx;
+  min-height: 48rpx;
+  padding: 0 16rpx 12rpx 8rpx;
+  margin-top: 12rpx;
+  border-bottom: 2rpx dotted #E5DCD2;
+  border-radius: 16rpx;
+}
+.skeleton__row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+.skeleton__punch {
+  width: 32rpx;
+  height: 32rpx;
+  border: 2rpx solid #B4A496;
+  border-radius: 50%;
+  margin-top: 4rpx;
+  flex-shrink: 0;
+  background: #FFF;
+  box-shadow: inset 0 2rpx 4rpx rgba(0, 0, 0, 0.06);
+}
+.skeleton__info {
+  flex: 1;
+  min-width: 0;
+}
+.skeleton__main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+.skeleton__block--name {
+  height: 26rpx;
+}
+.skeleton__block--amount {
+  width: 84rpx;
+  height: 22rpx;
+  flex-shrink: 0;
+}
+.skeleton__block--meta {
+  width: 46%;
+  height: 20rpx;
+  margin-top: 4rpx;
+}
+
+/* 底部锯齿撕裂（同 .shopping__receipt-tear） */
+.skeleton__tear {
+  position: absolute;
+  bottom: -16rpx;
+  left: 0;
+  right: 0;
+  height: 16rpx;
+  background-image: radial-gradient(circle, transparent 8rpx, var(--zakka-card-white, #FFFDF9) 8rpx);
+  background-size: 24rpx 16rpx;
+  background-position: 0 -8rpx;
+}

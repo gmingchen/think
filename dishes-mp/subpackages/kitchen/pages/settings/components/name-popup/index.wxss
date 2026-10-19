@@ -1,0 +1,27 @@
+.name-popup__form {
+  padding: 0 48rpx;
+}
+.name-popup__input {
+  height: 88rpx;
+  border-bottom: var(--border);
+  font-size: 28rpx;
+  color: var(--font-color);
+}
+.name-popup__btns {
+  display: flex;
+  gap: 24rpx;
+  padding: 48rpx 48rpx 0;
+}
+.name-popup__btn {
+  flex: 1;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--border-radius);
+  font-size: 28rpx;
+}
+.name-popup__btn--cancel {
+  background: var(--bg-section);
+  color: var(--font-color-sub);
+}

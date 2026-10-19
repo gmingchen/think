@@ -1,0 +1,130 @@
+
+.dish__photo {
+  width: 180rpx;
+  height: 180rpx;
+  background: #FFF;
+  border: 2rpx solid #E5DBD0;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 88rpx;
+  box-shadow: 2rpx 4rpx 12rpx rgba(0,0,0,0.06);
+  margin: 0 auto 16rpx;
+  overflow: hidden;
+}
+.dish__photo-img {
+  width: 100%;
+  height: 100%;
+}
+.dish__photo-emoji {
+  font-size: 88rpx;
+}
+.dish__name {
+  font-size: 32rpx;
+  font-weight: bold;
+  text-align: center;
+  color: var(--font-color);
+}
+.dish__meta {
+  font-size: 22rpx;
+  color: var(--font-color-sub);
+  text-align: center;
+  margin-top: 4rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4rpx;
+}
+.dish__remark, .dish__ingredients, .dish__steps {
+  background: #FFF;
+  border: 1rpx dashed #E0D4C5;
+  padding: 20rpx 24rpx;
+  border-radius: 16rpx;
+  font-size: 24rpx;
+  line-height: 1.7;
+  color: var(--font-color);
+  margin: 20rpx 40rpx 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+.dish__sub-title {
+  font-weight: bold;
+  color: var(--font-color);
+  margin-bottom: 4rpx;
+}
+.dish__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+.dish__tag {
+  font-size: 22rpx;
+  color: var(--font-color);
+  background: #F6EDE4;
+  padding: 6rpx 16rpx;
+  border-radius: 8rpx;
+}
+/* 传播动作组（贴图/分享），纯图标虚线圆钮 */
+.dish__actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20rpx;
+  margin-top: 16rpx;
+}
+.dish__action-btn {
+  width: 64rpx !important;
+  height: 64rpx;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0 !important;
+  color: #8C7E72;
+  background: transparent;
+  border: 1rpx dashed #D8CCBE;
+  border-radius: 50%;
+  line-height: 1;
+}
+.dish__action-btn::after { border: none; }
+/* 贴图按钮——品牌色描边 + NEW角标 + 呼吸动画 */
+.dish__action-btn--sticker {
+  position: relative;
+  border: 2rpx solid #E8A87C;
+  animation: sticker-breathe 2s ease-in-out infinite;
+}
+.dish__sticker-badge {
+  position: absolute;
+  top: -10rpx;
+  right: -10rpx;
+  padding: 2rpx 8rpx;
+  font-size: 16rpx;
+  font-weight: 600;
+  color: #fff;
+  background: #FF6B4A;
+  border-radius: 999rpx;
+  line-height: 1.4;
+}
+@keyframes sticker-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+}
+.dish__btn {
+  margin: 24rpx 40rpx 0;
+  padding: 20rpx 0;
+  font-size: 28rpx;
+  font-weight: bold;
+}
+.dish__link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4rpx;
+  font-size: 24rpx;
+  color: var(--font-color-sub);
+  margin-top: 16rpx;
+  padding: 8rpx 40rpx 0rpx;
+}

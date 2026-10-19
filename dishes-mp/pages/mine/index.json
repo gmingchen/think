@@ -1,0 +1,9 @@
+{
+  "usingComponents": {
+    "user": "./components/user/index",
+    "member": "./components/member/index",
+    "menu": "./components/menu/index",
+    "link": "./components/link/index",
+    "skeleton": "./components/skeleton/index"
+  }
+}

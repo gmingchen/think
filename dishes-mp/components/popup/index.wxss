@@ -1,0 +1,86 @@
+.popup__van {
+  width: 100%;
+}
+.popup__van--center {
+  width: auto;
+}
+/* 定位包装层：顶部留出空隙，胶带绝对定位在这里，上半截可伸到卡片边缘之外 */
+.popup__wrap {
+  position: relative;
+  padding-top: 16rpx;
+}
+.popup__panel {
+  padding: 0 0 72rpx;
+  border-radius: 40rpx 40rpx 0 0;
+  background: var(--bg-base);
+  border-top: 4rpx solid var(--color-primary);
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.popup__panel--center {
+  border-radius: 40rpx;
+  border-top: none;
+  max-width: 640rpx;
+  margin: 0 auto;
+  /* 72rpx 底边是给 bottom 抽屉留给可视区的安全距离；居中卡片按设计图 18px 即可 */
+  padding-bottom: 36rpx;
+}
+/* 和纸胶带：跨压在卡片顶边（wrap 预留的 16rpx 即露出部分，不受 overflow 裁切） */
+.popup__tape {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%) rotate(-1deg);
+  width: 128rpx;
+  height: 32rpx;
+  background: rgba(224, 169, 79, 0.5);
+  box-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.06);
+  clip-path: polygon(4% 0%, 96% 0%, 100% 100%, 0% 100%);
+  pointer-events: none;
+  z-index: 2;
+}
+.popup__header {
+  position: relative;
+  text-align: center;
+  padding: 16rpx 24rpx;
+}
+.popup__header-text {
+  padding: 0 80rpx;
+}
+.popup__title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: var(--font-color);
+}
+.popup__subtitle {
+  font-size: 24rpx;
+  color: var(--font-color-sub);
+  margin-top: 8rpx;
+}
+.popup__header-actions {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 24rpx;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  z-index: 1;
+}
+.popup__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 48rpx;
+  height: 48rpx;
+  font-size: 48rpx;
+  color: var(--font-color-weak);
+  line-height: 1;
+}
+/* 内容滚动区：小程序下 scroll-view 必须有明确高度才生效，靠 flex:1 自动拉伸不可靠；
+   60vh 是为了给 footer 插槽、标题栏与底部内边距留足余量，防止内容超出面板 85vh 而被截断 */
+.popup__body {
+  max-height: 60vh;
+}

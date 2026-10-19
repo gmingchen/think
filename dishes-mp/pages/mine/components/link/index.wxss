@@ -1,0 +1,46 @@
+.link {
+  margin: 24rpx 32rpx 0;
+  padding: 8rpx 32rpx;
+}
+.link__item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 28rpx 0;
+  border-bottom: var(--border-dashed);
+  font-size: 26rpx;
+  cursor: pointer;
+}
+.link__item--last {
+  border-bottom: none;
+}
+/* 分享按钮项：重置 button 默认样式，与普通行一致 */
+.link__item--btn {
+  width: 100% !important;
+  margin: 0 !important;
+  font-weight: 400;
+  background: transparent;
+  color: var(--font-color);
+  text-align: left;
+}
+.link__item--btn::after { border: none; }
+.link__label {
+  color: var(--font-color);
+}
+.link__arrow {
+  font-size: 20rpx;
+  color: var(--font-color-sub);
+}
+/* 激励视频入口行右侧：广告标签 + 箭头 */
+.link__reward {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+.link__reward-tag {
+  font-size: 20rpx;
+  color: var(--font-color-sub);
+  border: 1rpx solid #D8CCBE;
+  border-radius: 8rpx;
+  padding: 2rpx 10rpx;
+}

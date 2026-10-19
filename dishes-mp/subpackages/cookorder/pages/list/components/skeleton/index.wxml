@@ -1,0 +1,24 @@
+<view class="skeleton">
+  <!-- Tab 栏骨架 -->
+  <view class="skeleton__tab-bar">
+    <view class="skeleton__block skeleton__block--tab" wx:for="{{ [1,2] }}" wx:key="*this"></view>
+  </view>
+
+  <!-- 订单卡片骨架 -->
+  <view class="skeleton__card" wx:for="{{ [1,2,3,4,5] }}" wx:key="*this">
+    <!-- 头部 -->
+    <view class="skeleton__head">
+      <view class="skeleton__block skeleton__block--title"></view>
+      <view class="skeleton__block skeleton__block--status"></view>
+    </view>
+    <!-- 菜谱 -->
+    <view class="skeleton__dishes">
+      <view class="skeleton__block skeleton__block--dish" wx:for="{{ [1,2] }}" wx:for-item="d" wx:key="*this"></view>
+    </view>
+    <!-- 底部 -->
+    <view class="skeleton__foot">
+      <view class="skeleton__block skeleton__block--time"></view>
+      <view class="skeleton__block skeleton__block--action"></view>
+    </view>
+  </view>
+</view>

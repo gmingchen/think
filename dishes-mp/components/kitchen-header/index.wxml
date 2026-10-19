@@ -1,0 +1,11 @@
+<view class="kitchen-header" catch:tap="onTap">
+  <block wx:if="{{ kitchen.active }}">
+    <text class="kitchen-header__name">{{ kitchen.active.name }}</text>
+    <text class="kitchen-header__stamp">私房</text>
+    <iconfont name="arrow-bottom" size="20" color="#8C7E72" class="kitchen-header__arrow" />
+  </block>
+  <block wx:else>
+    <view class="kitchen-header__skeleton-name"></view>
+    <view class="kitchen-header__skeleton-stamp"></view>
+  </block>
+</view>

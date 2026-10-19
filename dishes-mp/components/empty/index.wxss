@@ -1,0 +1,20 @@
+/* 空状态组件 */
+.empty {
+  text-align: center;
+}
+
+.empty__img {
+  width: 250rpx;
+}
+
+.empty__title {
+  font-size: 28rpx;
+  color: var(--font-color);
+  margin-bottom: 12rpx;
+}
+
+.empty__desc {
+  font-size: 24rpx;
+  color: var(--font-color-sub);
+  margin-bottom: 40rpx;
+}

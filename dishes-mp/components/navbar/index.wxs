@@ -1,0 +1,12 @@
+function computeStyle(paddingTop, height, backgroundColor) {
+  var result = ''
+  result += 'padding-top: ' + paddingTop + 'px;'
+  result += 'height: ' + height + 'px;'
+  backgroundColor = backgroundColor || 'transparent'
+  result += 'background-color: ' + backgroundColor + ';'
+  return result
+}
+
+module.exports = {
+  computeStyle: computeStyle
+};

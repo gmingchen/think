@@ -1,0 +1,29 @@
+<wxs src="./index.wxs" module="utils" />
+
+<view 
+  wx:if="{{ fixed && placeholder }}" 
+  class="navbar" 
+  style="{{ utils.computeStyle(statusBarHeight, height + statusBarHeight, backgroundColor) }}">
+</view>
+
+<view
+  class="navbar f_a_i-c p_h-32 {{ fixed ? 'is-fixed' : '' }}"
+  style="{{ utils.computeStyle(statusBarHeight, height + statusBarHeight, backgroundColor) }}">
+  <view wx:if="{{ !useLeft }}" class="navbar__left f-i_f-1">
+    <view class="navbar__back" wx:if="{{ useBack }}" bind:tap="onBack">
+      <iconfont name="arrow-left" size="36" color="#8C7E72" />
+    </view>
+    {{ leftText }}
+  </view>
+  <slot wx:else name="left"></slot>
+
+  <view wx:if="{{ !useMiddle }}" class="navbar__middle f_j_c-c">
+    {{ middleText }}
+  </view>
+  <slot wx:else name="middle"></slot>
+
+  <view wx:if="{{ !useRight }}" class="navbar__right f-i_f-1 f_j_c-fe">
+    {{ rightText}}
+  </view>
+  <slot wx:else name="right"></slot>
+</view>

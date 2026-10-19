@@ -1,0 +1,5 @@
+@import './common/style/index.wxss';
+
+page {
+  height: 100%;
+}

@@ -1,0 +1,37 @@
+<container use-scroll title="{{ '「' + categoryName + '」排序' }}" use-back>
+
+  <!-- 骨架屏 -->
+  <skeleton wx:if="{{ loading }}" />
+
+  <!-- 拖拽排序列表 -->
+  <view class="zk__card sort__card" wx:if="{{ list.length }}">
+    <view class="sort__tip">拖动 ☰ 调整先后 · 共 {{ list.length }} 道 · 松手自动保存</view>
+    <view
+      class="sort__item {{ index === list.length - 1 ? 'sort__item--last' : '' }} {{ dragIndex === index ? 'sort__item--dragging' : '' }}"
+      wx:for="{{ list }}"
+      wx:key="id"
+      style="{{ dragIndex === index ? 'transform: translateY(' + dragOffsetY + 'px); z-index: 1;' : dragIndex >= 0 ? 'transform: translateY(' + (dragOffsets[index] || 0) + 'px); transition: transform 0.2s ease;' : '' }}">
+      <text
+        class="sort__drag"
+        data-index="{{ index }}"
+        catch:touchstart="onDragStart"
+        catch:touchmove="onDragMove"
+        catch:touchend="onDragEnd">☰</text>
+      <view class="sort__pic">
+        <image wx:if="{{ item.photo }}" src="{{ item.photo }}" mode="aspectFill" class="sort__img" />
+        <image wx:else src="{{ DEFAULT_DISH_COVER }}" mode="aspectFit" class="sort__img" />
+      </view>
+      <view class="sort__info">
+        <text class="sort__name">{{ item.name }}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空态：该分类下暂无菜谱（加载完成后才判定） -->
+  <empty wx:elif="{{ !loading }}" title="「{{ categoryName }}」下还没有菜谱" desc="快去菜谱页添加吧" />
+
+  <!-- Banner 广告（拖拽卡片/空态之后、页面末尾；加载完成即展示，列表/空态均曝光；本页卡片用 margin 24rpx 32rpx，故用 p_h-32 包裹对齐；不影响拖拽区；受 store.ad.enabled 总开关控制，无填充自动隐藏） -->
+  <view wx:if="{{ !loading }}" class="p_h-32">
+    <ad-unit ad-unit-id="{{ AD_UNIT_SORT_BANNER }}" cls="page__ad" />
+  </view>
+</container>

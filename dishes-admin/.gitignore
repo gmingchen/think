@@ -1,0 +1,15 @@
+node_modules
+dist
+dist-ssr
+*.local
+# 部署脚本的上传源：每次 npm run build 后重打，二进制产物不入 Git（见 deploy-admin.py 的 LOCAL_TGZ）
+admin-dist.tar.gz
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*

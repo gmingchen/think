@@ -1,0 +1,10 @@
+/* 右上角按钮 */
+.mine__nav-right {
+  font-size: 26rpx;
+  color: var(--color-primary);
+  padding: 0 8rpx;
+}
+/* Banner 广告：左右间距由外层 view（p_h-32）的 padding 承担，原生 ad 上只加上下 margin */
+.page__ad {
+  margin: 24rpx 0rpx 24rpx;
+}

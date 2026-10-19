@@ -1,0 +1,19 @@
+<view class="review-card">
+  <view class="review-card__top">
+    <image src="{{ data.avatar }}" mode="aspectFill" class="review-card__avatar" />
+    <view class="review-card__info">
+      <view class="review-card__meta">
+        <text class="review-card__nickname">{{ data.nickname }}</text>
+        <text class="review-card__time">{{ data.time }}</text>
+      </view>
+      <van-rate
+        value="{{ data.rating }}"
+        color="#E8A87C"
+        void-color="#D8CCBE"
+        size="14px"
+        readonly
+      />
+    </view>
+  </view>
+  <text class="review-card__content" wx:if="{{ data.content }}">「{{ data.content }}」</text>
+</view>

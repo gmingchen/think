@@ -1,0 +1,60 @@
+/* 骨架屏遮罩 */
+.skeleton {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
+  background: #F5F0EB;
+  padding: 24rpx 32rpx;
+  overflow: hidden;
+}
+
+/* 列表项 */
+.skeleton__item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 32rpx;
+  margin-bottom: 20rpx;
+  background: #FFF;
+  border-radius: 24rpx;
+  border: 1rpx solid #ECE3D9;
+  box-shadow: 2rpx 6rpx 16rpx rgba(0,0,0,0.06);
+}
+
+/* 骨架块 */
+.skeleton__block {
+  background: linear-gradient(90deg, #f0e6d8 25%, #f7efe4 50%, #f0e6d8 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s infinite;
+  border-radius: 6rpx;
+}
+
+.skeleton__info {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.skeleton__block--name {
+  width: 200rpx;
+  height: 30rpx;
+}
+
+.skeleton__block--role {
+  width: 260rpx;
+  height: 22rpx;
+}
+
+.skeleton__block--tag {
+  width: 80rpx;
+  height: 36rpx;
+  border-radius: 8rpx;
+}
+
+@keyframes skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

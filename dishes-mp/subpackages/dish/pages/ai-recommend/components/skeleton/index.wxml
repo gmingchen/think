@@ -1,0 +1,44 @@
+<view class="skeleton">
+  <view class="skeleton__card">
+    <view class="skeleton__tape"></view>
+
+    <!-- 标题 + 已选计数 -->
+    <view class="skeleton__heading">
+      <view class="skeleton__block skeleton__block--title"></view>
+      <view class="skeleton__block skeleton__block--count"></view>
+    </view>
+
+    <!-- 已选食材 chip -->
+    <view class="skeleton__chips">
+      <view class="skeleton__block skeleton__block--chip" wx:for="{{ [1,2,3] }}" wx:key="*this"></view>
+      <view class="skeleton__block skeleton__block--chip-add"></view>
+    </view>
+
+    <!-- 人数 -->
+    <view class="skeleton__condition">
+      <view class="skeleton__block skeleton__block--label"></view>
+      <view class="skeleton__pills">
+        <view class="skeleton__block skeleton__block--pill" wx:for="{{ [1,2,3] }}" wx:key="*this"></view>
+      </view>
+    </view>
+
+    <!-- 口味 -->
+    <view class="skeleton__condition skeleton__condition--col">
+      <view class="skeleton__block skeleton__block--label"></view>
+      <view class="skeleton__pills">
+        <view class="skeleton__block skeleton__block--pill" wx:for="{{ [1,2,3,4,5] }}" wx:key="*this"></view>
+      </view>
+    </view>
+
+    <!-- 忌口输入 -->
+    <view class="skeleton__condition">
+      <view class="skeleton__block skeleton__block--label"></view>
+      <view class="skeleton__block skeleton__block--input"></view>
+    </view>
+  </view>
+
+  <!-- 底部提示语 -->
+  <view class="skeleton__tip">
+    <view class="skeleton__block skeleton__block--tip"></view>
+  </view>
+</view>

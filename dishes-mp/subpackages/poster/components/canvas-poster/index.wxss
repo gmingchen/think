@@ -1,0 +1,6 @@
+/* 画布整幅不透明（底色等于页面 --bg-base），再加底色/圆角/矩形投影会与画内纸面投影叠成双影 */
+.canvas-poster__canvas {
+  display: block;
+  margin: 0 auto;
+  background: transparent;
+}

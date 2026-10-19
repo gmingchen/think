@@ -1,0 +1,87 @@
+/* 头像 */
+.edit__avatar-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 48rpx 0 32rpx;
+  background: none;
+  border: none;
+  margin: 0;
+  line-height: normal;
+}
+.edit__avatar-section::after {
+  display: none;
+}
+.edit__avatar-box {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 50%;
+  border: 4rpx dashed var(--color-primary);
+}
+.edit__avatar-tip {
+  font-size: 22rpx;
+  color: var(--font-color-sub);
+  margin-top: 12rpx;
+}
+
+/* 表单 */
+.edit__form-card {
+  margin: 0 32rpx;
+  padding: 8rpx 32rpx;
+}
+.edit__form-item {
+  padding: 28rpx 0;
+  border-bottom: var(--border-dashed);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.edit__form-item--last {
+  border-bottom: none;
+}
+.edit__form-label {
+  font-size: 28rpx;
+  color: var(--font-color);
+  font-weight: 600;
+  flex-shrink: 0;
+  width: 120rpx;
+}
+.edit__form-input {
+  flex: 1;
+  font-size: 28rpx;
+  color: var(--font-color);
+  text-align: right;
+}
+
+/* 性别选择 */
+.edit__gender-group {
+  display: flex;
+  gap: 16rpx;
+}
+.edit__gender-item {
+  padding: 8rpx 24rpx;
+  font-size: 24rpx;
+  border-radius: 99rpx;
+  background: var(--bg-base);
+  color: var(--font-color-sub);
+  border: 1rpx solid var(--border-color);
+}
+.edit__gender-item--active {
+  background: rgba(200, 109, 81, 0.12);
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+/* 保存 */
+.edit__save-section {
+  padding: 48rpx 32rpx;
+}
+.edit__save-btn {
+  padding: 24rpx 0;
+  font-size: 28rpx;
+  font-weight: bold;
+}
+/* Banner 广告：左右间距由外层 view（p_h-32）承担，原生 ad 只加上下 margin */
+.page__ad {
+  margin: 0 0 24rpx;
+}

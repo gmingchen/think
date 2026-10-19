@@ -1,0 +1,55 @@
+<view class="skeleton">
+  <!-- 封面图骨架 -->
+  <view class="skeleton__cover">
+    <view class="skeleton__block skeleton__block--cover"></view>
+  </view>
+
+  <!-- 信息卡片骨架 -->
+  <view class="skeleton__card">
+    <view class="skeleton__block skeleton__block--title"></view>
+    <view class="skeleton__block skeleton__block--meta"></view>
+  </view>
+
+  <!-- 食材调料骨架 -->
+  <view class="skeleton__section">
+    <view class="skeleton__block skeleton__block--label"></view>
+  </view>
+  <view class="skeleton__card skeleton__card--tag">
+    <view class="skeleton__tag-row">
+      <view class="skeleton__block skeleton__block--tag" wx:for="{{ [1,2,3,4] }}" wx:key="*this"></view>
+    </view>
+    <view class="skeleton__divider"></view>
+    <view class="skeleton__tag-row">
+      <view class="skeleton__block skeleton__block--tag skeleton__block--tag-sm" wx:for="{{ [5,6,7] }}" wx:key="*this"></view>
+    </view>
+  </view>
+
+  <!-- 做法步骤骨架 -->
+  <view class="skeleton__section">
+    <view class="skeleton__block skeleton__block--label"></view>
+  </view>
+  <view class="skeleton__card skeleton__card--steps">
+    <view class="skeleton__step" wx:for="{{ [1,2,3] }}" wx:key="*this">
+      <view class="skeleton__block skeleton__block--num"></view>
+      <view class="skeleton__step-text">
+        <view class="skeleton__block skeleton__block--line"></view>
+        <view class="skeleton__block skeleton__block--line skeleton__block--line-short"></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 评价骨架 -->
+  <view class="skeleton__section">
+    <view class="skeleton__block skeleton__block--label"></view>
+  </view>
+  <view class="skeleton__card skeleton__card--reviews">
+    <view class="skeleton__review" wx:for="{{ [1,2] }}" wx:key="*this">
+      <view class="skeleton__block skeleton__block--avatar"></view>
+      <view class="skeleton__review-info">
+        <view class="skeleton__block skeleton__block--name"></view>
+        <view class="skeleton__block skeleton__block--stars"></view>
+      </view>
+      <view class="skeleton__block skeleton__block--content"></view>
+    </view>
+  </view>
+</view>

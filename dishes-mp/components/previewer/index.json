@@ -1,0 +1,8 @@
+{
+  "component": true,
+  "styleIsolation": "shared",
+  "usingComponents": {
+    "img": "./image/index",
+    "vid": "./video/index"
+  }
+}

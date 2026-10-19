@@ -1,0 +1,9 @@
+<view class="stepper">
+  <view class="stepper__btn {{ value <= min ? 'stepper__btn--disabled' : '' }}" catch:tap="onDecrement">
+    <iconfont name="minus" size="28" color="#8C7E72" />
+  </view>
+  <text class="stepper__value">{{ value }}</text>
+  <view class="stepper__btn stepper__btn--add {{ value >= max ? 'stepper__btn--disabled' : '' }}" catch:tap="onIncrement">
+    <iconfont name="add" size="28" color="#FFF" />
+  </view>
+</view>

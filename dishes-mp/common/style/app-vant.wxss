@@ -1,0 +1,5 @@
+page {
+  --button-primary-color: var(--font-color-white);
+  --button-primary-background-color: var(--color-primary);
+  --button-primary-border-color: var(--color-primary);
+}

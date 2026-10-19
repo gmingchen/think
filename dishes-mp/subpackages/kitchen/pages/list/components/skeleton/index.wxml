@@ -1,0 +1,9 @@
+<view class="skeleton">
+  <view class="skeleton__item" wx:for="{{ [1,2,3] }}" wx:key="*this">
+    <view class="skeleton__info">
+      <view class="skeleton__block skeleton__block--name"></view>
+      <view class="skeleton__block skeleton__block--role"></view>
+    </view>
+    <view class="skeleton__block skeleton__block--tag"></view>
+  </view>
+</view>

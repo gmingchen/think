@@ -1,0 +1,231 @@
+/* 封面图 */
+.dish-detail__cover-section {
+  padding: 24rpx 32rpx 0;
+}
+.dish-detail__cover-swiper {
+  width: 100%;
+  height: 400rpx;
+  background: #F2E8DC;
+  border-radius: 24rpx;
+  overflow: hidden;
+  box-shadow: 4rpx 8rpx 20rpx rgba(0,0,0,0.06);
+}
+.dish-detail__cover-img {
+  width: 100%;
+  height: 100%;
+}
+.dish-detail__cover-placeholder {
+  font-size: 160rpx;
+}
+
+/* 信息卡片 */
+.dish-detail__info-card {
+  margin: 24rpx 32rpx 0;
+  padding: 32rpx;
+  text-align: center;
+}
+.dish-detail__dish-title {
+  font-size: 40rpx;
+  font-weight: bold;
+  color: var(--font-color);
+  display: block;
+}
+.dish-detail__dish-meta {
+  font-size: 24rpx;
+  color: var(--font-color-sub);
+  margin-top: 8rpx;
+}
+
+/* 传播操作栏（分享/晒到公众号） */
+.dish-detail__action-bar {
+  display: flex;
+  gap: 16rpx;
+  margin: 16rpx 32rpx 0;
+}
+.dish-detail__action-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  height: 68rpx;
+  padding: 0;
+  margin: 0;
+  font-size: 26rpx;
+  color: #8C7E72;
+  background: transparent;
+  border: 1rpx dashed #D8CCBE;
+  border-radius: 999rpx;
+  line-height: 1;
+}
+.dish-detail__action-btn::after {
+  border: none;
+}
+/* 贴图按钮——品牌色描边 + NEW角标 + 呼吸动画 */
+.dish-detail__action-btn--sticker {
+  position: relative;
+  border: 2rpx solid #E8A87C;
+  color: #E8A87C;
+  animation: sticker-breathe 2s ease-in-out infinite;
+}
+.dish-detail__sticker-badge {
+  position: absolute;
+  top: -12rpx;
+  right: -8rpx;
+  padding: 2rpx 10rpx;
+  font-size: 18rpx;
+  font-weight: 600;
+  color: #fff;
+  background: #FF6B4A;
+  border-radius: 999rpx;
+  line-height: 1.4;
+}
+@keyframes sticker-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+}
+
+/* 便签小节标题 */
+.dish-detail__section-tag {
+  margin: 32rpx 40rpx 16rpx;
+  font-size: 28rpx;
+  font-weight: 700;
+  color: var(--font-color);
+}
+.dish-detail__section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 32rpx 40rpx 16rpx;
+}
+.dish-detail__section-head .dish-detail__section-tag {
+  margin: 0;
+}
+.dish-detail__section-more {
+  font-size: 24rpx;
+  color: var(--color-accent);
+}
+
+/* 标签流卡片 */
+.dish-detail__tag-card {
+  margin: 0 32rpx;
+  padding: 20rpx 24rpx;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+.dish-detail__tag {
+  display: inline-block;
+  padding: 8rpx 20rpx;
+  border-radius: 8rpx;
+  font-size: 24rpx;
+}
+.dish-detail__tag--food {
+  background: #F6EDE4;
+  color: #7D6855;
+}
+.dish-detail__tag--seasoning {
+  background: #E8EFE5;
+  color: #5B7A50;
+}
+.dish-detail__tag-divider {
+  width: 100%;
+  border-bottom: var(--border-dashed);
+}
+
+/* 列表卡片（步骤等） */
+.dish-detail__list-card {
+  margin: 0 32rpx;
+  padding: 8rpx 32rpx;
+}
+/* Banner 广告（做法步骤上方）：左右间距由外层 p_h-32 承担，原生 ad 只加上下 margin */
+.page__ad {
+  margin: 24rpx 0 0;
+}
+.dish-detail__review-item {
+  padding: 24rpx 0;
+  border-bottom: var(--border-dashed);
+}
+.dish-detail__review-item:first-child {
+  padding-top: 0;
+}
+.dish-detail__review-item:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+/* 步骤 */
+.dish-detail__step-item {
+  padding: 20rpx 0;
+  border-bottom: var(--border-dashed);
+  display: flex;
+  align-items: flex-start;
+  gap: 16rpx;
+}
+.dish-detail__step-item:last-child {
+  border-bottom: none;
+}
+.dish-detail__step-num {
+  width: 44rpx;
+  height: 44rpx;
+  background: var(--color-primary);
+  color: #FFF;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22rpx;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+.dish-detail__step-text {
+  font-size: 26rpx;
+  color: var(--font-color);
+  line-height: 1.6;
+  padding-top: 4rpx;
+}
+
+/* 备注 */
+.dish-detail__note-card {
+  margin: 0 32rpx;
+  padding: 24rpx 32rpx;
+  font-size: 24rpx;
+  color: #7D6855;
+  background: #F6EDE4;
+  border-radius: 16rpx;
+  line-height: 1.6;
+}
+
+/* 底部间距 */
+.dish-detail__bottom-spacer {
+  height: 32rpx;
+}
+
+/* 底部操作栏 */
+.dish-detail__bottom-bar {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 24rpx 32rpx;
+  padding-bottom: 16rpx;
+}
+.dish-detail__bottom-btn {
+  padding: 16rpx 0;
+  font-size: 24rpx;
+  font-weight: 600;
+  text-align: center;
+}
+.dish-detail__bottom-btn--main {
+  flex: 1;
+  /* 与带描边的「编辑」按钮等高：主按钮补一条同宽透明边框 */
+  border: 1rpx solid transparent;
+}
+.dish-detail__bottom-btn--edit {
+  width: 180rpx;
+  box-sizing: border-box;
+  color: var(--color-primary);
+  /* 透明底 + 主题色描边：全站次要按钮的统一档，按钮自身不铺色，透出所在底栏底色 */
+  background: transparent;
+  border: 1rpx solid var(--color-primary);
+  border-radius: 12rpx;
+}

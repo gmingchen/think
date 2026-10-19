@@ -1,0 +1,102 @@
+<container use-scroll use-back title="{{ dish.name || '菜谱详情' }}">
+  <!-- 骨架屏 -->
+  <skeleton wx:if="{{ loading }}" />
+
+  <block wx:if="{{ dish }}">
+    <!-- 封面/详情图轮播（首图=封面，其后=详情图；一张都没有时用默认图） -->
+    <view class="dish-detail__cover-section">
+      <swiper
+        class="dish-detail__cover-swiper"
+        indicator-dots="{{ gallery.length > 1 }}"
+        indicator-color="rgba(255,255,255,0.5)"
+        indicator-active-color="#FFFFFF"
+        circular="{{ gallery.length > 1 }}"
+        autoplay="{{ gallery.length > 1 }}"
+        interval="{{ 4000 }}"
+        duration="{{ 300 }}">
+        <swiper-item wx:for="{{ gallery }}" wx:key="index">
+          <image
+            src="{{ item }}"
+            mode="aspectFill"
+            class="dish-detail__cover-img"
+            data-url="{{ item }}"
+            bind:tap="onPreviewImage" />
+        </swiper-item>
+      </swiper>
+    </view>
+
+    <!-- 基本信息 -->
+    <view class="zk__card dish-detail__info-card">
+      <view class="zk__tape"></view>
+      <text class="dish-detail__dish-title">{{ dish.name }}</text>
+      <view class="dish-detail__dish-meta">
+        <text>{{ categoryName }} · 做过{{ dish.cookCount }}次 · </text>
+        <van-rate value="{{ rating }}" color="#E8A87C" void-color="#D8CCBE" size="12px" readonly />
+      </view>
+    </view>
+
+    <!-- 传播操作（贴图/分享） -->
+    <view class="dish-detail__action-bar">
+      <view class="dish-detail__action-btn dish-detail__action-btn--sticker" wx:if="{{ canPostOfficial }}" bind:tap="onPostToOfficial">
+        <view class="dish-detail__sticker-badge">NEW</view>
+        <iconfont name="sticker" size="28" color="#E8A87C" />
+        <text>贴图</text>
+      </view>
+      <button class="dish-detail__action-btn" open-type="share" hover-class="none">
+        <iconfont name="share" size="28" color="#8C7E72" />
+        <text>分享</text>
+      </button>
+    </view>
+
+    <!-- 食材调料 -->
+    <view class="dish-detail__section-tag" wx:if="{{ foods.length || seasonings.length }}">✎ 食材调料</view>
+    <view class="zk__card dish-detail__tag-card" wx:if="{{ foods.length || seasonings.length }}">
+      <text class="dish-detail__tag dish-detail__tag--food" wx:for="{{ foods }}" wx:key="name">{{ item.name }} {{ item.amount }}</text>
+      <view class="dish-detail__tag-divider" wx:if="{{ foods.length && seasonings.length }}"></view>
+      <text class="dish-detail__tag dish-detail__tag--seasoning" wx:for="{{ seasonings }}" wx:key="name">{{ item.name }} {{ item.amount }}</text>
+    </view>
+
+    <!-- Banner 广告（做法步骤上方；本页卡片用 margin 0 32rpx，故用 p_h-32 包裹对齐；仅在有步骤时展示；受 store.ad.enabled 总开关控制） -->
+    <view wx:if="{{ steps.length }}" class="p_h-32">
+      <ad-unit ad-unit-id="{{ AD_UNIT_DETAIL_BANNER }}" cls="page__ad" />
+    </view>
+
+    <!-- 做法步骤 -->
+    <view class="dish-detail__section-tag" wx:if="{{ steps.length }}">✎ 做法步骤</view>
+    <view class="zk__card dish-detail__list-card" wx:if="{{ steps.length }}">
+      <view class="dish-detail__step-item" wx:for="{{ steps }}" wx:key="*this">
+        <text class="dish-detail__step-num">{{ index + 1 }}</text>
+        <text class="dish-detail__step-text">{{ item }}</text>
+      </view>
+    </view>
+
+    <!-- 备注 -->
+    <view class="dish-detail__section-tag" wx:if="{{ dish.remark }}">✎ 备注</view>
+    <view class="zk__card dish-detail__note-card" wx:if="{{ dish.remark }}">
+      <text>{{ dish.remark }}</text>
+    </view>
+
+    <!-- 评价 -->
+    <view class="dish-detail__section-head" wx:if="{{ reviews.length }}">
+      <view class="dish-detail__section-tag">✎ 评价</view>
+      <view class="dish-detail__section-more" wx:if="{{ reviewTotal > 3 }}" bind:tap="onViewAllReviews">查看全部 {{ reviewTotal }} 条 ></view>
+    </view>
+    <view class="zk__card dish-detail__list-card" wx:if="{{ reviews.length }}">
+      <view class="dish-detail__review-item" wx:for="{{ reviews }}" wx:key="index">
+        <review-card data="{{ item }}" />
+      </view>
+    </view>
+
+    <!-- 底部间距 -->
+    <view class="dish-detail__bottom-spacer"></view>
+  </block>
+
+  <!-- 底部操作栏（编辑入口仅厨师长/管厨可见） -->
+  <view class="dish-detail__bottom-bar" wx:if="{{ dish }}">
+    <view
+      class="dish-detail__bottom-btn dish-detail__bottom-btn--edit"
+      wx:if="{{ kitchen.active.role === KITCHEN_ROLE_ENUM.OWNER || kitchen.active.role === KITCHEN_ROLE_ENUM.MANAGER }}"
+      bind:tap="onEditDish">编辑</view>
+    <view class="btn--primary dish-detail__bottom-btn dish-detail__bottom-btn--main" bind:tap="onAddToCart">+ 点这道</view>
+  </view>
+</container>

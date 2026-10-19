@@ -1,0 +1,19 @@
+<popup show="{{ visible }}" title="{{ title }}" bind:close="onClose">
+  <view class="step-popup__form">
+    <textarea
+      class="step-popup__textarea"
+      placeholder="输入步骤内容..."
+      placeholder-style="color: #B8A99A; line-height: 1.6;"
+      value="{{ text }}"
+      bindinput="onInput"
+      auto-height
+      maxlength="{{ maxLength }}"
+      focus="{{ focus }}"
+      cursor-spacing="40" />
+  </view>
+  <view class="step-popup__actions">
+    <view class="step-popup__cancel" catch:tap="onClose">取消</view>
+    <view wx:if="{{ index < 0 }}" class="step-popup__next" catch:tap="onConfirmAndNext">确认·继续</view>
+    <view class="step-popup__confirm" catch:tap="onConfirm">确认</view>
+  </view>
+</popup>

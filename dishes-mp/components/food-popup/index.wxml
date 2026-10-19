@@ -1,0 +1,19 @@
+<popup
+  show="{{ visible }}"
+  title="{{ title }}"
+  bind:close="onClose">
+  <view class="food-popup__form">
+    <input
+      class="food-popup__input"
+      placeholder="请输入食材名称"
+      value="{{ form.name }}"
+      data-field="form.name"
+      bindinput="onFieldChange"
+      focus="{{ visible }}"
+      maxlength="30" />
+  </view>
+  <view class="food-popup__btns">
+    <view class="food-popup__btn food-popup__btn--cancel" bind:tap="onClose">取消</view>
+    <view class="food-popup__btn food-popup__btn--save btn--primary" bind:tap="onSave">保存</view>
+  </view>
+</popup>

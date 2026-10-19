@@ -1,0 +1,15 @@
+
+.section {
+  margin: 32rpx 0 16rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 28rpx;
+  font-weight: 700;
+  color: var(--font-color);
+}
+.section__link {
+  font-size: 24rpx;
+  color: var(--font-color-sub);
+  font-weight: 400;
+}

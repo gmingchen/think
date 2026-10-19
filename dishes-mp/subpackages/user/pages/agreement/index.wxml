@@ -1,0 +1,35 @@
+<container use-scroll title="用户协议" use-back>
+  <view class="agreement__content">
+    <text class="agreement__title">厨菜记用户协议</text>
+    <text class="agreement__update-time">更新日期：2026年10月12日</text>
+    <!-- ⚠️ 上面这行只能在**实际发版当天**改（§17 第 15 条）：2026-10-12 已按当日实际发版日填入，
+         以后改本节内容时同时把它推到新的发布日，不要留旧日期 -->
+
+    <view class="agreement__section">
+      <text class="agreement__section-title">一、服务说明</text>
+      <text class="agreement__text">厨菜记是一款家庭厨房管理工具，帮助您记录菜谱、管理食材、安排家庭用餐。</text>
+    </view>
+
+    <view class="agreement__section">
+      <text class="agreement__section-title">二、账号注册</text>
+      <text class="agreement__text">您需要使用微信授权登录，我们将获取您的微信昵称和头像用于展示。</text>
+    </view>
+
+    <view class="agreement__section">
+      <text class="agreement__section-title">三、用户行为</text>
+      <text class="agreement__text">请遵守相关法律法规，不得上传违法违规内容。</text>
+    </view>
+
+    <view class="agreement__section">
+      <text class="agreement__section-title">四、知识产权</text>
+      <text class="agreement__text">您上传的菜谱内容版权归您所有，平台有权用于产品推广。</text>
+    </view>
+
+    <!-- 会员服务摘要（v12 §10.2）：⚠️ 这里**不写任何价格数字**（价格只在会员中心页由后端下发），
+         也不写「不予退款」这种与后端退款通道矛盾的硬口径；完整条款见会员中心页「购买须知」 -->
+    <view class="agreement__section">
+      <text class="agreement__section-title">五、会员服务</text>
+      <text class="agreement__text">本服务由个体工商户「苏州吴中长桥宓芯软件工作室」提供。本小程序提供付费会员服务，分为「轻享会员」与「畅厨会员」两档，具体价格、权益与有效周期以会员中心页展示为准。会员为主动购买、到期自动终止，不设自动续费。其中「分类与菜谱不限数」仅适用于您本人创建的厨房；在您加入的他人厨房内，添加权限仍由该厨房厨师长授予。因虚拟商品的特殊性，权益一经发放不支持转让；除法律法规要求或微信官方退款流程外，一经发放不予退还。如需发票，请在开通后联系客服并提供订单号。购买即表示您已阅读并同意会员中心页展示的《购买须知》。</text>
+    </view>
+  </view>
+</container>

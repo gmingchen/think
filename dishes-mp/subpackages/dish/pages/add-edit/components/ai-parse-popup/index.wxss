@@ -1,0 +1,122 @@
+/* ── 输入态 ── */
+.ai-parse__form {
+  padding: 0 48rpx;
+}
+.ai-parse__textarea {
+  width: 100%;
+  height: 360rpx;
+  font-size: 28rpx;
+  color: var(--font-color);
+  line-height: 1.6;
+  padding: 20rpx;
+  background: #FFFDF9;
+  border-radius: 12rpx;
+  border: var(--card-border);
+  box-sizing: border-box;
+}
+.ai-parse__count {
+  font-size: 22rpx;
+  color: var(--font-color-weak);
+  padding-top: 12rpx;
+  text-align: right;
+}
+
+/* ── 预览态 ── */
+.ai-parse__preview {
+  padding: 0 48rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+.ai-parse__row {
+  display: flex;
+  align-items: baseline;
+  gap: 16rpx;
+}
+/* 食材/调料/步骤：左侧标题与右侧内容块垂直居中对齐 */
+.ai-parse__group {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+.ai-parse__label {
+  flex-shrink: 0;
+  width: 64rpx;
+  font-size: 24rpx;
+  color: var(--font-color-sub);
+}
+.ai-parse__value {
+  flex: 1;
+  min-width: 0;
+  font-size: 28rpx;
+  color: var(--font-color);
+  line-height: 1.6;
+  word-break: break-all;
+}
+.ai-parse__value--empty {
+  color: var(--font-color-weak);
+}
+.ai-parse__chips {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+.ai-parse__chip {
+  padding: 6rpx 16rpx;
+  font-size: 24rpx;
+  color: var(--font-color);
+  /* 弹窗面板底色为 --bg-base(#F5EFEB)，旧值 #F8F1E7 与之几乎同色、看不出有底；
+     改用贴纸白底 + 描边（同 ai-recommend 食材 chip 配方），靠色差与边框双重区分 */
+  background: #FFFDF9;
+  border: var(--card-border);
+  border-radius: var(--radius-pill);
+  box-sizing: border-box;
+}
+.ai-parse__steps {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+.ai-parse__step {
+  font-size: 26rpx;
+  color: var(--font-color);
+  line-height: 1.6;
+  word-break: break-all;
+}
+
+/* ── 底部操作区（footer 插槽，固定吸底） ── */
+.ai-parse__actions {
+  display: flex;
+  gap: 24rpx;
+  padding: 24rpx 48rpx 0;
+  border-top: 1rpx solid #EDE4D8;
+}
+.ai-parse__cancel {
+  flex: 1;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--border-radius);
+  font-size: 28rpx;
+  background: var(--bg-section);
+  color: var(--font-color-sub);
+}
+.ai-parse__confirm {
+  flex: 1;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  background: var(--color-primary);
+  color: #FFF;
+}
+.ai-parse__confirm--disabled {
+  opacity: 0.5;
+}

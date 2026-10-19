@@ -1,0 +1,16 @@
+.shell-button {
+  padding: unset;
+  overflow: unset;
+  font-size: unset;
+  font-weight: unset;
+  color: unset;
+  border-radius: 0;
+  background-color: transparent;
+}
+.shell-button:not([size=mini]) {
+  width: unset
+}
+.shell-button[disabled]:not([type]),
+.shell-button[disabled][type=default] {
+  background-color: transparent;
+}

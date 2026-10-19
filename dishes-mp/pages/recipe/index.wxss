@@ -1,0 +1,308 @@
+/* 主体布局 */
+.recipe__menu-body {
+  height: 100%;
+  display: flex;
+}
+
+/* 左侧分类栏 */
+.recipe__sidebar {
+  flex-shrink: 0;
+  width: 150rpx;
+  background: #EDE4D8;
+  border-right: 1rpx solid #DED2C4;
+}
+.recipe__tab-item {
+  padding: 32rpx 4rpx;
+  text-align: center;
+  font-size: 24rpx;
+  color: var(--font-color-sub);
+  border-bottom: 1rpx dotted #DED2C4;
+}
+.recipe__tab-item--active {
+  background: var(--bg-base);
+  color: var(--color-primary);
+  font-weight: bold;
+  border-left: 6rpx solid var(--color-primary);
+}
+
+/* 右侧菜谱列表：总布局无左右内边距，间距由卡片 margin 与广告包裹层 padding 承担（均 24rpx）*/
+.recipe__dish-list {
+  flex: 1;
+  overflow-x: hidden;
+}
+.recipe__empty-wrap {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  box-sizing: border-box;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+/* 空态 Banner：拉满整宽给原生 ad 横向空间（否则塌宽渲染不出），左右 24rpx 内边距与菜谱卡片对齐，与按钮拉开间距 */
+.recipe__empty-ad {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 24rpx;
+  margin-top: 8rpx;
+}
+.recipe__add-btn-empty {
+  margin-top: 32rpx;
+  padding: 16rpx 48rpx;
+  font-size: 28rpx;
+  border-radius: 40rpx;
+}
+.recipe__group-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--font-color-sub);
+  padding: 24rpx 24rpx 12rpx;
+}
+.recipe__group-sort {
+  font-size: 24rpx;
+  font-weight: 400;
+  color: var(--color-primary);
+}
+.recipe__list-bottom {
+  height: 100rpx;
+}
+/* Banner 广告：列表容器无左右内边距，右列末尾广告由页面侧 recipe__list-ad 包裹承担 24rpx 左右内边距，与卡片对齐；原生 ad 只加上下 margin */
+.recipe__list-ad {
+  padding: 0 24rpx;
+}
+.recipe__ad {
+  /* margin: 8rpx 0 24rpx; */
+}
+
+/* 菜谱卡片：左右间距由卡片 margin 承担（列表容器已无内边距） */
+.recipe__dish-card {
+  position: relative;
+  background: #FFF;
+  border: 1rpx solid #E8DDD0;
+  border-radius: 16rpx;
+  padding: 20rpx;
+  margin: 0 24rpx 24rpx;
+  display: flex;
+  gap: 24rpx;
+  box-shadow: 2rpx 4rpx 12rpx rgba(0,0,0,0.04);
+}
+.recipe__dish-card--selected {
+  border-color: var(--color-primary);
+  background: #FFFAF5;
+}
+.recipe__dish-check {
+  display: flex;
+  align-items: flex-start;
+  padding-top: 8rpx;
+}
+.recipe__checkbox {
+  width: 28rpx;
+  height: 28rpx;
+  border: 2rpx solid #D0C4B6;
+  border-radius: 6rpx;
+}
+.recipe__checkbox--checked {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+/* 菜谱图片 */
+.recipe__dish-pic {
+  width: 152rpx;
+  height: 152rpx;
+  background: #F8F1E7;
+  border-radius: 12rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.recipe__dish-img {
+  width: 100%;
+  height: 100%;
+}
+.recipe__dish-default-img {
+  opacity: 0.8;
+}
+
+/* 菜谱文字 */
+.recipe__dish-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
+}
+.recipe__dish-name {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: var(--font-color);
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.recipe__dish-desc {
+  font-size: 22rpx;
+  color: var(--font-color-sub);
+  margin-top: 4rpx;
+  display: flex;
+  align-items: center;
+  gap: 4rpx;
+}
+
+/* 编辑按钮 */
+.recipe__dish-edit {
+  padding: 8rpx 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24rpx;
+  color: var(--color-primary);
+}
+
+.recipe__tag-label {
+  font-size: 20rpx;
+  color: var(--color-secondary);
+  background: #EAF0E8;
+  padding: 4rpx 12rpx;
+  border-radius: 6rpx;
+  margin-top: 12rpx;
+}
+
+/* 加购按钮 */
+.recipe__add-btn {
+  position: absolute;
+  right: 20rpx;
+  bottom: 20rpx;
+  background: var(--color-primary);
+  color: #FFF;
+  border: none;
+  border-radius: 12rpx;
+  padding: 8rpx 20rpx;
+  font-size: 22rpx;
+  box-shadow: 2rpx 2rpx 6rpx rgba(200, 109, 81, 0.3);
+}
+
+/* 步进器定位 */
+.recipe__dish-card stepper {
+  position: absolute;
+  right: 20rpx;
+  bottom: 20rpx;
+}
+
+/* 底部购物车栏（小黑板风格） */
+.recipe__cart-bar {
+  position: absolute;
+  bottom: 16rpx;
+  left: 28rpx;
+  right: 28rpx;
+  background: #3B332C;
+  border: 4rpx solid #52473D;
+  border-radius: 20rpx;
+  padding: 12rpx 24rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #F8F3EC;
+  box-shadow: 0 16rpx 40rpx rgba(0,0,0,0.25);
+  z-index: 50;
+}
+.recipe__cart-badge {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.recipe__cart-badge--shake {
+  animation: cartShake 0.5s ease-in-out;
+  transform-origin: center bottom;
+}
+@keyframes cartShake {
+  0%   { transform: rotate(0); }
+  20%  { transform: rotate(-15deg); }
+  40%  { transform: rotate(12deg); }
+  60%  { transform: rotate(-8deg); }
+  80%  { transform: rotate(5deg); }
+  100% { transform: rotate(0); }
+}
+.recipe__cart-icon {
+  font-size: 40rpx;
+}
+.recipe__badge {
+  position: absolute;
+  top: -15rpx;
+  left: 30rpx;
+  min-width: 32rpx;
+  height: 32rpx;
+  line-height: 32rpx;
+  text-align: center;
+  font-size: 20rpx;
+  font-weight: bold;
+  color: #FFF;
+  background: var(--color-danger);
+  border-radius: 16rpx;
+  padding: 0 6rpx;
+}
+.recipe__cart-actions {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 16rpx;
+}
+.recipe__cart-btn {
+  padding: 10rpx 20rpx;
+  border-radius: 10rpx;
+  font-size: 22rpx;
+  display: inline-flex;
+  align-items: center;
+}
+.recipe__cart-btn-inner {
+  display: flex;
+  align-items: center;
+  gap: 4rpx;
+  line-height: 1;
+}
+.recipe__cart-btn-inner iconfont {
+  display: flex;
+  align-items: center;
+  line-height: 0;
+  flex-shrink: 0;
+  margin-top: 5rpx;
+}
+button.recipe__cart-btn {
+  margin: 0;
+  padding: 10rpx 20rpx;
+  line-height: normal;
+  background: transparent;
+  border: 0;
+  outline: none;
+  -webkit-appearance: none;
+  display: inline-block;
+  width: auto;
+  flex: none;
+}
+button.recipe__cart-btn::after {
+  display: none;
+}
+.recipe__cart-btn--outline {
+  border: 1rpx solid rgba(248, 243, 236, 0.5) !important;
+  color: #F8F3EC;
+  background: transparent !important;
+}
+.recipe__cart-btn--primary {
+  background: var(--color-primary) !important;
+  color: #FFF;
+}
+.recipe__cart-btn--pick {
+  background: #54493F !important;
+  color: #F9EADA;
+  border: 1rpx dashed var(--color-accent);
+  font-weight: bold;
+}

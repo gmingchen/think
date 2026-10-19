@@ -1,0 +1,141 @@
+/* 底部间距 */
+.cook__scroll-spacer {
+  height: 32rpx;
+}
+
+/* 时段分块标题 */
+.cook__section-tag {
+  text-align: center;
+  font-size: 26rpx;
+  font-weight: bold;
+  color: var(--font-color);
+  padding: 16rpx 0 24rpx;
+}
+
+/* 划单卡片 */
+.cook__memo-card {
+  background: #FFFDF9;
+  border: 2rpx dashed var(--color-primary);
+  border-radius: 16rpx;
+  margin: 0 32rpx 28rpx;
+  padding: 32rpx;
+  position: relative;
+  box-shadow: 2rpx 6rpx 16rpx rgba(0,0,0,0.04);
+}
+
+/* 卡片内人物分区 */
+.cook__person-divider {
+  border-top: var(--border-dashed);
+  margin: 16rpx 0;
+}
+.cook__person-label {
+  font-size: 24rpx;
+  color: var(--font-color);
+  font-weight: 500;
+}
+/* 人物头部：名称 + 标签 + 状态 */
+.cook__person-header {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  padding-bottom: 8rpx;
+  border-bottom: var(--border-dashed);
+  margin-bottom: 8rpx;
+}
+.cook__person-tag {
+  font-size: 20rpx;
+  color: #FFF;
+  background: var(--color-primary);
+  padding: 2rpx 12rpx;
+  border-radius: 8rpx;
+}
+.cook__person-status {
+  font-size: 22rpx;
+  color: var(--color-primary);
+  font-weight: bold;
+  margin-left: auto;
+}
+
+.cook__memo-body {
+  padding: 8rpx 0;
+  font-size: 26rpx;
+  line-height: 1.7;
+}
+
+/* 菜谱行 */
+.cook__dish-item {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  padding: 8rpx 0;
+}
+.cook__dish-cover {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 8rpx;
+  flex-shrink: 0;
+}
+.cook__dish-name {
+  flex: 1;
+  font-size: 26rpx;
+  color: var(--font-color);
+}
+.cook__dish-qty {
+  font-size: 24rpx;
+  color: var(--font-color-sub);
+  flex-shrink: 0;
+}
+.cook__memo-note {
+  background: #F6EDE4;
+  padding: 12rpx 20rpx;
+  border-radius: 8rpx;
+  font-size: 22rpx;
+  margin-top: 12rpx;
+  color: #7D6855;
+}
+.cook__memo-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 16rpx;
+  margin-top: 12rpx;
+}
+.cook__memo-footer--reviewed {
+  justify-content: flex-start;
+}
+.cook__reviewed-label {
+  font-size: 22rpx;
+  color: var(--font-color-sub);
+}
+.cook__memo-btn {
+  display: inline-block;
+  padding: 12rpx 32rpx;
+  font-size: 24rpx;
+}
+.cook__memo-btn--cancel {
+  color: var(--font-color-sub);
+  font-size: 24rpx;
+}
+
+/* 空状态 */
+.cook__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 80rpx 0;
+}
+.cook__empty-icon {
+  font-size: 80rpx;
+  margin-bottom: 16rpx;
+}
+.cook__empty-text {
+  font-size: 26rpx;
+  color: var(--font-color-sub);
+}
+
+/* 印章标记 */
+.cook__stamp-pos {
+  position: absolute;
+  right: 32rpx;
+  bottom: 24rpx;
+}

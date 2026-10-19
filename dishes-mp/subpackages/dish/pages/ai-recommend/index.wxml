@@ -1,0 +1,239 @@
+<container use-back use-navbar-middle use-footer>
+
+  <!-- 标题栏：主标题 + AI 生成标识（审核要求常驻） + 今日剩余次数（小字，三态常驻） -->
+  <view slot="navbar-middle" class="ai-recommend__title">
+    <text>AI 荐菜</text>
+    <text class="ai-recommend__title-ai-tag">AI 生成</text>
+    <text wx:if="{{ !loading }}" class="ai-recommend__title-quota">余 {{ remainCount }} 次</text>
+  </view>
+
+  <!-- ① 初始加载：骨架屏 -->
+  <skeleton wx:if="{{ loading }}" />
+
+  <!-- ② 选择态：冰箱便签 -->
+  <view wx:elif="{{ status === 'select' }}" class="ai-recommend__select">
+    <view class="ai-recommend__card">
+      <view class="ai-recommend__tape"></view>
+
+      <view class="ai-recommend__memo-heading">
+        <text class="ai-recommend__memo-title">🧊 翻翻冰箱，手头有什么食材？</text>
+        <text class="ai-recommend__memo-count">已选 {{ selectedFoods.length }} 样</text>
+      </view>
+
+      <!-- 已选食材 chip -->
+      <view class="ai-recommend__chips">
+        <view
+          wx:for="{{ selectedFoods }}"
+          wx:key="id"
+          class="ai-recommend__chip ai-recommend__chip--selected"
+          data-id="{{ item.id }}"
+          catch:tap="onRemoveFood"
+        >
+          <text>{{ item.name }}</text>
+          <text class="ai-recommend__chip-x">✕</text>
+        </view>
+        <view class="ai-recommend__chip ai-recommend__chip--add" catch:tap="onOpenFoodPicker">+ 选食材</view>
+      </view>
+
+      <!-- 人数 -->
+      <view class="ai-recommend__condition">
+        <text class="ai-recommend__condition-label">👨‍👩‍👧 围坐用餐人数</text>
+        <view class="ai-recommend__pills">
+          <view
+            wx:for="{{ peopleOptions }}"
+            wx:key="value"
+            class="ai-recommend__pill {{ peopleValue === item.value ? 'ai-recommend__pill--active' : '' }}"
+            data-value="{{ item.value }}"
+            catch:tap="onSelectPeople"
+          >{{ item.label }}</view>
+        </view>
+      </view>
+
+      <!-- 口味 -->
+      <view class="ai-recommend__condition ai-recommend__condition--col">
+        <text class="ai-recommend__condition-label">🌶️ 辣度与偏好</text>
+        <view class="ai-recommend__pills">
+          <view
+            wx:for="{{ tasteOptions }}"
+            wx:key="value"
+            class="ai-recommend__pill {{ tasteValue === item.value ? 'ai-recommend__pill--active' : '' }}"
+            data-value="{{ item.value }}"
+            catch:tap="onSelectTaste"
+          >{{ item.label }}</view>
+        </view>
+      </view>
+
+      <!-- 忌口 -->
+      <view class="ai-recommend__condition">
+        <text class="ai-recommend__condition-label">⛔️ 忌口与备注</text>
+        <input
+          class="ai-recommend__input"
+          placeholder="如：少油、不吃香菜"
+          maxlength="20"
+          value="{{ avoid }}"
+          bindinput="onAvoidInput"
+        />
+      </view>
+
+    </view>
+
+    <view class="ai-recommend__select-tip">~ 冰箱有什么，AI 做什么 · 优先翻出家里常吃好味 ~</view>
+
+    <!-- Banner 广告（选择态也展示；select 容器自带 32rpx 左右内边距 + align-items:stretch，宿主不塔缩） -->
+    <ad-unit ad-unit-id="{{ AD_UNIT_AI_BANNER }}" cls="page__ad" />
+
+    <!-- AIGC 声明（审核要求：选择态也常驻） -->
+    <view class="ai-recommend__disclaimer">⚠️ {{ AI_DISCLAIMER_TEXT }}</view>
+  </view>
+
+  <!-- ② 生成中：手账风动画舞台 -->
+  <view wx:elif="{{ status === 'loading' }}" class="ai-recommend__loading">
+    <view class="ai-recommend__memo-board">
+      <view class="ai-recommend__memo-tape"></view>
+
+      <!-- ① 颠锅 + 跳跃食材 + 蒸气 -->
+      <view class="ai-recommend__cooking">
+        <view class="ai-recommend__steam ai-recommend__steam--1">♨</view>
+        <view class="ai-recommend__steam ai-recommend__steam--2">♨</view>
+        <view class="ai-recommend__toss ai-recommend__toss--1">🥩</view>
+        <view class="ai-recommend__toss ai-recommend__toss--2">🫘</view>
+        <view class="ai-recommend__toss ai-recommend__toss--3">🥔</view>
+        <view class="ai-recommend__wok">🍳</view>
+      </view>
+
+      <!-- ② 3D 菜谱便签翻页 -->
+      <view class="ai-recommend__flip">
+        <view class="ai-recommend__flip-base">📖 正在翻阅私房菜谱…</view>
+        <view class="ai-recommend__flip-sheet">{{ flipText }}</view>
+      </view>
+
+      <!-- ③ 主副文案轮播 -->
+      <view class="ai-recommend__quote">
+        <view class="ai-recommend__quote-main">{{ loadingText }}</view>
+        <view class="ai-recommend__quote-sub">{{ loadingSubText }}</view>
+      </view>
+
+      <!-- ④ AI 思考清单（分步推进 + 盖章） -->
+      <view class="ai-recommend__checklist">
+        <view
+          wx:for="{{ loadingSteps }}"
+          wx:key="key"
+          class="ai-recommend__check ai-recommend__check--{{ item.state }}"
+        >
+          <view class="ai-recommend__check-left">
+            <view class="ai-recommend__check-dot"></view>
+            <text>{{ item.label }}</text>
+          </view>
+          <view class="ai-recommend__stamp {{ item.state === 'done' ? 'ai-recommend__stamp--on' : '' }}">{{ item.stamp }}</view>
+        </view>
+      </view>
+
+      <view class="ai-recommend__loading-tip">~ 大厨 AI 正在文火慢思，耗时约 5~10 秒 ~</view>
+    </view>
+
+    <!-- Banner 广告（生成中也展示；loading 为 align-items:center 且无内边距，外层 stretch + 32rpx 内边距防塌宽并留边距） -->
+    <view class="ai__ad-wrap">
+      <ad-unit ad-unit-id="{{ AD_UNIT_AI_BANNER }}" cls="page__ad" />
+    </view>
+
+    <!-- AIGC 声明（审核要求：生成过程同样提示内容由 AI 生成） -->
+    <view class="ai-recommend__disclaimer ai-recommend__disclaimer--loading">
+      <view>{{ AI_DISCLAIMER_TEXT }}</view>
+    </view>
+  </view>
+
+  <!-- ③ 结果态：双组推荐 -->
+  <view wx:else class="ai-recommend__result">
+    <!-- 两组皆空兜底：LLM 未返回可用结果时的引导空态 -->
+    <view wx:if="{{ !ranked.length && !fresh.length }}" class="ai-recommend__result-empty">
+      <view class="ai-recommend__result-empty-icon">🍽️</view>
+      <view class="ai-recommend__result-empty-title">这组食材 AI 暂时没凑出合适的菜</view>
+      <view class="ai-recommend__result-empty-desc">换个食材组合，或点下方「重新调整」再试一次吧～</view>
+    </view>
+
+    <block wx:else>
+      <!-- 第一组：你家现有能做 -->
+      <view class="ai-recommend__group-title">
+        <view class="ai-recommend__group-title-left">
+          <text>🍳 你家现有能做</text>
+          <text class="ai-recommend__group-title-sub">(规则粗筛 + AI 理由)</text>
+        </view>
+        <text class="ai-recommend__group-title-tag">命中率高</text>
+      </view>
+
+      <block wx:if="{{ ranked.length }}">
+        <dish-card
+          wx:for="{{ ranked }}"
+          wx:key="dishId"
+          dish="{{ item }}"
+          bind:detail="onDishDetail"
+          bind:cart="onDishAddCart"
+        />
+      </block>
+      <view wx:else class="ai-recommend__ranked-empty">库里暂时没有能凑出来的菜，看看新花样 👇</view>
+
+      <!-- 第二组：AI 帮你换新花样 -->
+      <view class="ai-recommend__group-title ai-recommend__group-title--fresh">
+        <view class="ai-recommend__group-title-left">
+          <text>✨ AI 帮你换新花样</text>
+          <text class="ai-recommend__group-title-sub">(针对盲区生成)</text>
+        </view>
+      </view>
+
+      <fresh-card
+        wx:for="{{ fresh }}"
+        wx:key="name"
+        fresh="{{ item }}"
+        index="{{ index }}"
+        bind:adopt="onAdopt"
+        bind:detail="onFreshDetail"
+      />
+
+      <!-- 底部 AIGC 声明 -->
+      <view class="ai-recommend__disclaimer">⚠️ {{ AI_DISCLAIMER_TEXT }}</view>
+    </block>
+
+    <!-- Banner 广告（结果态末尾；result 容器自带 32rpx 左右内边距，无需额外包裹；受 store.ad.enabled 总开关控制，无填充自动隐藏） -->
+    <ad-unit ad-unit-id="{{ AD_UNIT_AI_BANNER }}" cls="page__ad" />
+  </view>
+
+  <!-- 底部固定操作栏：菜篮入口（常驻） + 生成 / 重新调整 + 换一批 -->
+  <view slot="footer" class="ai-recommend__footer">
+    <!-- 菜篮入口：三态常驻，点开购物车弹窗，确认后去下单（同 draw 页） -->
+    <view class="ai-recommend__cart-badge {{ cartShake ? 'ai-recommend__cart-badge--shake' : '' }}" catch:tap="onOpenCartPopup">
+      <text class="ai-recommend__cart-icon">🧺</text>
+      <text class="ai-recommend__cart-count" wx:if="{{ cart.quantity > 0 }}">{{ cart.quantity }}</text>
+    </view>
+    <view wx:if="{{ loading }}" class="ai-recommend__submit ai-recommend__submit--skeleton"></view>
+    <button
+      wx:elif="{{ status === 'select' }}"
+      class="ai-recommend__submit {{ selectedFoods.length === 0 ? 'ai-recommend__submit--disabled' : '' }}"
+      disabled="{{ selectedFoods.length === 0 }}"
+      catch:tap="onGenerate"
+    >🤖 帮我想今天吃什么</button>
+    <view wx:elif="{{ status === 'result' }}" class="ai-recommend__footer-actions">
+      <button class="ai-recommend__reset" catch:tap="onReset">✎ 重新调整</button>
+      <button class="ai-recommend__refresh" catch:tap="onRefreshFresh">🎲 换一批</button>
+    </view>
+  </view>
+</container>
+
+<!-- 菜谱详情弹窗（点第一组卡片展开查看，弹窗内「点这道」可入篮） -->
+<dish-popup id="dishPopup" bind:add="onPopupAddCart" bind:detail="onPopupDetail" />
+
+<!-- 购物车弹窗（入篮后从底栏菜篮进入，确认后去下单） -->
+<cart-popup id="cartPopup" bind:confirm="onGoOrder" />
+
+<!-- 采纳二次确认弹窗 -->
+<confirm-popup id="adoptConfirmPopup" bind:confirm="onAdoptConfirm" />
+
+<!-- 菜谱数达上限（4005）引导：看激励视频为上限 +1，确认后自动重试采纳 -->
+<confirm-popup id="limitPopup" bind:confirm="onExpandConfirm" />
+
+<!-- 食材选择弹窗（复用现有组件） -->
+<food-picker
+  visible="{{ showFoodPicker }}"
+  selectedIds="{{ selectedFoodsIds }}"
+  bind:close="onCloseFoodPicker"
+  bind:confirm="onFoodConfirm"
+/>

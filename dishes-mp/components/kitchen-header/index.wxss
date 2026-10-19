@@ -1,0 +1,50 @@
+.kitchen-header {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+.kitchen-header__name {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: var(--font-color);
+  letter-spacing: 1rpx;
+  max-width: 360rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* iconfont 箭头宿主：只负责对齐，取色由组件 color 属性传入 */
+.kitchen-header__arrow {
+  display: flex;
+  align-items: center;
+}
+.kitchen-header__stamp {
+  display: inline-block;
+  border: 3rpx solid var(--color-danger);
+  color: var(--color-danger);
+  font-size: 20rpx;
+  padding: 2rpx 8rpx;
+  border-radius: 6rpx;
+  transform: rotate(-3deg);
+}
+/* 骨架屏 */
+.kitchen-header__skeleton-name {
+  width: 160rpx;
+  height: 32rpx;
+  border-radius: 6rpx;
+  background: linear-gradient(90deg, #f0e6d8 25%, #f7efe4 50%, #f0e6d8 75%);
+  background-size: 200% 100%;
+  animation: kitchen-header-shimmer 1.5s infinite;
+}
+.kitchen-header__skeleton-stamp {
+  width: 64rpx;
+  height: 28rpx;
+  border-radius: 6rpx;
+  background: linear-gradient(90deg, #f0e6d8 25%, #f7efe4 50%, #f0e6d8 75%);
+  background-size: 200% 100%;
+  animation: kitchen-header-shimmer 1.5s infinite;
+}
+@keyframes kitchen-header-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

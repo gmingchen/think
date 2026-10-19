@@ -1,0 +1,45 @@
+<container use-scroll title="编辑资料" use-back>
+
+  <!-- 头像 -->
+  <button class="edit__avatar-section" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+    <image class="edit__avatar-box" src="{{ avatar || defaultAvatar }}" mode="aspectFill" />
+    <text class="edit__avatar-tip">点击更换头像</text>
+  </button>
+
+  <!-- 表单 -->
+  <view class="zk__card edit__form-card">
+    <view class="edit__form-item">
+      <text class="edit__form-label">昵称</text>
+      <input
+        type="nickname"
+        class="edit__form-input"
+        value="{{ nickname }}"
+        placeholder="点击输入昵称"
+        data-field="nickname"
+        bindinput="onFieldChange"
+        bindblur="onFieldChange"
+        maxlength="30" />
+    </view>
+    <view class="edit__form-item edit__form-item--last">
+      <text class="edit__form-label">性别</text>
+      <view class="edit__gender-group">
+        <view
+          wx:for="{{ SEX_LIST }}"
+          wx:key="value"
+          class="edit__gender-item {{ sex === item.value ? 'edit__gender-item--active' : '' }}"
+          data-value="{{ item.value }}"
+          bind:tap="onSexChange">{{ item.label }}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 保存按钮 -->
+  <view class="edit__save-section">
+    <view class="btn--primary edit__save-btn" bind:tap="onSave">保存</view>
+  </view>
+
+  <!-- Banner 广告（页面末尾，受 store.ad.enabled 总开关控制，无填充自动隐藏） -->
+  <view class="p_h-32">
+    <ad-unit ad-unit-id="{{ AD_UNIT_EDIT_BANNER }}" cls="page__ad" />
+  </view>
+</container>

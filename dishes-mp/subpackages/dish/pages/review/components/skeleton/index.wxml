@@ -1,0 +1,14 @@
+<view class="skeleton">
+  <view class="skeleton__item" wx:for="{{ [1,2,3,4,5] }}" wx:key="*this">
+    <view class="skeleton__block skeleton__block--avatar"></view>
+    <view class="skeleton__body">
+      <view class="skeleton__row">
+        <view class="skeleton__block skeleton__block--name"></view>
+        <view class="skeleton__block skeleton__block--time"></view>
+        <view class="skeleton__block skeleton__block--stars"></view>
+      </view>
+      <view class="skeleton__block skeleton__block--content"></view>
+      <view class="skeleton__block skeleton__block--content skeleton__block--content-short"></view>
+    </view>
+  </view>
+</view>

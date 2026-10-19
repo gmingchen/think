@@ -1,0 +1,9 @@
+{
+  "name": "llm-proxy",
+  "version": "1.0.0",
+  "description": "AI 荐菜 LLM 中转云函数（混元 hy3，消耗小程序成长计划赠送额度）",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~3.0.5-beta.1"
+  }
+}

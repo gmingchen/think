@@ -1,0 +1,34 @@
+<view class="container h-f f_d-c {{ isTabbar ? 'is-tabbar' : '' }} {{ !useScroll ? 'is-use-scroll' : '' }} {{ useFooter ? 'is-use-footer' : '' }}">
+  <navbar
+    wx:if="{{ useNavbar }}"
+    middle-text="{{ title }}"
+    backgroundColor="{{ navbarBackgroundColor }}"
+    use-back="{{ useBack }}"
+    use-custom-back="{{ useCustomBack }}"
+    use-left="{{ useNavbarLeft }}"
+    use-middle="{{ useNavbarMiddle }}"
+    use-right="{{ useNavbarRight }}">
+    <slot name="navbar-left" slot="left"></slot>
+    <slot name="navbar-middle" slot="middle"></slot>
+    <slot name="navbar-right" slot="right"></slot>
+  </navbar>
+  <view class="container__header">
+    <slot name="header"></slot>
+  </view>
+  <scroll-view
+    wx:if="{{ useScroll }}"
+    class="container__scroll"
+    scroll-top="{{ scrollTop }}"
+    scroll-y="{{ true }}"
+    bindscrolltolower="onScrollLower">
+    <view class="container__body">
+      <slot></slot>
+    </view>
+  </scroll-view>
+  <view wx:else class="container__body f-i_f-1" >
+    <slot></slot>
+  </view>
+  <view class="container__footer" wx:if="{{ useFooter }}">
+    <slot name="footer"></slot>
+  </view>
+</view>

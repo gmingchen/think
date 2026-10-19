@@ -1,0 +1,57 @@
+/* 骨架屏遮罩 */
+.skeleton {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
+  background: #F5F0EB;
+  padding: 24rpx 32rpx;
+  overflow: hidden;
+}
+/* 卡片 */
+.skeleton__card {
+  background: #FFF;
+  border-radius: 24rpx;
+  border: 1rpx solid #ECE3D9;
+  box-shadow: 2rpx 6rpx 16rpx rgba(0,0,0,0.06);
+  padding: 8rpx 32rpx;
+}
+/* 列表项 */
+.skeleton__item {
+  padding: 28rpx 0;
+  border-bottom: 1rpx dashed #ECE3D9;
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+.skeleton__item:last-child {
+  border-bottom: none;
+}
+/* 骨架块 */
+.skeleton__block {
+  background: linear-gradient(90deg, #f0e6d8 25%, #f7efe4 50%, #f0e6d8 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s infinite;
+  border-radius: 6rpx;
+}
+.skeleton__block--drag {
+  width: 32rpx;
+  height: 32rpx;
+  flex-shrink: 0;
+}
+.skeleton__block--name {
+  flex: 1;
+  height: 28rpx;
+  max-width: 200rpx;
+}
+.skeleton__block--edit {
+  width: 60rpx;
+  height: 24rpx;
+  flex-shrink: 0;
+}
+@keyframes skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

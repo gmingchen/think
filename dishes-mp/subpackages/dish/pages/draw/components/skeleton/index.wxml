@@ -1,0 +1,31 @@
+<view class="skeleton">
+  <!-- 老虎机机箱骨架 -->
+  <view class="skeleton__cabinet-wrap">
+    <view class="skeleton__cabinet">
+      <view class="skeleton__block skeleton__block--tape"></view>
+
+      <!-- 铜质铭牌：左标签 + 右步进器 -->
+      <view class="skeleton__brass">
+        <view class="skeleton__block skeleton__block--brass-tag"></view>
+        <view class="skeleton__block skeleton__block--stepper"></view>
+      </view>
+
+      <!-- 玻璃视窗：3 列滚轮 -->
+      <view class="skeleton__viewport">
+        <view class="skeleton__reel" wx:for="{{ [1,2,3] }}" wx:key="*this">
+          <view class="skeleton__block skeleton__block--item-photo"></view>
+          <view class="skeleton__block skeleton__block--item-name"></view>
+        </view>
+      </view>
+
+      <!-- 启动拉杆按钮 -->
+      <view class="skeleton__block skeleton__block--spin-btn"></view>
+    </view>
+  </view>
+
+  <!-- 底部栏骨架：竹篮 + 敲定菜单 -->
+  <view class="skeleton__footer">
+    <view class="skeleton__block skeleton__block--cart"></view>
+    <view class="skeleton__block skeleton__block--order-btn"></view>
+  </view>
+</view>

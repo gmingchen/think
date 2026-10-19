@@ -1,0 +1,31 @@
+<container use-scroll title="隐私政策" use-back>
+  <view class="privacy__content">
+    <text class="privacy__title">厨菜记隐私政策</text>
+    <text class="privacy__update-time">更新日期：2026年10月12日</text>
+
+    <view class="privacy__section">
+      <text class="privacy__section-title">一、信息收集</text>
+      <text class="privacy__text">我们会收集您的微信昵称、头像，用于个人展示。您上传的菜谱、食材等信息仅用于为您提供服务。</text>
+    </view>
+
+    <view class="privacy__section">
+      <text class="privacy__section-title">二、信息使用</text>
+      <text class="privacy__text">我们不会将您的个人信息出售给第三方，仅用于产品功能优化和服务改进。</text>
+    </view>
+
+    <view class="privacy__section">
+      <text class="privacy__section-title">三、信息存储</text>
+      <text class="privacy__text">您的数据存储在安全的服务器中，我们会采取合理措施保护信息安全。</text>
+    </view>
+
+    <view class="privacy__section">
+      <text class="privacy__section-title">四、信息共享</text>
+      <text class="privacy__text">在您加入厨房成员时，您的昵称和头像会对厨房内其他成员可见。</text>
+    </view>
+
+    <view class="privacy__section">
+      <text class="privacy__section-title">五、联系我们</text>
+      <text class="privacy__text">如有隐私相关问题，请通过小程序内客服联系我们。</text>
+    </view>
+  </view>
+</container>

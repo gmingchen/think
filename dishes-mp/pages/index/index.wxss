@@ -1,0 +1,46 @@
+.banner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24rpx;
+  padding: 16rpx 0;
+}
+.banner__row {
+  display: flex;
+  gap: 24rpx;
+  width: 100%;
+}
+.banner__row > .banner__img {
+  width: calc(50% - 12rpx);
+}
+.banner__row .banner__btn {
+  width: calc(50% - 12rpx) !important;
+}
+.banner__img {
+  width: 100%;
+  border-radius: var(--border-radius);
+}
+.banner__btn {
+  width: 100% !important;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: none;
+  line-height: normal;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+.banner__btn::after {
+  display: none;
+}
+/* Banner 广告（最近一餐上方） */
+.page__ad {
+  margin: 8rpx 0 24rpx;
+}
+
+/* 厨房晒图 */
+.official__publish {
+  display: block;
+  margin-top: 16rpx;
+  padding: 24rpx 36rpx;
+}

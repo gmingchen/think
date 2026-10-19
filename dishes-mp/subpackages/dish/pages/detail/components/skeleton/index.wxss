@@ -1,0 +1,165 @@
+/* 骨架屏遮罩 */
+.skeleton {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
+  overflow: hidden;
+  padding-bottom: 32rpx;
+}
+
+/* 骨架块基础 */
+.skeleton__block {
+  background: linear-gradient(90deg, #f0e6d8 25%, #f7efe4 50%, #f0e6d8 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s infinite;
+  border-radius: 6rpx;
+}
+
+/* 封面图 */
+.skeleton__cover {
+  padding: 24rpx 32rpx 0;
+}
+.skeleton__block--cover {
+  width: 100%;
+  height: 400rpx;
+  border-radius: 24rpx;
+}
+
+/* 信息卡片 */
+.skeleton__card {
+  margin: 24rpx 32rpx 0;
+  padding: 32rpx;
+  background: #FFF;
+  border: 1rpx solid #E8DDD0;
+  border-radius: 16rpx;
+  text-align: center;
+}
+.skeleton__block--title {
+  width: 50%;
+  height: 36rpx;
+  margin: 0 auto 12rpx;
+}
+.skeleton__block--meta {
+  width: 70%;
+  height: 22rpx;
+  margin: 0 auto;
+}
+
+/* 小节标题 */
+.skeleton__section {
+  margin: 32rpx 40rpx 16rpx;
+}
+.skeleton__block--label {
+  width: 140rpx;
+  height: 26rpx;
+}
+
+/* 标签流卡片 */
+.skeleton__card--tag {
+  margin: 0 32rpx;
+  padding: 20rpx 24rpx;
+}
+.skeleton__tag-row {
+  display: flex;
+  gap: 16rpx;
+  margin-bottom: 16rpx;
+}
+.skeleton__tag-row:last-child {
+  margin-bottom: 0;
+}
+.skeleton__block--tag {
+  width: 140rpx;
+  height: 36rpx;
+  border-radius: 8rpx;
+}
+.skeleton__block--tag-sm {
+  width: 100rpx;
+}
+.skeleton__divider {
+  width: 100%;
+  height: 1rpx;
+  background: #EDE4D8;
+  margin: 8rpx 0;
+}
+
+/* 步骤卡片 */
+.skeleton__card--steps {
+  margin: 0 32rpx;
+  padding: 8rpx 32rpx;
+}
+.skeleton__step {
+  display: flex;
+  align-items: flex-start;
+  gap: 16rpx;
+  padding: 20rpx 0;
+  border-bottom: 1rpx dashed #EDE4D8;
+}
+.skeleton__step:last-child {
+  border-bottom: none;
+}
+.skeleton__block--num {
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.skeleton__step-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+  padding-top: 4rpx;
+}
+.skeleton__block--line {
+  width: 100%;
+  height: 22rpx;
+}
+.skeleton__block--line-short {
+  width: 60%;
+}
+
+/* 评价卡片 */
+.skeleton__card--reviews {
+  margin: 0 32rpx;
+  padding: 8rpx 32rpx;
+}
+.skeleton__review {
+  padding: 24rpx 0;
+  border-bottom: 1rpx dashed #EDE4D8;
+}
+.skeleton__review:last-child {
+  border-bottom: none;
+}
+.skeleton__block--avatar {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.skeleton__review-info {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin: 12rpx 0 8rpx;
+}
+.skeleton__block--name {
+  width: 100rpx;
+  height: 22rpx;
+}
+.skeleton__block--stars {
+  width: 120rpx;
+  height: 22rpx;
+  margin-left: auto;
+}
+.skeleton__block--content {
+  width: 80%;
+  height: 22rpx;
+}
+
+@keyframes skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

@@ -1,0 +1,18 @@
+<view class="skeleton">
+  <!-- 成员列表骨架 -->
+  <view class="skeleton__card">
+    <view class="skeleton__member-item" wx:for="{{ [1,2,3] }}" wx:key="*this">
+      <view class="skeleton__block skeleton__block--avatar"></view>
+      <view class="skeleton__member-info">
+        <view class="skeleton__block skeleton__block--name"></view>
+        <view class="skeleton__block skeleton__block--role"></view>
+      </view>
+      <view class="skeleton__block skeleton__block--action"></view>
+    </view>
+  </view>
+  <!-- 邀请区域骨架 -->
+  <view class="skeleton__invite">
+    <view class="skeleton__block skeleton__block--btn"></view>
+    <view class="skeleton__block skeleton__block--tip"></view>
+  </view>
+</view>

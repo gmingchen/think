@@ -1,0 +1,134 @@
+/* 骨架屏：绝对定位铺满 .container__body（position:relative + min-height:100%=scroll 可视高），与 select/loading 同样纵向居中 */
+.skeleton {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  box-sizing: border-box;
+  padding: 0 32rpx;
+}
+
+/* 便签外卡：与 .ai-recommend__card 一致 */
+.skeleton__card {
+  position: relative;
+  background: var(--zakka-card, #FAF6F0);
+  border: 2rpx solid #E5DBD0;
+  border-radius: 24rpx;
+  box-shadow: 4rpx 6rpx 16rpx rgba(100, 80, 60, 0.05);
+  padding: 32rpx;
+}
+
+/* 顶部胶带 */
+.skeleton__tape {
+  position: absolute;
+  top: -16rpx;
+  left: 50%;
+  transform: translateX(-50%) rotate(-0.5deg);
+  width: 128rpx;
+  height: 32rpx;
+  background: var(--zakka-tape, #E0A94F);
+  opacity: 0.55;
+  box-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.05);
+}
+
+/* 标题行 */
+.skeleton__heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+}
+
+/* chip 区 */
+.skeleton__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  margin-bottom: 28rpx;
+}
+
+/* 条件行 */
+.skeleton__condition {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16rpx 0;
+  border-top: 2rpx dashed var(--zakka-border-dashed, #DDD3C8);
+}
+.skeleton__condition--col {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.skeleton__pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+.skeleton__condition--col .skeleton__pills {
+  width: 100%;
+  margin-top: 16rpx;
+}
+
+/* 底部提示 */
+.skeleton__tip {
+  display: flex;
+  justify-content: center;
+  margin-top: 20rpx;
+}
+
+/* 骨架块（统一微光动画，同 index 页骨架屏） */
+.skeleton__block {
+  background: linear-gradient(90deg, #f0e6d8 25%, #f7efe4 50%, #f0e6d8 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s infinite;
+  border-radius: 6rpx;
+}
+
+/* 尺寸：与真实版式对齐 */
+.skeleton__block--title {
+  width: 58%;
+  height: 32rpx;
+}
+.skeleton__block--count {
+  width: 88rpx;
+  height: 26rpx;
+}
+.skeleton__block--chip {
+  width: 130rpx;
+  height: 52rpx;
+  border-radius: 12rpx;
+}
+.skeleton__block--chip-add {
+  width: 150rpx;
+  height: 52rpx;
+  border-radius: 12rpx;
+}
+.skeleton__block--label {
+  width: 220rpx;
+  height: 28rpx;
+}
+.skeleton__block--pill {
+  width: 96rpx;
+  height: 44rpx;
+  border-radius: 8rpx;
+}
+.skeleton__block--input {
+  width: 100%;
+  height: 64rpx;
+  border-radius: 8rpx;
+}
+.skeleton__block--tip {
+  width: 60%;
+  height: 24rpx;
+}
+
+@keyframes skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

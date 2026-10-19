@@ -1,0 +1,36 @@
+<van-popup
+  show="{{ show }}"
+  position="{{ position }}"
+  close-on-overlay-click
+  lock-scroll="{{ lockScroll }}"
+  safe-area-inset-bottom="{{ false }}"
+  overlay-style="background: rgba(45, 39, 36, 0.6); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);"
+  custom-style="background: transparent;"
+  custom-class="popup__van {{ position === 'center' ? 'popup__van--center' : '' }}"
+  bind:close="onClose"
+>
+  <!-- 定位包装层：预留顶部空隙，让胶带能伸到卡片边缘之外（panel/van-popup 自身 overflow 会裁掉负溢出） -->
+  <view class="popup__wrap">
+    <!-- 和纸胶带装饰：跨压在卡片顶边上（对齐 UI设计图 .tape-center） -->
+    <view class="popup__tape"></view>
+    <view class="popup__panel {{ position === 'center' ? 'popup__panel--center' : '' }}" catch:touchmove="{{ lockScroll ? 'onLockTouchMove' : '' }}">
+    <!-- 标题栏（含关闭按钮） -->
+    <view class="popup__header">
+      <view class="popup__header-text" wx:if="{{ title || subtitle }}">
+        <view class="popup__title">{{ title }}</view>
+        <view class="popup__subtitle" wx:if="{{ subtitle }}">{{ subtitle }}</view>
+      </view>
+      <view class="popup__header-actions">
+        <slot name="header-right" />
+        <view class="popup__close" bind:tap="onClose">×</view>
+      </view>
+    </view>
+    <!-- 内容插槽：用 scroll-view 承载，自身消费手势，不受面板 catch:touchmove 影响 -->
+    <scroll-view scroll-y class="popup__body">
+      <slot />
+    </scroll-view>
+    <!-- 底部固定区：在滚动区之外，不随内容滚动 -->
+    <slot name="footer" />
+    </view>
+  </view>
+</van-popup>

@@ -1,0 +1,4 @@
+.previewer__img {
+  display: block;
+  background: var(--bg-section);
+}

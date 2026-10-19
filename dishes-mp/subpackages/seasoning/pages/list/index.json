@@ -1,0 +1,7 @@
+{
+  "usingComponents": {
+    "empty": "/components/empty/index",
+    "seasoning-popup": "/components/seasoning-popup/index",
+    "skeleton": "./components/skeleton/index"
+  }
+}

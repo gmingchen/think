@@ -1,0 +1,85 @@
+<container use-scroll use-footer use-back title="订单详情">
+
+  <!-- 骨架屏 -->
+  <skeleton wx:if="{{ loading }}" />
+
+  <block wx:if="{{ order }}">
+    <!-- 状态卡片 -->
+    <view class="zk__card order-detail__status-card">
+      <view class="zk__tape"></view>
+      <text class="order-detail__status-tag {{ order.isPending ? 'order-detail__status-tag--primary' : order.isServed ? 'order-detail__status-tag--success' : order.isCancelled ? 'order-detail__status-tag--danger' : '' }}">{{ order.statusLabel }}</text>
+      <view class="order-detail__status-meta">
+        <text>{{ order.periodLabel }} · {{ order.ordererName || '我' }}</text>
+        <text>{{ order.dateLabel }}</text>
+      </view>
+    </view>
+
+    <!-- 菜谱列表 -->
+    <view class="order-detail__section-tag" wx:if="{{ order.dishes.length }}">✎ 点的菜</view>
+    <view class="zk__card order-detail__dish-card" wx:if="{{ order.dishes.length }}">
+      <view class="order-detail__dish-item" wx:for="{{ order.dishes }}" wx:key="dishId">
+        <image wx:if="{{ item.dishCover }}" src="{{ item.dishCover }}" mode="aspectFill" class="order-detail__dish-cover" />
+        <image wx:else src="{{ DEFAULT_DISH_COVER }}" mode="aspectFit" class="order-detail__dish-cover" />
+        <view class="order-detail__dish-info">
+          <view class="order-detail__dish-head">
+            <text class="order-detail__dish-name">{{ item.dishName }}</text>
+            <text class="order-detail__dish-qty">×{{ item.quantity }}</text>
+          </view>
+          <view wx:if="{{ item.rating }}" class="order-detail__dish-review">
+            <van-rate value="{{ item.rating }}" color="#E8A87C" void-color="#D8CCBE" size="12px" readonly />
+            <text wx:if="{{ item.content }}" class="order-detail__dish-content">{{ item.content }}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 备注 -->
+    <view class="order-detail__section-tag" wx:if="{{ order.remark }}">✎ 备注</view>
+    <view class="zk__card order-detail__remark-card" wx:if="{{ order.remark }}">
+      <text>{{ order.remark }}</text>
+    </view>
+
+    <!-- 订单信息 -->
+    <view class="order-detail__section-tag">✎ 订单信息</view>
+    <view class="zk__card order-detail__info-card">
+      <view class="order-detail__info-row">
+        <text class="order-detail__info-label">下单时间</text>
+        <text class="order-detail__info-value">{{ order.createdAtLabel }}</text>
+      </view>
+      <view class="order-detail__info-row" wx:if="{{ order.servedAtLabel }}">
+        <text class="order-detail__info-label">上菜时间</text>
+        <text class="order-detail__info-value">{{ order.servedAtLabel }}</text>
+      </view>
+      <view class="order-detail__info-row" wx:if="{{ order.reviewedAtLabel }}">
+        <text class="order-detail__info-label">评价时间</text>
+        <text class="order-detail__info-value">{{ order.reviewedAtLabel }}</text>
+      </view>
+    </view>
+
+    <!-- Banner 广告（订单信息卡片之后、内容末尾；本页卡片用 margin 0 32rpx，故用 p_h-32 包裹对齐；受 store.ad.enabled 总开关控制，无填充自动隐藏） -->
+    <view class="p_h-32">
+      <ad-unit ad-unit-id="{{ AD_UNIT_COOKORDER_DETAIL_CUSTOM }}" cls="page__ad" />
+    </view>
+  </block>
+
+  <!-- 底部操作栏：固定在 container footer 插槽，不随内容滚动；采购清单除已取消外常驻（整栏已带 isCancelled 守卫） -->
+  <view class="order-detail__bottom-bar" wx:if="{{ order && !order.isCancelled }}" slot="footer">
+    <view class="order-detail__bottom-actions">
+      <view class="order-detail__actions-group">
+        <view wx:if="{{ order.isPending || order.isAccepted }}" class="order-detail__ghost-btn order-detail__ghost-btn--cancel" bindtap="onCancel">取消</view>
+      </view>
+      <view class="order-detail__actions-group">
+        <view class="order-detail__ghost-btn" bindtap="onGoShopping">🛒 采购清单</view>
+        <view wx:if="{{ order.isPending && isChef }}" class="btn--primary order-detail__bottom-btn" bindtap="onAccept">🧾 接单</view>
+        <view wx:if="{{ order.isPending || order.isAccepted }}" class="btn--primary order-detail__bottom-btn" bindtap="onServe">🍽️ 上菜</view>
+        <view wx:if="{{ order.isServed && order.isMine }}" class="btn--primary order-detail__bottom-btn" bindtap="onReview">✍️ 夸夸大厨</view>
+      </view>
+    </view>
+  </view>
+</container>
+
+<!-- 评价弹窗 -->
+<review-popup id="reviewPopup" bind:success="onReviewSuccess" />
+
+<!-- 操作确认弹窗 -->
+<confirm-popup id="actionConfirmPopup" bind:confirm="onActionConfirm" />

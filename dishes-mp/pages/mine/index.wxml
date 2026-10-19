@@ -1,0 +1,26 @@
+<container use-scroll use-footer title="我的">
+  <!-- 骨架屏 -->
+  <skeleton wx:if="{{ loading }}" />
+
+  <!-- 右上角编辑资料 -->
+  <view slot="navbar-right" class="mine__nav-right" bind:tap="onEditProfile">编辑</view>
+
+  <!-- 头像区（不做卡片；原统计卡已迁往厨房设置页） -->
+  <user />
+
+  <!-- 会员中心卡：占原 stats 的槽位（§4.3），数据由 store.member.mineCard 驱动（§4.1） -->
+  <member />
+
+  <!-- 功能菜单 -->
+  <menu />
+
+  <!-- 链接列表（含激励视频入口，事件抛回页面处理） -->
+  <link bind:reward="onWatchAdTap" />
+
+  <!-- Banner 广告（页面末尾，受 store.ad.enabled 总开关控制，无填充自动隐藏） -->
+  <view class="p_h-32">
+    <ad-unit wx:if="{{ !loading }}" ad-unit-id="{{ AD_UNIT_MINE_BANNER }}" cls="page__ad" />
+  </view>
+
+  <tabbar slot="footer"></tabbar>
+</container>

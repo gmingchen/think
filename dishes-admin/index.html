@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>厨菜记 · 运营数据看板</title>
+    <style>
+      /* 首屏骨架屏：纯 CSS，浏览器解析即渲染，不等 JS；Vue 挂载后自动替换 #app 内容 */
+      #app-skeleton {
+        padding: 16px 20px 48px;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      }
+      .sk-bar,
+      .sk-card {
+        background: #fff;
+        border: 1px solid #eaeaea;
+        border-radius: 10px;
+      }
+      .sk-toolbar {
+        height: 56px;
+        margin: -16px -20px 8px;
+        border-radius: 0;
+        border-left: 0;
+        border-right: 0;
+      }
+      .sk-hero {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 12px;
+        padding: 20px;
+        margin-bottom: 16px;
+      }
+      .sk-hero > i {
+        height: 52px;
+        border-radius: 8px;
+      }
+      .sk-card {
+        padding: 20px;
+        margin-bottom: 16px;
+      }
+      .sk-title {
+        width: 160px;
+        height: 20px;
+        margin-bottom: 20px;
+        border-radius: 6px;
+      }
+      .sk-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 16px;
+        margin-bottom: 16px;
+      }
+      .sk-grid > i {
+        height: 76px;
+        border-radius: 8px;
+      }
+      .sk-chart {
+        height: 300px;
+        border-radius: 8px;
+      }
+      .sk-shimmer {
+        background: linear-gradient(90deg, #f0f2f5 25%, #e6e8eb 37%, #f0f2f5 63%);
+        background-size: 400% 100%;
+        animation: sk-loading 1.3s ease infinite;
+      }
+      @keyframes sk-loading {
+        0% { background-position: 100% 50%; }
+        100% { background-position: 0 50%; }
+      }
+      @media (prefers-color-scheme: dark) {
+        body { background: #121212; }
+        .sk-bar, .sk-card { background: #1d1d1d; border-color: #3a3a3a; }
+        .sk-shimmer { background: linear-gradient(90deg, #2a2a2a 25%, #333 37%, #2a2a2a 63%); background-size: 400% 100%; }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <div id="app-skeleton">
+        <div class="sk-bar sk-toolbar sk-shimmer"></div>
+        <div class="sk-card sk-hero">
+          <i class="sk-shimmer"></i><i class="sk-shimmer"></i><i class="sk-shimmer"></i>
+          <i class="sk-shimmer"></i><i class="sk-shimmer"></i><i class="sk-shimmer"></i><i class="sk-shimmer"></i>
+        </div>
+        <div class="sk-card">
+          <div class="sk-title sk-shimmer"></div>
+          <div class="sk-grid"><i class="sk-shimmer"></i><i class="sk-shimmer"></i><i class="sk-shimmer"></i><i class="sk-shimmer"></i><i class="sk-shimmer"></i></div>
+          <div class="sk-chart sk-shimmer"></div>
+        </div>
+        <div class="sk-card">
+          <div class="sk-title sk-shimmer"></div>
+          <div class="sk-grid"><i class="sk-shimmer"></i><i class="sk-shimmer"></i><i class="sk-shimmer"></i><i class="sk-shimmer"></i><i class="sk-shimmer"></i></div>
+          <div class="sk-chart sk-shimmer"></div>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

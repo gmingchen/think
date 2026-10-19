@@ -1,0 +1,7 @@
+<ad
+  wx:if="{{ ad.enabled && adUnitId && !member.adFree }}"
+  class="ad-unit {{ visible ? '' : 'ad-unit--hide' }} {{ cls }}"
+  unit-id="{{ adUnitId }}"
+  bindload="onLoad"
+  binderror="onError">
+</ad>

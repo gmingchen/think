@@ -1,0 +1,175 @@
+<container use-scroll use-footer use-back title="会员中心">
+
+  <!-- 骨架：loaded 之前整页只画同高占位，不画半张卡（§4.1 那条「不能兜底成未开通卡」的同源约定）；灰色同高、不转圈 -->
+  <block wx:if="{{ loading }}">
+    <view class="vip__sk-card">
+      <view class="vip__sk-bar vip__sk-bar--title"></view>
+      <view class="vip__sk-bar"></view>
+    </view>
+    <view class="vip__sk-card">
+      <view class="vip__sk-bar vip__sk-bar--title"></view>
+      <view class="vip__sk-bar"></view>
+      <view class="vip__sk-bar vip__sk-bar--short"></view>
+    </view>
+    <view class="vip__sk-card">
+      <view class="vip__sk-bar vip__sk-bar--title"></view>
+      <view class="vip__sk-bar"></view>
+      <view class="vip__sk-bar vip__sk-bar--short"></view>
+    </view>
+  </block>
+
+  <block wx:else>
+    <!-- 弱提示：置灰期与低版本各一句，常驻不加横幅。入口不隐藏——隐藏会让人以为功能消失了，也拿不到审核要看的页面（§5.2） -->
+    <view wx:if="{{ lowVersion }}" class="vip__hint">
+      <text class="vip__hint-icon">ℹ️</text>
+      <text class="vip__hint-text">当前微信版本暂不支持开通，升级微信后可回来继续</text>
+    </view>
+    <view wx:if="{{ !open }}" class="vip__hint">
+      <text class="vip__hint-icon">ℹ️</text>
+      <text class="vip__hint-text">会员功能即将开放，权益与价格先放着看</text>
+    </view>
+
+    <!-- ① 身份状态卡：只画「这人现在是什么身份」，可买的东西一律在下面（§5.1 第一块） -->
+    <view class="vip__status {{ status.gold ? 'vip__status--gold' : '' }}">
+      <view class="vip__status-main">
+        <view class="vip__status-title-row">
+          <text wx:if="{{ status.kind === 'active' }}" class="vip__status-crown">👑</text>
+          <text wx:elif="{{ status.kind === 'expired' }}" class="vip__status-crown">⏳</text>
+          <text wx:else class="vip__status-dot"></text>
+          <text class="vip__status-title">{{ status.title }}</text>
+        </view>
+        <text class="vip__status-note">{{ status.note }}</text>
+      </view>
+      <!-- 生效中的人多一个续费位：与底栏 CTA 同一个动作，不另开一条链路（§5.3）。
+           但买不到东西时不能递这个钮——一个点不动的按钮摆在身份卡上就是死按钮 -->
+      <view wx:if="{{ status.kind === 'active' && open }}" class="vip__status-btn" catch:tap="onBuy">{{ status.action }}</view>
+      <text wx:elif="{{ status.kind === 'expired' }}" class="vip__status-reactivate">重新激活</text>
+      <view wx:elif="{{ status.kind === 'guest' }}" class="vip__status-pot">🍳</view>
+    </view>
+
+    <!-- ② 选择档位：两张满宽卡上下堆叠，畅厨在上（§5.1 定稿理由 1、2） -->
+    <view class="vip__group-head">
+      <text class="vip__group-title"><text class="vip__group-icon">✎</text> 选择适合的厨房档位</text>
+      <text class="vip__group-sub">随时可按规则补差价升级</text>
+    </view>
+    <view
+      wx:for="{{ tiers }}"
+      wx:key="tier"
+      wx:for-item="group"
+      class="vip__tier {{ group.selected ? 'vip__tier--on' : '' }}"
+      data-tier="{{ group.tier }}"
+      bind:tap="onTierTap">
+      <view wx:if="{{ group.recommend }}" class="vip__tape">推荐首选</view>
+      <view wx:if="{{ group.selected }}" class="vip__tier-check">✓</view>
+      <view class="vip__tier-head {{ group.selected ? '' : 'vip__tier-head--roomy' }}">
+        <text class="vip__tier-name">{{ group.emoji }} {{ group.name }}</text>
+        <text class="vip__tier-tag">{{ group.tag }}</text>
+      </view>
+      <!-- 轻享那行的「容量仍受限」是防误解设计：不写就会被读成「会员都加容量」，那是投诉不是差评（§5.1 理由 4） -->
+      <text class="vip__tier-desc">{{ group.desc }}</text>
+      <view class="vip__tier-price">
+        <text class="vip__tier-from"><text class="vip__tier-from-num">{{ group.fromText }}</text> /月 起</text>
+        <text wx:if="{{ group.toText }}" class="vip__tier-to">年付低至 <text class="vip__tier-to-num">{{ group.toText }}</text></text>
+      </view>
+    </view>
+
+    <!-- ③ 选择开通周期：只跟着当前选中档位，独立成一张卡（周期与档位是两层选择，不混在档位的卡里） -->
+    <view class="vip__period-card">
+      <view class="vip__period-head">
+        <text class="vip__period-title"><text class="vip__period-icon">📅</text> 选择开通周期（{{ currentTierName }}）</text>
+        <text class="vip__period-sub">到期不自动扣款</text>
+      </view>
+      <view class="vip__periods">
+        <view
+          wx:for="{{ periods }}"
+          wx:key="code"
+          wx:for-item="period"
+          class="vip__pill {{ period.selected ? 'vip__pill--on' : '' }}"
+          data-code="{{ period.code }}"
+          catch:tap="onPeriodTap">
+          <text class="vip__pill-label">{{ period.label }}</text>
+          <text class="vip__pill-price">{{ period.priceText }}</text>
+          <!-- 「省 ¥X」由后端下发的分值派生，是全周期口径的真实优惠额，与首月促销无关；没有就不占行 -->
+          <text wx:if="{{ period.savedText }}" class="vip__pill-saved">{{ period.savedText }}</text>
+        </view>
+      </view>
+      <view class="vip__period-foot">📌 到期后不会自动扣款，可随时按需续费</view>
+    </view>
+
+    <!-- ④ 权益对比：三列窄格，列头用短名（轻享 / 畅厨）；本版不放 AI 行——三档无差异的一行摆上去等于当面说「这项你没好处」（§1.2 注 2） -->
+    <view class="vip__compare-card">
+      <view class="vip__compare-title"><text class="vip__compare-icon">⚖️</text> 权益细则对比</view>
+      <view class="vip__table">
+        <view class="vip__tr vip__tr--head">
+          <text class="vip__th vip__th--label">核心权益</text>
+          <text class="vip__th vip__th--free">{{ benefitHeader.free }}</text>
+          <text class="vip__th vip__th--lite">{{ benefitHeader.lite }}</text>
+          <text class="vip__th vip__th--pro">👑 {{ benefitHeader.pro }}</text>
+        </view>
+        <view wx:for="{{ benefits }}" wx:key="label" wx:for-item="row" class="vip__tr">
+          <text class="vip__td vip__td--label">{{ row.label }}</text>
+          <text class="vip__td vip__td--free">{{ row.free }}</text>
+          <text class="vip__td vip__td--lite">{{ row.lite }}</text>
+          <text class="vip__td vip__td--pro">{{ row.pro }}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- ⑤ 购买须知：默认收起（展开会把权益对比与价格顶出首屏），正文只在这里维护一份（§5.4）。
+         首购优惠本版不在本页展示，故条款里不含首月特惠那一条（⚠️ 但后端仍会按首单价成交，见 §16 第 17 条） -->
+    <view class="vip__notice">
+      <view class="vip__notice-head" bind:tap="onToggleNotice">
+        <text class="vip__notice-title"><text class="vip__notice-icon">📖</text> 开通前请阅读 · 购买须知</text>
+        <view class="vip__notice-toggle">
+          <text class="vip__notice-stat">{{ noticeOpen ? '点击收起' : '点击展开' }}</text>
+          <text class="vip__notice-arrow {{ noticeOpen ? 'vip__notice-arrow--open' : '' }}">▼</text>
+        </view>
+      </view>
+      <view wx:if="{{ noticeOpen }}" class="vip__notice-body">
+        <view class="vip__notice-item"><text class="vip__notice-no">1.</text><text class="vip__notice-txt"><text class="vip__notice-b">档位权益说明：</text>各档位特权在付费成功后即时下发至绑定微信账号，轻享档位包含广告去除，但不解除厨房容量上限。</text></view>
+        <view class="vip__notice-item"><text class="vip__notice-no">2.</text><text class="vip__notice-txt"><text class="vip__notice-b">有效期与续费：</text>会员按日历自然周期累计，<text class="vip__notice-b">到期不会自动扣款，可随时手动续费</text>，不产生任何未经确认的扣费。</text></view>
+        <view class="vip__notice-item"><text class="vip__notice-no">3.</text><text class="vip__notice-txt"><text class="vip__notice-b">升级差价折算：</text>轻享会员若升级为畅厨会员，系统自动将剩余天数按日等额折抵新档位金额，补齐差价后即刻生效。</text></view>
+        <view class="vip__notice-item"><text class="vip__notice-no">4.</text><text class="vip__notice-txt"><text class="vip__notice-b">到期后数据安全：</text>会员期满若未续费，已记录的菜谱、配料与笔记将保留在您的厨房日记中，绝不删除已有数据。</text></view>
+        <view class="vip__notice-item"><text class="vip__notice-no">5.</text><text class="vip__notice-txt"><text class="vip__notice-b">退款政策：</text>会员开通为数字化虚拟商品服务，若遇重复支付或服务故障，可联系客服微信人工核实处理退款。</text></view>
+        <view class="vip__notice-item"><text class="vip__notice-no">6.</text><text class="vip__notice-txt"><text class="vip__notice-b">服务主体与发票：</text>本服务由个体工商户「苏州吴中长桥宓芯软件工作室」提供。如需发票，请在开通后联系在线客服，并提供本笔订单的交易单号（开通后可在「开通记录」里点行复制）。</text></view>
+        <view class="vip__notice-item"><text class="vip__notice-no">7.</text><text class="vip__notice-txt"><text class="vip__notice-b">其他事项：</text>本小程序遵循微信开发者平台各项规范，客服答疑时间为工作日 09:00 - 18:00。</text></view>
+      </view>
+    </view>
+
+    <!-- ⑥ 开通记录：后端只给最近 5 条已发放/已退款订单（§7.1）；一条都没有时整块不出现，新用户不该先看到一张空表；点整行复制交易单号（与微信账单一致，找客服报单号查单退款用） -->
+    <block wx:if="{{ records.length }}">
+      <view class="vip__records">
+        <view class="vip__records-title"><text class="vip__records-icon">🧾</text> 开通记录</view>
+        <view wx:for="{{ records }}" wx:key="key" wx:for-item="rec" class="vip__record"
+          bindtap="onCopyTransactionId" data-no="{{ rec.transactionId }}">
+          <view class="vip__record-left">
+            <text class="vip__record-label">{{ rec.label }}</text>
+            <text class="vip__record-date">{{ rec.dateText }}</text>
+            <text class="vip__record-no">交易单号 {{ rec.transactionId }}（点行复制）</text>
+          </view>
+          <view class="vip__record-right">
+            <text class="vip__record-price">{{ rec.priceText }}</text>
+            <text class="vip__record-status vip__record-status--{{ rec.statusClass }}">{{ rec.statusText }}</text>
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <!-- ⑦ 协议链接：《用户协议》里那条购买须知摘要指向的就是本页，所以这里只给入口不复制正文（§5.4） -->
+    <view class="vip__links">
+      <text class="vip__link" bind:tap="onAgreement">《用户协议》</text>
+      <text class="vip__link-split">·</text>
+      <text class="vip__link" bind:tap="onPrivacy">《隐私政策》</text>
+    </view>
+    <!-- 底栏 CTA 吸底常驻，正文要给它留出腾挪高度，否则最后一条记录永远被压着 -->
+    <view class="vip__bottom-space"></view>
+  </block>
+
+  <!-- 底部操作栏（footer 插槽固定吸底，与 add-edit 底栏同一权重；本页不接 Banner 广告，§5.1） -->
+  <view slot="footer" class="vip__bar">
+    <view class="vip__cta {{ (purchasing || ctaDisabled) ? 'vip__cta--off' : '' }}" catch:tap="onBuy">
+      <text wx:if="{{ !ctaDisabled }}" class="vip__cta-crown">👑</text>
+      <text>{{ purchasing ? '发放确认中…' : ctaText }}</text>
+    </view>
+  </view>
+</container>

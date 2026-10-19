@@ -1,0 +1,134 @@
+/**
+ * 数组是否包含某个值
+ * @param value 值
+ * @param list 数组
+ */
+function listIncludes(value, list) {
+  return list.some(function(item) {
+    return item === value
+  })
+}
+/**
+ * 根据值查找枚举对象
+ * @param value 值
+ * @param list 枚举数组
+ */
+function findEnum(value, list) {
+  var result = {}
+  for (var i = 0; i < list.length; i++) {
+    var item = list[i];
+    if (item.value === value) {
+      result = item
+      break
+    }
+  }
+  return result
+}
+/**
+ * 根据值查找枚举label
+ * @param value 
+ * @param list 
+ */
+function findEnumLabel(value, list) {
+  var result = findEnum(value, list)
+  return result.label
+}
+/**
+ * 保留小数位
+ * @param value 数值
+ * @param decimal 小数位数
+ */
+function toFix(value, decimal = 2) {
+  return (+value).toFixed(decimal)
+}
+/**
+ * 获取整数位
+ * @param value 数值 
+ */
+function getInteger(value) {
+  var values = (+value).toFixed(2).split('.')
+  return values[0]
+}
+/**
+ * 获取小数位
+ * @param value 数值 
+ */
+function getDecimal(value) {
+  var values = (+value).toFixed(2).split('.')
+  return values[1]
+}
+/**
+ * 格式化距离单位
+ * @param distance 
+ */
+function formatDistance(distance) {
+  if (!distance) {
+    return '0 m'
+  } else if (+distance < 1000) {
+    return (+distance).toFixed(0) + ' m'
+  } else {
+    return (distance/1000).toFixed(2) + ' km'
+  }
+}
+
+/**
+ * 阿拉伯数字转中文数字（0-100）
+ * @param num 数字
+ */
+function toChineseNum(num) {
+  var map = ['零','一','二','三','四','五','六','七','八','九','十']
+  num = +num
+  if (num === 0) return '零'
+  if (num <= 10) return map[num]
+  if (num < 20) {
+    return num === 10 ? '十' : '十' + map[num - 10]
+  }
+  var tens = Math.floor(num / 10)
+  var ones = num % 10
+  if (ones === 0) return map[tens] + '十'
+  return map[tens] + '十' + map[ones]
+}
+
+/**
+ * 根据多个数字中位数最多的那个返回统一字号（rpx）
+ * 1-3位 64rpx | 4位 52rpx | 5位 42rpx | 6位+ 34rpx
+ */
+function statFontSize() {
+  var maxLen = 0
+  for (var i = 0; i < arguments.length; i++) {
+    var len = ('' + arguments[i]).length
+    if (len > maxLen) maxLen = len
+  }
+  if (maxLen <= 3) return '64rpx'
+  if (maxLen === 4) return '52rpx'
+  if (maxLen === 5) return '42rpx'
+  return '34rpx'
+}
+
+/**
+ * 根据菜谱ID获取购物车中的数量
+ * @param dishId 菜谱ID
+ * @param cartItems 购物车items数组
+ */
+function getCartQuantity(dishId, cartItems) {
+  if (!cartItems || !cartItems.length) return 0
+  for (var i = 0; i < cartItems.length; i++) {
+    if (cartItems[i].dishId === dishId) {
+      return cartItems[i].quantity
+    }
+  }
+  return 0
+}
+
+module.exports = {
+  listIncludes: listIncludes,
+  findEnum: findEnum,
+  findEnumLabel: findEnumLabel,
+  toFix: toFix,
+  getInteger: getInteger,
+  getDecimal: getDecimal,
+  formatDistance: formatDistance,
+  toChineseNum: toChineseNum,
+  statFontSize: statFontSize,
+  getCartQuantity: getCartQuantity,
+};

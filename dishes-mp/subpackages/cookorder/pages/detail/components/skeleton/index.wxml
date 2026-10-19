@@ -1,0 +1,32 @@
+<view class="skeleton">
+  <!-- 状态卡片骨架 -->
+  <view class="skeleton__status-card">
+    <view class="skeleton__block skeleton__block--status"></view>
+    <view class="skeleton__block skeleton__block--meta"></view>
+  </view>
+
+  <!-- 菜谱列表骨架 -->
+  <view class="skeleton__section">
+    <view class="skeleton__block skeleton__block--label"></view>
+  </view>
+  <view class="skeleton__dish-card">
+    <view class="skeleton__dish-item" wx:for="{{ [1,2,3] }}" wx:key="*this">
+      <view class="skeleton__block skeleton__block--cover"></view>
+      <view class="skeleton__dish-text">
+        <view class="skeleton__block skeleton__block--name"></view>
+        <view class="skeleton__block skeleton__block--qty"></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 订单信息骨架 -->
+  <view class="skeleton__section">
+    <view class="skeleton__block skeleton__block--label"></view>
+  </view>
+  <view class="skeleton__info-card">
+    <view class="skeleton__info-row" wx:for="{{ [1,2,3] }}" wx:key="*this">
+      <view class="skeleton__block skeleton__block--info-label"></view>
+      <view class="skeleton__block skeleton__block--info-value"></view>
+    </view>
+  </view>
+</view>

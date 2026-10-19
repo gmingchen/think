@@ -1,0 +1,75 @@
+<container use-scroll use-footer use-navbar-left>
+  <!-- 厨房切换 -->
+  <kitchen-header slot="navbar-left" bind:tap="onOpenKitchenSwitch" />
+
+  <!-- 骨架屏 -->
+  <skeleton wx:if="{{ loading }}" />
+
+  <!-- 时段分块 -->
+  <block wx:if="{{ !loading }}" wx:for="{{ blocks }}" wx:for-item="block" wx:key="period">
+    <view class="cook__section-tag">── {{ block.label }} ──</view>
+    <view class="cook__memo-card">
+      <view class="cook__person" wx:for="{{ block.persons }}" wx:for-item="person" wx:for-index="pIdx" wx:key="ordererId">
+        <view class="cook__person-divider" wx:if="{{ pIdx > 0 }}"></view>
+        <!-- 人物标签：显示名称 + 我的订单标签 -->
+        <view class="cook__person-header">
+          <text class="cook__person-label">{{ person.name }}</text>
+          <text class="cook__person-tag" wx:if="{{ person.isMine }}">我点的</text>
+          <text class="cook__person-status">{{ person.orders[0].statusLabel }}</text>
+        </view>
+        <view class="cook__order" wx:for="{{ person.orders }}" wx:for-item="order" wx:key="id">
+          <view class="cook__memo-body">
+            <view class="cook__dish-item" wx:for="{{ order.dishes }}" wx:for-item="dish" wx:key="name" data-id="{{ dish.id }}" bind:tap="onDishTap">
+              <image class="cook__dish-cover" wx:if="{{ dish.cover }}" src="{{ dish.cover }}" mode="aspectFill" />
+              <image class="cook__dish-cover" wx:else src="{{ DEFAULT_DISH_COVER }}" mode="aspectFit" />
+              <text class="cook__dish-name">{{ dish.name }}</text>
+              <text class="cook__dish-qty">× {{ dish.quantity }}</text>
+            </view>
+            <view class="cook__memo-note" wx:if="{{ order.remark }}">
+              叮嘱：{{ order.remark }}
+            </view>
+          </view>
+          <!-- 待接单/备菜中：显示取消/上菜按钮（所有成员），接单按钮仅厨师长/管厨 -->
+          <view class="cook__memo-footer" wx:if="{{ order.isPending || order.isAccepted }}">
+            <view class="cook__memo-btn cook__memo-btn--cancel" data-id="{{ order.id }}" bind:tap="onCancel">取消</view>
+            <view wx:if="{{ order.isPending && isChef }}" class="btn--matcha cook__memo-btn" data-id="{{ order.id }}" bind:tap="onAccept">🧾 接单</view>
+            <view class="btn--matcha cook__memo-btn" data-id="{{ order.id }}" bind:tap="onServe">🍽️ 上菜</view>
+          </view>
+          <!-- 已上桌且是自己下的单：显示评价按钮 -->
+          <view class="cook__memo-footer" wx:elif="{{ order.isServed && order.isMine }}">
+            <view class="btn--primary cook__memo-btn" data-id="{{ order.id }}" bind:tap="openComment">✍️ 夸夸大厨</view>
+          </view>
+          <!-- 已评价：显示评分 -->
+          <view class="cook__memo-footer cook__memo-footer--reviewed" wx:elif="{{ order.isReviewed }}">
+            <van-rate value="{{ order.rating }}" color="#E8A87C" void-color="#D8CCBE" size="14px" readonly />
+            <text class="cook__reviewed-label">已评价</text>
+          </view>
+        </view>
+      </view>
+      <view class="stamp__circle cook__stamp-pos">今日特供</view>
+    </view>
+  </block>
+
+  <!-- 空状态 -->
+  <view class="cook__empty" wx:if="{{ !loading && !blocks.length }}">
+    <text class="cook__empty-icon">🍳</text>
+    <text class="cook__empty-text">今天暂无订单</text>
+  </view>
+
+  <!-- 底部安全间距 -->
+  <view class="cook__scroll-spacer"></view>
+
+  <tabbar slot="footer"></tabbar>
+</container>
+
+<!-- 切换厨房弹窗 -->
+<kitchen-picker visible="{{ showKitchenSwitch }}" bind:close="onCloseKitchenSwitch" bind:switch="onSwitchKitchenConfirm" />
+
+<!-- 菜谱详情弹窗 -->
+<dish-popup id="dishPopup" />
+
+<!-- 评价弹窗 -->
+<review-popup id="reviewPopup" bind:success="onReviewSuccess" />
+
+<!-- 操作确认弹窗 -->
+<confirm-popup id="actionConfirmPopup" bind:confirm="onActionConfirm" />

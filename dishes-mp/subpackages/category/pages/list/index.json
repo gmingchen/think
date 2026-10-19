@@ -1,0 +1,8 @@
+{
+  "usingComponents": {
+    "empty": "/components/empty/index",
+    "category-popup": "/components/category-popup/index",
+    "confirm-popup": "/components/confirm-popup/index",
+    "skeleton": "./components/skeleton/index"
+  }
+}

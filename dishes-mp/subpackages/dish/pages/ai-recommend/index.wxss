@@ -1,0 +1,729 @@
+@import '../../../../common/style/index.wxss';
+
+/* ── 手账色板变量 ── */
+page {
+  --zakka-terracotta: #C86D51;
+  --zakka-terracotta-dark: #A44F37;
+  --zakka-matcha: #688B58;
+  --zakka-mustard: #E0A94F;
+  --zakka-paper: #F5EFEB;
+  --zakka-card: #FAF6F0;
+  --zakka-ink: #3D352E;
+  --zakka-pencil: #8C7E72;
+  --zakka-tape: rgba(224, 169, 79, 0.45);
+  --zakka-stamp-red: #B84A39;
+  --zakka-border-dashed: #DDD3C8;
+}
+
+/* 底部固定操作栏 */
+.ai-recommend__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32rpx;
+  padding: 16rpx 32rpx;
+  padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
+  background: rgba(245, 239, 235, 0.96);
+  border-top: 2rpx dashed #DDD1C4;
+}
+
+/* 菜篮入口（徽标 + 数量角标，三态常驻） */
+.ai-recommend__cart-badge {
+  position: relative;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ai-recommend__cart-icon {
+  font-size: 44rpx;
+}
+
+.ai-recommend__cart-count {
+  position: absolute;
+  top: -12rpx;
+  left: 32rpx;
+  min-width: 32rpx;
+  height: 32rpx;
+  line-height: 32rpx;
+  text-align: center;
+  font-size: 20rpx;
+  font-weight: bold;
+  color: #FFF;
+  background: var(--color-danger);
+  border-radius: 16rpx;
+  padding: 0 6rpx;
+}
+
+/* 入篮后竹篮抽拽动效 */
+.ai-recommend__cart-badge--shake {
+  animation: aiCartShake 0.5s ease-in-out;
+  transform-origin: center bottom;
+}
+
+@keyframes aiCartShake {
+  0%   { transform: rotate(0); }
+  20%  { transform: rotate(-15deg); }
+  40%  { transform: rotate(12deg); }
+  60%  { transform: rotate(-8deg); }
+  80%  { transform: rotate(5deg); }
+  100% { transform: rotate(0); }
+}
+
+/* 标题栏：主标题 + 剩余次数小字 */
+.ai-recommend__title {
+  display: flex;
+  align-items: baseline;
+  gap: 12rpx;
+  font-weight: 700;
+  color: var(--font-color);
+  font-size: var(--font-size-large-3);
+  letter-spacing: 1rpx;
+}
+
+.ai-recommend__title-quota {
+  font-size: 22rpx;
+  font-weight: normal;
+  color: var(--zakka-pencil);
+  letter-spacing: 0;
+}
+
+/* 标题栏「AI 生成」标识（审核要求常驻） */
+.ai-recommend__title-ai-tag {
+  font-size: 18rpx;
+  font-weight: normal;
+  letter-spacing: 0;
+  color: #FFF;
+  background: var(--zakka-terracotta);
+  padding: 2rpx 10rpx;
+  border-radius: 8rpx;
+  line-height: 1.4;
+}
+
+/* ═══════════ ① 选择态 ═══════════ */
+.ai-recommend__select {
+  /* 绝对定位铺满 .container__body（position:relative + min-height:100%=scroll 可视高），使便签卡纵向居中；左右 padding 保留 32rpx 边距 */
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  box-sizing: border-box;
+  padding: 0 32rpx;
+}
+
+.ai-recommend__card {
+  box-sizing: border-box;
+  background: var(--zakka-card);
+  border-radius: 24rpx;
+  padding: 32rpx;
+  border: 2rpx solid #E5DBD0;
+  box-shadow: 4rpx 6rpx 16rpx rgba(100, 80, 60, 0.05);
+  position: relative;
+}
+
+.ai-recommend__tape {
+  position: absolute;
+  top: -16rpx;
+  left: 50%;
+  transform: translateX(-50%) rotate(-0.5deg);
+  width: 128rpx;
+  height: 32rpx;
+  background: var(--zakka-tape);
+  box-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.05);
+}
+
+.ai-recommend__memo-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+}
+
+.ai-recommend__memo-title {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: var(--zakka-ink);
+}
+
+.ai-recommend__memo-count {
+  font-size: 20rpx;
+  color: var(--zakka-pencil);
+}
+
+/* 食材 chip */
+.ai-recommend__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  margin-bottom: 28rpx;
+}
+
+.ai-recommend__chip {
+  padding: 10rpx 22rpx;
+  background: #FFFDF9;
+  border: 2rpx dashed var(--zakka-border-dashed);
+  border-radius: 12rpx;
+  font-size: 24rpx;
+  color: var(--zakka-ink);
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.ai-recommend__chip--selected {
+  background: #FBEFEA;
+  border: 3rpx solid var(--zakka-terracotta);
+  color: var(--zakka-terracotta);
+  font-weight: 600;
+}
+
+.ai-recommend__chip-x {
+  font-size: 20rpx;
+  color: var(--zakka-terracotta);
+}
+
+.ai-recommend__chip--add {
+  color: var(--zakka-terracotta);
+  border-style: solid;
+  border-color: #E0CDBF;
+}
+
+/* 条件行 */
+.ai-recommend__condition {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16rpx 0;
+  border-top: 2rpx dashed var(--zakka-border-dashed);
+  font-size: 24rpx;
+}
+
+.ai-recommend__condition-label {
+  color: var(--zakka-pencil);
+}
+
+/* 口味：选项较多，标题在上、pills 换行占满整行 */
+.ai-recommend__condition--col {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16rpx;
+}
+
+.ai-recommend__pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.ai-recommend__condition--col .ai-recommend__pills {
+  width: 100%;
+}
+
+.ai-recommend__pill {
+  padding: 6rpx 16rpx;
+  border-radius: 8rpx;
+  background: #EFE8DF;
+  font-size: 22rpx;
+  color: var(--zakka-pencil);
+}
+
+.ai-recommend__pill--active {
+  background: var(--zakka-matcha);
+  color: #FFF;
+  font-weight: bold;
+}
+
+.ai-recommend__input {
+  border: 2rpx dashed #D6C8B8;
+  background: #FFFDF9;
+  padding: 8rpx 16rpx;
+  border-radius: 8rpx;
+  font-size: 22rpx;
+  color: var(--zakka-ink);
+  width: 260rpx;
+}
+
+/* 生成按钮 */
+.ai-recommend__submit {
+  flex: 1;
+  margin: 0;
+  background: var(--zakka-terracotta);
+  color: #FFF;
+  border: none;
+  padding: 20rpx 32rpx;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  font-weight: bold;
+  box-shadow: 2rpx 6rpx 16rpx rgba(200, 109, 81, 0.35);
+  line-height: normal;
+}
+
+.ai-recommend__submit::after {
+  border: none;
+}
+
+.ai-recommend__submit:active {
+  transform: scale(0.98);
+}
+
+/* 初始加载：底栏提交按钮骨架占位（高度对齐真实 submit，微光动画同页骨架屏） */
+.ai-recommend__submit--skeleton {
+  box-sizing: border-box;
+  height: 80rpx;
+  padding: 0;
+  background: linear-gradient(90deg, #f0e6d8 25%, #f7efe4 50%, #f0e6d8 75%);
+  background-size: 200% 100%;
+  box-shadow: none;
+  animation: aiSkeletonShimmer 1.5s infinite;
+}
+
+@keyframes aiSkeletonShimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.ai-recommend__submit--disabled,
+.ai-recommend__submit[disabled] {
+  background: rgba(231, 220, 206, 0.5) !important;
+  color: rgba(140, 126, 114, 0.6) !important;
+  box-shadow: none !important;
+}
+
+.ai-recommend__select-tip {
+  font-size: 22rpx;
+  color: var(--zakka-pencil);
+  text-align: center;
+  line-height: 1.6;
+  margin-top: 20rpx;
+}
+
+/* ═══════════ ② 生成中：手账风动画舞台 ═══════════ */
+.ai-recommend__loading {
+  /* 绝对定位铺满 .container__body（它 position:relative + min-height:100%=scroll 可视高，高度确定），规避小程序百分比 height 不解析 */
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: 0;
+}
+
+/* 便签纸外卡（内边距 32rpx + 外侧 margin 32rpx，与 .ai-recommend__card 等本页卡片一致） */
+.ai-recommend__memo-board {
+  position: relative;
+  align-self: stretch;
+  margin: 0 32rpx;
+  background: var(--zakka-card);
+  border: 2rpx solid #E5DBD0;
+  border-radius: 24rpx;
+  box-shadow: 4rpx 6rpx 16rpx rgba(100, 80, 60, 0.05);
+  padding: 32rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 顶部复古纸胶带 */
+.ai-recommend__memo-tape {
+  position: absolute;
+  top: -18rpx;
+  left: 50%;
+  transform: translateX(-50%) rotate(-1deg);
+  width: 160rpx;
+  height: 36rpx;
+  background: var(--zakka-tape);
+  box-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.06);
+}
+
+/* ① 颠锅 + 跳跃食材 + 蒸气 */
+.ai-recommend__cooking {
+  position: relative;
+  width: 320rpx;
+  height: 220rpx;
+  margin-bottom: 20rpx;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.ai-recommend__wok {
+  font-size: 108rpx;
+  line-height: 1;
+  transform-origin: 25% 65%;
+  animation: aiWokShake 1.4s infinite cubic-bezier(0.45, 0.05, 0.55, 0.95);
+  filter: drop-shadow(0 8rpx 12rpx rgba(0, 0, 0, 0.12));
+  z-index: 2;
+}
+
+@keyframes aiWokShake {
+  0%, 100% { transform: rotate(0deg) translateY(0); }
+  25% { transform: rotate(-10deg) translateY(4rpx); }
+  40% { transform: rotate(14deg) translateY(-16rpx); }
+  55% { transform: rotate(-5deg) translateY(-4rpx); }
+  75% { transform: rotate(4deg) translateY(0); }
+}
+
+.ai-recommend__toss {
+  position: absolute;
+  font-size: 44rpx;
+  line-height: 1;
+  bottom: 76rpx;
+  opacity: 0;
+  z-index: 1;
+}
+.ai-recommend__toss--1 { left: 86rpx; animation: aiTossArc1 1.4s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+.ai-recommend__toss--2 { left: 134rpx; animation: aiTossArc2 1.4s infinite 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+.ai-recommend__toss--3 { left: 182rpx; animation: aiTossArc3 1.4s infinite 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+
+@keyframes aiTossArc1 {
+  0% { transform: translate(0, 0) scale(0.6) rotate(0deg); opacity: 0; }
+  35% { opacity: 1; }
+  50% { transform: translate(-27rpx, -92rpx) scale(1.1) rotate(-80deg); opacity: 1; }
+  80% { transform: translate(-8rpx, -19rpx) scale(0.8) rotate(-160deg); opacity: 0.8; }
+  100% { transform: translate(0, 0) scale(0.5) rotate(-200deg); opacity: 0; }
+}
+@keyframes aiTossArc2 {
+  0% { transform: translate(0, 0) scale(0.6) rotate(0deg); opacity: 0; }
+  35% { opacity: 1; }
+  50% { transform: translate(8rpx, -110rpx) scale(1.2) rotate(110deg); opacity: 1; }
+  80% { transform: translate(15rpx, -23rpx) scale(0.8) rotate(220deg); opacity: 0.8; }
+  100% { transform: translate(0, 0) scale(0.5) rotate(260deg); opacity: 0; }
+}
+@keyframes aiTossArc3 {
+  0% { transform: translate(0, 0) scale(0.6) rotate(0deg); opacity: 0; }
+  35% { opacity: 1; }
+  50% { transform: translate(30rpx, -84rpx) scale(1) rotate(-90deg); opacity: 1; }
+  80% { transform: translate(11rpx, -15rpx) scale(0.8) rotate(-180deg); opacity: 0.8; }
+  100% { transform: translate(0, 0) scale(0.5) rotate(-220deg); opacity: 0; }
+}
+
+.ai-recommend__steam {
+  position: absolute;
+  top: 19rpx;
+  font-size: 28rpx;
+  line-height: 1;
+  color: var(--zakka-pencil);
+  opacity: 0;
+  animation: aiSteamRise 1.8s infinite ease-out;
+}
+.ai-recommend__steam--1 { left: 115rpx; animation-delay: 0.1s; }
+.ai-recommend__steam--2 { left: 169rpx; animation-delay: 0.8s; }
+
+@keyframes aiSteamRise {
+  0% { transform: translateY(0) scale(0.7); opacity: 0; }
+  40% { opacity: 0.55; }
+  100% { transform: translateY(-54rpx) scale(1.3); opacity: 0; }
+}
+
+/* ② 3D 菜谱便签翻页 */
+.ai-recommend__flip {
+  width: 440rpx;
+  height: 76rpx;
+  position: relative;
+  perspective: 1200rpx;
+  margin-bottom: 32rpx;
+}
+.ai-recommend__flip-base {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: #EFE7DC;
+  border: 2rpx dashed #D5C7B8;
+  border-radius: 12rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22rpx;
+  color: var(--zakka-pencil);
+}
+.ai-recommend__flip-sheet {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: #FFFDF9;
+  border: 2rpx solid #DFD5C6;
+  border-radius: 12rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22rpx;
+  font-weight: bold;
+  color: var(--zakka-terracotta);
+  transform-origin: top center;
+  box-shadow: 0 8rpx 16rpx rgba(0, 0, 0, 0.05);
+  animation: aiSheetFlip 2.4s infinite ease-in-out;
+}
+@keyframes aiSheetFlip {
+  0%, 15% { transform: rotateX(0deg); }
+  50% { transform: rotateX(-90deg); opacity: 0.9; }
+  85%, 100% { transform: rotateX(-180deg); opacity: 0; }
+}
+
+/* ③ 主副文案轮播 */
+.ai-recommend__quote {
+  min-height: 88rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 36rpx;
+  text-align: center;
+}
+.ai-recommend__quote-main {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: var(--zakka-terracotta);
+  letter-spacing: 1rpx;
+  transition: all 0.3s ease;
+}
+.ai-recommend__quote-sub {
+  font-size: 22rpx;
+  color: var(--zakka-pencil);
+  margin-top: 6rpx;
+}
+
+/* ④ AI 思考清单 */
+.ai-recommend__checklist {
+  width: 100%;
+  background: #F8F3EC;
+  border: 2rpx dashed var(--zakka-border-dashed);
+  border-radius: 16rpx;
+  padding: 24rpx 28rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+.ai-recommend__check {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 24rpx;
+  color: var(--zakka-pencil);
+  transition: color 0.3s ease;
+}
+.ai-recommend__check-left {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+.ai-recommend__check-dot {
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
+  background: #D9CEBF;
+  flex-shrink: 0;
+}
+.ai-recommend__check--active {
+  color: var(--zakka-ink);
+  font-weight: 600;
+}
+.ai-recommend__check--active .ai-recommend__check-dot {
+  background: var(--zakka-terracotta);
+  transform: scale(1.3);
+}
+.ai-recommend__check--done {
+  color: var(--zakka-matcha);
+}
+.ai-recommend__check--done .ai-recommend__check-dot {
+  background: var(--zakka-matcha);
+}
+.ai-recommend__stamp {
+  font-size: 20rpx;
+  border: 3rpx solid var(--zakka-stamp-red);
+  color: var(--zakka-stamp-red);
+  padding: 2rpx 12rpx;
+  border-radius: 6rpx;
+  font-weight: bold;
+  transform: rotate(-5deg) scale(0);
+  opacity: 0;
+  transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.ai-recommend__stamp--on {
+  transform: rotate(-6deg) scale(1);
+  opacity: 0.9;
+}
+
+.ai-recommend__loading-tip {
+  font-size: 20rpx;
+  color: var(--zakka-pencil);
+  text-align: center;
+  margin-top: 28rpx;
+}
+
+/* ═══════════ ③ 结果态 ═══════════ */
+.ai-recommend__result {
+  padding: 8rpx 32rpx 40rpx;
+}
+
+/* footer 按钮组（结果态：重新调整 + 换一批） */
+.ai-recommend__footer-actions {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  gap: 16rpx;
+}
+
+/* Banner 广告：左右间距由 ai-recommend__result 自带 32rpx 内边距承担，原生 ad 只加顶部 margin */
+.page__ad {
+  margin: 24rpx 0 0;
+}
+/* 生成中广告宿主包裹层：loading 为 align-items:center 且无内边距，需 stretch 拉满横宽 + 32rpx 内边距与卡片对齐 */
+.ai__ad-wrap {
+  align-self: stretch;
+  padding: 0 32rpx;
+  box-sizing: border-box;
+}
+
+/* 重新调整按钮（次级） */
+.ai-recommend__reset {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  background: #EDE2D5;
+  color: var(--zakka-ink);
+  border: none;
+  padding: 20rpx 16rpx;
+  border-radius: 16rpx;
+  font-size: 24rpx;
+  font-weight: bold;
+  line-height: normal;
+  white-space: nowrap;
+}
+
+.ai-recommend__reset::after {
+  border: none;
+}
+
+.ai-recommend__reset:active {
+  transform: scale(0.98);
+}
+
+/* 换一批按钮（主级） */
+.ai-recommend__refresh {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  background: var(--zakka-terracotta);
+  color: #FFF;
+  border: none;
+  padding: 20rpx 16rpx;
+  border-radius: 16rpx;
+  font-size: 24rpx;
+  font-weight: bold;
+  box-shadow: 2rpx 6rpx 16rpx rgba(200, 109, 81, 0.35);
+  line-height: normal;
+  white-space: nowrap;
+}
+
+.ai-recommend__refresh::after {
+  border: none;
+}
+
+.ai-recommend__refresh:active {
+  transform: scale(0.98);
+}
+
+.ai-recommend__group-title {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: var(--zakka-ink);
+  margin: 36rpx 0 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ai-recommend__group-title--fresh {
+  margin-top: 44rpx;
+}
+
+.ai-recommend__group-title-left {
+  display: flex;
+  align-items: baseline;
+  gap: 8rpx;
+}
+
+.ai-recommend__group-title-sub {
+  font-size: 22rpx;
+  font-weight: normal;
+  color: var(--zakka-pencil);
+}
+
+.ai-recommend__group-title-tag {
+  font-size: 20rpx;
+  color: var(--zakka-terracotta);
+  background: #FDF2EE;
+  padding: 4rpx 12rpx;
+  border-radius: 6rpx;
+}
+
+.ai-recommend__ranked-empty {
+  font-size: 24rpx;
+  color: var(--zakka-pencil);
+  text-align: center;
+  padding: 32rpx 0;
+}
+
+/* 两组皆空兜底空态（卡片式居中） */
+.ai-recommend__result-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 80rpx 32rpx;
+  margin-top: 24rpx;
+  background: var(--zakka-card);
+  border: 2rpx dashed var(--zakka-border-dashed);
+  border-radius: 24rpx;
+}
+
+.ai-recommend__result-empty-icon {
+  font-size: 88rpx;
+  line-height: 1;
+  margin-bottom: 24rpx;
+}
+
+.ai-recommend__result-empty-title {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: var(--zakka-ink);
+  margin-bottom: 12rpx;
+}
+
+.ai-recommend__result-empty-desc {
+  font-size: 22rpx;
+  color: var(--zakka-pencil);
+  line-height: 1.6;
+}
+
+.ai-recommend__disclaimer {
+  text-align: center;
+  font-size: 20rpx;
+  color: var(--zakka-pencil);
+  margin-top: 40rpx;
+  padding-bottom: 20rpx;
+  line-height: 1.5;
+}
+
+/* 生成态声明：loading 容器无左右内边距，补 32rpx 内边距对齐卡片 */
+.ai-recommend__disclaimer--loading {
+  align-self: stretch;
+  padding-left: 32rpx;
+  padding-right: 32rpx;
+}

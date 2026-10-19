@@ -1,0 +1,11 @@
+{
+  "usingComponents": {
+    "food-picker": "/components/food-picker/index",
+    "dish-card": "./components/dish-card/index",
+    "fresh-card": "./components/fresh-card/index",
+    "skeleton": "./components/skeleton/index",
+    "dish-popup": "/components/dish-popup/index",
+    "cart-popup": "/components/cart-popup/index",
+    "confirm-popup": "/components/confirm-popup/index"
+  }
+}

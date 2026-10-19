@@ -1,0 +1,19 @@
+<previewer
+  value="{{ value }}"
+  width="{{ width }}"
+  height="{{ height }}"
+  radius="{{ radius }}"
+  preview="{{ preview }}"
+  deletable="{{ deletable }}"
+  data-field="list"
+  bind:on-touch="onTouch"
+  bind:on-delete="onDelete">
+  <view
+    wx:if="{{ !disabled && (count > 1 ? value.length < count : !value) }}"
+    class="uploader f_d-c f_j_c-c f_a_i-c"
+    style="width: {{ width }}; height: {{ height }}; border-radius: {{ radius }};"
+    catch:tap="onUpload">
+    <iconfont name="{{ icon }}" size="64" color="#C8B8A8" />
+    <view class="uploader__placeholder m_t-8" wx:if="{{ placeholder }}">{{ placeholder }}</view>
+  </view>
+</previewer>

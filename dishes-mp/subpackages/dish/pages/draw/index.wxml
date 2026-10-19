@@ -1,0 +1,112 @@
+<container use-back use-footer title="今天吃什么">
+
+  <!-- 骨架屏 -->
+  <skeleton wx:if="{{ loading }}" />
+
+  <!-- 空态 -->
+  <view wx:elif="{{ isEmpty }}" class="draw__empty">
+    <empty title="还没有菜谱" desc="先去添加菜谱，再来摇一道吧">
+      <view class="draw__empty-btn" catch:tap="onAddDish">+ 去添加菜谱</view>
+    </empty>
+    <!-- Banner 广告：空态同样曝光，置于「去添加菜谱」按钮下方；p_h-32 承担左右间距，总开关与无填充隐藏由 ad-unit 内部处理 -->
+    <view class="p_h-32 draw__empty-ad">
+      <ad-unit ad-unit-id="{{ AD_UNIT_DRAW_BANNER }}" cls="page__ad" />
+    </view>
+  </view>
+
+  <!-- 老虎机主体 -->
+  <view wx:else class="draw__body">
+    <!-- 老虎机组件：抽菜业务由页面处理，start 开始摇 / change 出结果 -->
+    <slot-machine
+      id="slotMachine"
+      data="{{ dishes }}"
+      bind:start="onSpinStart"
+      bind:change="onSpinChange"
+    />
+
+    <!-- 出纸口 + 小票 -->
+    <view class="draw__chute">
+      <view class="draw__chute-slit"></view>
+
+      <!-- 小票卡片（未抽菜时整个容器不渲染，不占位；抽出时挂载播放出纸动画） -->
+      <view wx:if="{{ showResult }}" class="draw__receipt">
+        <!-- 顶部穿孔线 -->
+        <view class="draw__receipt-perf"></view>
+
+        <!-- 小票头 -->
+        <view class="draw__receipt-head">
+          <text class="draw__receipt-title">🧾 今日定餐便签</text>
+          <text class="draw__receipt-time">摇奖定音 · 今日开饭</text>
+        </view>
+
+        <!-- 菜品清单 -->
+        <view class="draw__receipt-list">
+          <view
+            wx:for="{{ pickedList }}"
+            wx:key="id"
+            class="draw__receipt-row {{ item._locked ? 'draw__receipt-row--locked' : '' }}"
+            catch:tap="onDishTap"
+            data-id="{{ item.id }}"
+          >
+            <view class="draw__receipt-row-left">
+              <image class="draw__receipt-row-img" src="{{ item.photo || DEFAULT_DISH_COVER }}" mode="aspectFill" />
+              <text class="draw__receipt-row-name">{{ item.name }}</text>
+            </view>
+            <view class="draw__receipt-row-right">
+              <text class="draw__receipt-row-meta">做过{{ item.cookCount }}次</text>
+              <view
+                class="draw__lock-btn {{ item._locked ? 'draw__lock-btn--locked' : '' }}"
+                catch:tap="onLockToggle"
+                data-index="{{ index }}"
+              >
+                <text>{{ item._locked ? '🔒' : '📌' }}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 朱红印章 -->
+        <view class="draw__seal {{ stamped ? 'draw__seal--hit' : '' }}">
+          <text class="draw__seal-main">大厨准奏</text>
+          <text class="draw__seal-sub">今日开火</text>
+        </view>
+
+        <!-- 底部锯齿 -->
+        <view class="draw__receipt-tear"></view>
+
+        <!-- 操作按钮 -->
+        <view class="draw__receipt-actions">
+          <button class="draw__rbtn draw__rbtn--sub" catch:tap="onOpenShareSheet">📤 分享</button>
+          <button class="draw__rbtn draw__rbtn--sub" catch:tap="onGoShopping">🛒 采购清单</button>
+          <button class="draw__rbtn draw__rbtn--pri" catch:tap="onAddAllToCart">🧺 一键入篮</button>
+        </view>
+      </view>
+
+      <!-- Banner 广告（出纸口内、老虎机/便签正下方；chute 为 flex 列居中，宿主需 align-self:stretch 拉满才能渲染） -->
+      <ad-unit class="draw__ad" ad-unit-id="{{ AD_UNIT_DRAW_BANNER }}" cls="page__ad" />
+    </view>
+  </view>
+
+  <!-- 底部栏 -->
+  <view wx:if="{{ !loading && !isEmpty }}" class="draw__footer" slot="footer">
+    <view class="draw__footer-inner">
+      <view class="draw__cart-badge {{ cartShake ? 'draw__cart-badge--shake' : '' }}" catch:tap="onOpenCartPopup">
+        <text class="draw__cart-icon">🧺</text>
+        <text class="draw__cart-count" wx:if="{{ cart.quantity > 0 }}">{{ cart.quantity }}</text>
+      </view>
+      <view class="draw__footer-order-btn" catch:tap="onGoOrder">
+        <text>敲定菜单</text>
+        <iconfont name="arrow-right" size="22" color="#FFFFFF" />
+      </view>
+    </view>
+  </view>
+</container>
+
+<!-- 菜谱详情弹窗 -->
+<dish-popup id="dishPopup" bind:detail="onPopupDetail" />
+
+<!-- 购物车弹窗 -->
+<cart-popup id="cartPopup" bind:confirm="onGoOrder" />
+
+<!-- 分享选择面板（转发/海报二选一，转发项内部 open-type=share 触发本页 onShareAppMessage） -->
+<share-popup id="sharePopup" bind:select="onShareSelect" />

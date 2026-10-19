@@ -1,0 +1,11 @@
+<view class="tabbar">
+  <view
+    class="tabbar__item {{ tabbar.active === item.value ? 'tabbar__item--active' : '' }}"
+    wx:for="{{ tabbar.list }}"
+    wx:key="value"
+    data-row="{{ item }}"
+    bind:tap="onTap">
+    <text class="tabbar__icon">{{ item.emoji }}</text>
+    <text>{{ item.label }}</text>
+  </view>
+</view>

@@ -1,0 +1,336 @@
+/* ── 顶部区域（封面 + 基本信息） ── */
+.add-edit__top {
+  padding: 24rpx 32rpx 0rpx;
+}
+.add-edit__header {
+  display: flex;
+  gap: 32rpx;
+  align-items: center;
+}
+.add-edit__photo-box {
+  width: 180rpx;
+  height: 180rpx;
+  background: #F8F1E7;
+  border-radius: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+  position: relative;
+  box-shadow: 2rpx 4rpx 12rpx rgba(0,0,0,0.06);
+}
+.add-edit__photo-tip {
+  font-size: 20rpx;
+  color: var(--font-color-sub);
+  padding-top: 12rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+/* 封面区 AI 生图入口：与底部「AI 识别」同构的迷你描边胶囊（emoji 左置） */
+.add-edit__cover-ai-btn {
+  flex-shrink: 0;
+  padding: 6rpx 16rpx;
+  border-radius: 10rpx;
+  border: 1rpx solid var(--color-primary);
+  color: var(--color-primary);
+  background: transparent;
+  font-size: 20rpx;
+  font-weight: 500;
+}
+.add-edit__cover-ai-btn:active {
+  background: rgba(200, 109, 81, 0.12);
+}
+
+/* 菜名 + 分类 */
+.add-edit__fields {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20rpx;
+}
+.add-edit__field {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+.add-edit__field-label {
+  font-size: 28rpx;
+  color: var(--font-color-sub);
+  width: 80rpx;
+  flex-shrink: 0;
+}
+.add-edit__field-input {
+  flex: 1;
+  font-size: 28rpx;
+  color: var(--font-color);
+  padding: 16rpx 20rpx;
+  background: #F8F1E7;
+  border-radius: 12rpx;
+}
+.add-edit__field-value {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 28rpx;
+  color: var(--font-color);
+  padding: 16rpx 20rpx;
+  background: #F8F1E7;
+  border-radius: 12rpx;
+  line-height: 1;
+}
+.add-edit__field-placeholder {
+  color: #B8A99A;
+}
+
+/* ── 分区标题 ── */
+.add-edit__section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32rpx 40rpx 16rpx;
+}
+.add-edit__section-title {
+  font-size: 28rpx;
+  color: var(--font-color);
+  font-weight: 600;
+}
+.add-edit__section-add {
+  text-align: center;
+  padding: 16rpx 0 8rpx;
+  font-size: 26rpx;
+  color: var(--color-primary);
+  font-weight: 500;
+}
+.add-edit__section-actions {
+  display: flex;
+  align-items: center;
+  gap: 28rpx;
+}
+.add-edit__section-action {
+  font-size: 24rpx;
+  color: var(--font-color-sub);
+  padding: 8rpx 0;
+}
+.add-edit__section-action--primary {
+  color: var(--color-primary);
+  font-weight: 500;
+}
+
+/* ── 列表卡片 ── */
+.add-edit__list-card {
+  margin: 0 32rpx 8rpx;
+  padding: 4rpx 28rpx;
+}
+/* ── 详情图卡片（uploader 九宫格，最多 3 张：3×180rpx + 间距可容纳单行） ── */
+.add-edit__detail-card {
+  margin: 0 32rpx 8rpx;
+  padding: 28rpx;
+}
+.add-edit__list-item {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+  padding: 24rpx 0;
+  border-bottom: var(--border-dashed);
+}
+.add-edit__list-item:last-child {
+  border-bottom: none;
+}
+.add-edit__list-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.add-edit__list-name {
+  font-size: 28rpx;
+  color: var(--font-color);
+  font-weight: 500;
+}
+.add-edit__list-fields {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+.add-edit__list-input {
+  flex: 1;
+  min-width: 0;
+  height: 56rpx;
+  padding: 0 16rpx;
+  font-size: 24rpx;
+  color: var(--font-color);
+  background: #F8F1E7;
+  border-radius: 6rpx;
+}
+.add-edit__list-remove {
+  font-size: 36rpx;
+  color: var(--color-primary);
+  padding: 0 4rpx;
+  line-height: 1;
+}
+.add-edit__list-side {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+/* 食材/调料「可选」切换标签：基座用全局 .tag，局部只定义两态皮肤
+   未选态虚线框提示可标记；点亮态同全局 .tag--primary 浅底主色字（采购清单归入可不买） */
+.add-edit__optional {
+  border-radius: var(--radius-pill);
+  border: var(--border-dashed);
+  color: var(--font-color-weak);
+  background: transparent;
+  line-height: 1.5;
+}
+.add-edit__optional--on {
+  border: 1rpx solid transparent;
+  background: rgba(200, 109, 81, 0.12);
+  color: var(--color-primary);
+}
+
+/* ── 空状态提示 ── */
+.add-edit__empty-tip {
+  text-align: center;
+  font-size: 24rpx;
+  color: var(--font-color-sub);
+  padding: 32rpx;
+  margin: 0 32rpx;
+  background: #FAF6F1;
+  border-radius: 12rpx;
+  border: 1rpx dashed #E8DDD0;
+}
+
+/* ── 步骤列表（弹窗录入，行内只读展示，点击可编辑） ── */
+.add-edit__step-card {
+  padding-bottom: 12rpx;
+}
+.add-edit__step-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 16rpx;
+  padding: 24rpx 0;
+  border-bottom: var(--border-dashed);
+}
+.add-edit__step-item:last-child {
+  border-bottom: none;
+}
+.add-edit__step-item--dragging {
+  background: var(--bg-section);
+  border-radius: 8rpx;
+  opacity: 0.9;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.1);
+}
+.add-edit__step-drag {
+  font-size: 28rpx;
+  color: var(--font-color-weak);
+  flex-shrink: 0;
+  line-height: 44rpx;
+  padding-right: 4rpx;
+}
+.add-edit__step-num {
+  width: 44rpx;
+  height: 44rpx;
+  background: var(--color-primary);
+  color: #FFF;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22rpx;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+.add-edit__step-text {
+  flex: 1;
+  min-width: 0;
+  font-size: 26rpx;
+  color: var(--font-color);
+  line-height: 1.6;
+  padding: 6rpx 0;
+  word-break: break-all;
+}
+
+/* ── 操作提示 ── */
+.add-edit__tip-text {
+  font-size: 22rpx;
+  color: var(--font-color-weak);
+  padding: 8rpx 40rpx 16rpx;
+  line-height: 1.6;
+}
+
+/* ── 备注 ── */
+.add-edit__note-card {
+  margin: 0 32rpx 24rpx;
+  padding: 24rpx 32rpx;
+  font-size: 24rpx;
+  color: #7D6855;
+  background: #F6EDE4;
+  border-radius: 16rpx;
+  line-height: 1.6;
+}
+.add-edit__note-textarea {
+  width: 100%;
+  min-height: 80rpx;
+  font-size: 26rpx;
+  color: var(--font-color);
+  line-height: 1.6;
+}
+/* Banner 广告：左右间距由外层 p_h-32 承担，原生 ad 只加上下 margin */
+.page__ad {
+  margin: 8rpx 0 24rpx;
+}
+
+/* ── 底部操作栏（对齐订单详情页底栏：左右分组 + space-between + 统一紧凑 scale） ── */
+.add-edit__bottom-bar {
+  background: rgba(255,255,255,0.96);
+  padding: 24rpx 32rpx calc(24rpx + env(safe-area-inset-bottom));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 -2rpx 12rpx rgba(0,0,0,0.04);
+}
+/* 右侧两个保存按钮成组：组内 gap、组间通栏两端分布（对齐 order-detail__actions-group） */
+.add-edit__save-group {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+/* AI 识别入口：对齐订单详情页 ghost 轻按钮 scale（描边、不 flex 撑满、权重低于主按钮） */
+.add-edit__ai-btn {
+  flex-shrink: 0;
+  padding: 10rpx 20rpx;
+  border-radius: 10rpx;
+  border: 1rpx solid var(--color-primary);
+  color: var(--color-primary);
+  background: transparent;
+  font-size: 22rpx;
+  font-weight: 500;
+  line-height: 1.4;
+}
+.add-edit__ai-btn:active {
+  background: rgba(200, 109, 81, 0.12);
+}
+/* 保存按钮：对齐订单详情页 bottom-btn 紧凑 scale，按内容宽度、不 flex 撑满 */
+.add-edit__bottom-btn {
+  flex-shrink: 0;
+  padding: 10rpx 24rpx;
+  border-radius: 10rpx;
+  font-size: 22rpx;
+  text-align: center;
+  font-weight: 500;
+  line-height: 1.4;
+  /* 描边按钮与实底按钮共用同宽边框，两颗才一高一低对齐 */
+  border: 1rpx solid transparent;
+}
+.add-edit__btn--outline {
+  border: 1rpx solid var(--color-primary);
+  color: var(--color-primary);
+  background: transparent;
+}
+.add-edit__btn--primary {
+  background: var(--color-primary);
+  color: #FFF;
+}

@@ -1,0 +1,62 @@
+<container use-scroll title="分类管理" use-back>
+
+  <!-- 分类容量进度条（header 插槽，固定顶部）：数量+进度条居左、看视频按钮居右；使用率≥90% 转红并右侧警示
+       畅厨在自己的厨房内显「x/不限」并隐藏进度条与 📺 入口（轻享不隐藏，§6.1）；到期超额时括号里换成「已超出 N」（§12） -->
+  <view slot="header" wx:if="{{ !loading && category }}" class="category__capacity">
+    <view class="category__capacity-info">
+      <view class="category__capacity-top {{ category.unlimited ? 'category__capacity-top--flat' : '' }}">
+        <text class="category__capacity-count">{{ category.cur }}/{{ category.unlimited ? '不限' : category.max + (category.over > 0 ? '（已超出 ' + category.over + '）' : '（余 ' + category.remain + '）') }}</text>
+        <text wx:if="{{ !category.unlimited && !category.over && category.warn }}" class="category__capacity-warn">{{ category.full ? '已满' : '即将满载' }}</text>
+      </view>
+      <view wx:if="{{ !category.unlimited }}" class="category__capacity-meter">
+        <view class="category__capacity-bar {{ category.warn ? 'category__capacity-bar--alert' : '' }}" style="width: {{ category.percent }}%"></view>
+      </view>
+      <!-- 会员引导行：只给厨师长看（isOwner 为假时连这一行都不出现，等于在卖「花钱解别人厨房的限制」，§1.4 决策 1） -->
+      <view wx:if="{{ kitchen.active.isOwner && !kitchen.active.unlimitedCapacity }}" class="category__capacity-vip" bind:tap="onGoVip">开通畅厨会员，不再限数 ›</view>
+    </view>
+    <!-- 📺 按钮条件与本方法里的 _canExpand() 同义（角色 ∧ 广告开关 ∧ 该厨房未取消上限）：
+         wxml 调不了 util 函数，所以同一判据在两处各写一遍——改一处必须同时改另一处 -->
+    <view wx:if="{{ (kitchen.active.role === 1 || kitchen.active.role === 2) && ad.enabled && !kitchen.active.unlimitedCapacity }}" class="category__capacity-btn {{ expanding ? 'category__capacity-btn--disabled' : '' }}" bind:tap="onExpandCapacity">📺 看视频 +1</view>
+  </view>
+
+  <!-- 骨架屏 -->
+  <skeleton wx:if="{{ loading }}" />
+
+  <!-- 分类列表 -->
+  <view class="zk__card category__list-card" wx:if="{{ list.length }}">
+    <view
+      class="category__cat-item {{ index === list.length - 1 ? 'category__cat-item--last' : '' }} {{ dragIndex === index ? 'category__cat-item--dragging' : '' }}"
+      wx:for="{{ list }}"
+      wx:key="id"
+      style="{{ dragIndex === index ? 'transform: translateY(' + dragOffsetY + 'px); z-index: 1;' : dragIndex >= 0 ? 'transform: translateY(' + (dragOffsets[index] || 0) + 'px); transition: transform 0.2s ease;' : '' }}">
+      <text
+        class="category__cat-drag"
+        data-index="{{ index }}"
+        bindtouchstart="onDragStart"
+        bindtouchmove="onDragMove"
+        bindtouchend="onDragEnd">☰</text>
+      <view class="category__cat-info" data-item="{{ item }}" bindlongpress="onDelete">
+        <text class="category__cat-name">{{ item.name }}</text>
+      </view>
+      <text class="category__cat-edit" data-item="{{ item }}" bind:tap="onEdit">编辑</text>
+    </view>
+  </view>
+  <empty wx:elif="{{ !loading }}" />
+
+  <!-- 新增按钮 -->
+  <view class="category__add-btn-wrap">
+    <view class="btn--primary category__add-btn" bind:tap="onAdd">+ 新增分类</view>
+  </view>
+
+  <view class="category__tip-text">提示：拖拽 ☰ 排序 · 长按名称删除</view>
+
+  <!-- Banner 广告（页面末尾，受 store.ad.enabled 总开关控制，无填充自动隐藏） -->
+  <view class="p_h-32">
+    <ad-unit wx:if="{{ !loading }}" ad-unit-id="{{ AD_UNIT_CATEGORY_BANNER }}" cls="page__ad" />
+  </view>
+</container>
+
+<category-popup id="categoryPopup" bind:confirm="onConfirm" bind:limit="onCategoryLimit" />
+
+<!-- 分类数达上限（4005）引导：看激励视频为上限 +1，确认后自动重试保存 -->
+<confirm-popup id="limitPopup" bind:confirm="onExpandConfirm" />

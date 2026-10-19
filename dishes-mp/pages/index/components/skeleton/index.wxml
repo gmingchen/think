@@ -1,0 +1,55 @@
+<view class="skeleton">
+  <!-- 顶部内容区（对应 page__content：左右 32rpx 内边距） -->
+  <view class="skeleton__content">
+    <!-- 功能入口图 -->
+    <view class="skeleton__banner">
+      <view class="skeleton__banner-row">
+        <view class="skeleton__block skeleton__block--banner-half"></view>
+        <view class="skeleton__block skeleton__block--banner-half"></view>
+      </view>
+      <view class="skeleton__banner-row">
+        <view class="skeleton__block skeleton__block--banner-half"></view>
+        <view class="skeleton__block skeleton__block--banner-half"></view>
+      </view>
+    </view>
+
+    <!-- 最近一餐 标题 -->
+    <view class="skeleton__section">
+      <view class="skeleton__block skeleton__block--section-title"></view>
+    </view>
+    <!-- 最近一餐 卡片 -->
+    <view class="skeleton__card">
+      <view class="skeleton__tape"></view>
+      <view class="skeleton__order">
+        <view class="skeleton__block skeleton__block--orderer"></view>
+        <view class="skeleton__dish">
+          <view class="skeleton__block skeleton__block--img"></view>
+          <view class="skeleton__dish-info">
+            <view class="skeleton__block skeleton__block--name"></view>
+            <view class="skeleton__block skeleton__block--qty"></view>
+          </view>
+        </view>
+        <view class="skeleton__dish">
+          <view class="skeleton__block skeleton__block--img"></view>
+          <view class="skeleton__dish-info">
+            <view class="skeleton__block skeleton__block--name"></view>
+            <view class="skeleton__block skeleton__block--qty"></view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 拿手好菜 标题（通栏，自带左内边距） -->
+  <view class="skeleton__section skeleton__section--bleed">
+    <view class="skeleton__block skeleton__block--section-title"></view>
+  </view>
+  <!-- 拿手好菜 横滑卡片 -->
+  <view class="skeleton__best">
+    <view class="skeleton__best-card" wx:for="{{ [1,2,3] }}" wx:key="*this">
+      <view class="skeleton__block skeleton__block--photo"></view>
+      <view class="skeleton__block skeleton__block--caption"></view>
+      <view class="skeleton__block skeleton__block--note"></view>
+    </view>
+  </view>
+</view>

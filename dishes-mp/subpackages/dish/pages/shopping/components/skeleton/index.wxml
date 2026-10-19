@@ -1,0 +1,57 @@
+<view class="skeleton">
+  <!-- 采买进度胶囊：描边胶囊 + 内部「已买 / x·y / 进度槽」三段 -->
+  <view class="skeleton__progress">
+    <view class="skeleton__block skeleton__block--progress-label"></view>
+    <view class="skeleton__block skeleton__block--progress-num"></view>
+    <view class="skeleton__progress-track">
+      <view class="skeleton__block skeleton__block--progress-fill"></view>
+    </view>
+  </view>
+
+  <!-- 采买便签小票：胶带 + 穿孔线 + 便签头 + 来源菜条 + 三档分组 + 底部撕齿 -->
+  <view class="skeleton__receipt">
+    <view class="skeleton__tape"></view>
+    <view class="skeleton__perf"></view>
+
+    <view class="skeleton__head">
+      <view class="skeleton__block skeleton__block--title"></view>
+      <view class="skeleton__block skeleton__block--sub"></view>
+    </view>
+
+    <!-- 来源菜条（默认收起，只一行「共 N 道菜」+ 箭头） -->
+    <view class="skeleton__source">
+      <view class="skeleton__block skeleton__block--source-icon"></view>
+      <view class="skeleton__block skeleton__block--source-label"></view>
+      <view class="skeleton__block skeleton__block--source-arrow"></view>
+    </view>
+
+    <view class="skeleton__group" wx:for="{{ [1,2,3] }}" wx:key="*this" wx:for-index="gi">
+      <!-- 组头：左分类名，右「已买 x/y」+ 折叠箭头 -->
+      <view class="skeleton__group-head">
+        <view class="skeleton__block skeleton__block--group-title"></view>
+        <view class="skeleton__group-status">
+          <view class="skeleton__block skeleton__block--group-ratio"></view>
+          <view class="skeleton__block skeleton__block--group-arrow"></view>
+        </view>
+      </view>
+
+      <!-- 条目行：32rpx 打孔圈 + 名称/用量同行，部分行带来源小字，行底 dotted 分隔
+           只给首组「需要买」画行：可不买/调料默认折叠，画假条目会在加载完发生一次收缩跳变 -->
+      <view class="skeleton__row" wx:for="{{ gi === 0 ? [1,2,3,4] : [] }}" wx:key="*this" wx:for-index="ri">
+        <view class="skeleton__punch"></view>
+        <view class="skeleton__info">
+          <view class="skeleton__main">
+            <view
+              class="skeleton__block skeleton__block--name"
+              style="width: {{ ri === 0 ? '40%' : (ri === 1 ? '62%' : (ri === 2 ? '34%' : '52%')) }}"
+            ></view>
+            <view class="skeleton__block skeleton__block--amount"></view>
+          </view>
+          <view wx:if="{{ ri === 0 || ri === 2 }}" class="skeleton__block skeleton__block--meta"></view>
+        </view>
+      </view>
+    </view>
+
+    <view class="skeleton__tear"></view>
+  </view>
+</view>

@@ -1,0 +1,69 @@
+/* 顶部 Logo */
+.about__top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60rpx 0 48rpx;
+}
+.about__logo-box {
+  width: 160rpx;
+  height: 160rpx;
+  background: var(--bg-card);
+  border: 4rpx dashed var(--color-primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow: 4rpx 8rpx 20rpx rgba(0,0,0,0.06);
+}
+.about__logo-img {
+  width: 100%;
+  height: 100%;
+}
+.about__name {
+  font-size: 40rpx;
+  font-weight: bold;
+  color: var(--font-color);
+  margin-top: 24rpx;
+  display: block;
+}
+.about__version {
+  font-size: 24rpx;
+  color: var(--font-color-sub);
+  margin-top: 8rpx;
+  display: block;
+}
+.about__slogan {
+  font-size: 24rpx;
+  color: var(--font-color-weak);
+  margin-top: 12rpx;
+  display: block;
+}
+
+/* 列表 */
+.about__list {
+  margin: 0 32rpx;
+  padding: 8rpx 32rpx;
+}
+.about__item {
+  padding: 32rpx 0;
+  border-bottom: var(--border-dashed);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 28rpx;
+  color: var(--font-color);
+}
+.about__item--last {
+  border-bottom: none;
+}
+.about__arrow {
+  font-size: 32rpx;
+  color: var(--font-color-weak);
+}
+
+/* Banner 广告：左右间距由页面侧 p_h-32 包裹承担，原生 ad 只加上下 margin */
+.page__ad {
+  margin: 32rpx 0 24rpx;
+}

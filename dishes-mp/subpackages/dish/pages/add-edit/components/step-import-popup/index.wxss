@@ -1,0 +1,47 @@
+.step-import__form {
+  padding: 0 48rpx;
+}
+.step-import__textarea {
+  width: 100%;
+  height: 360rpx;
+  font-size: 28rpx;
+  color: var(--font-color);
+  line-height: 1.6;
+  padding: 20rpx;
+  background: #FAF6F1;
+  border-radius: 12rpx;
+  border: 1rpx solid #EDE4D8;
+  box-sizing: border-box;
+}
+.step-import__count {
+  font-size: 22rpx;
+  color: var(--font-color-weak);
+  padding-top: 12rpx;
+}
+.step-import__actions {
+  display: flex;
+  gap: 24rpx;
+  padding: 32rpx 48rpx 0;
+}
+.step-import__cancel {
+  flex: 1;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--border-radius);
+  font-size: 28rpx;
+  background: var(--bg-section);
+  color: var(--font-color-sub);
+}
+.step-import__confirm {
+  flex: 1;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  background: var(--color-primary);
+  color: #FFF;
+}

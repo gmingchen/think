@@ -1,0 +1,78 @@
+/* 加载中 */
+.review__loading {
+  display: flex;
+  justify-content: center;
+  padding: 40rpx 0;
+}
+.review__loading-text {
+  font-size: 26rpx;
+  color: var(--font-color-sub);
+}
+
+/* 可滚动内容区 */
+.review__scroll {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+/* 菜谱评价项 */
+.review__dish {
+  padding: 20rpx 40rpx;
+  border-bottom: 1rpx dashed #E8DDD0;
+}
+.review__dish:last-of-type {
+  border-bottom: none;
+}
+
+/* 菜谱头部：图片 + 名称 */
+.review__dish-header {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 12rpx;
+}
+.review__dish-cover {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 8rpx;
+  flex-shrink: 0;
+}
+.review__dish-name {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: var(--font-color);
+  flex: 1;
+}
+.review__dish-qty {
+  font-size: 24rpx;
+  color: var(--font-color-sub);
+  flex-shrink: 0;
+}
+
+/* 评语输入 */
+.review__input {
+  width: 100%;
+  height: 100rpx;
+  padding: 12rpx;
+  border: 1rpx solid #D8CCBE;
+  border-radius: 12rpx;
+  font-size: 24rpx;
+  background: #FFF;
+  box-sizing: border-box;
+}
+
+/* 空状态 */
+.review__empty {
+  text-align: center;
+  padding: 40rpx 40rpx;
+  font-size: 26rpx;
+  color: var(--font-color-sub);
+}
+
+/* 提交按钮 */
+.review__btn {
+  margin: 24rpx 40rpx 0;
+  padding: 20rpx 0;
+  font-size: 28rpx;
+  font-weight: bold;
+}
