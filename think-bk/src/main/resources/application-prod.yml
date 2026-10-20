@@ -1,0 +1,54 @@
+project:
+  group: think
+  name: think
+
+service:
+  port: 8820
+  context-path: /think
+# 主数据源
+database:
+  ip: 47.103.87.88
+  port: 3306
+  name: think
+  username: root
+  password: Gmc950830.
+  installation-path:  # 数据库安装路径
+  backup-path:  # 数据库备份文件存放路径
+  statViewServlet: # 监控
+    url-pattern: /druid/*
+    username:
+    password:
+# redis
+redis:
+  database: 2
+  host: 47.103.87.88
+  port: 6379
+  password: Gmc950830.
+# 对象存储
+qiniu:
+  accessKey: Xf4rsuKMm4F-wSBzBJVi4VW0vLBR46LPLFx83voK
+  secretKey: 7IWWQuTIwcecu4N3OiKXKcevnHGhdahxCjqvJXqX
+  domain: https://os.think.mx-studio.cn
+# AI 荐菜：部署 llm-proxy 云函数后回填（HTTP 访问地址 + 与云函数一致的共享密钥）
+ai-llm:
+  url: https://ccj-d8govrx3z867b6b72-1497228990.ap-shanghai.app.tcloudbase.com/llm-proxy
+  proxyKey: ecfeb810d12512a47d73acc72f181f3223056d1f80a62b17    # 与云函数环境变量 PROXY_KEY 相同
+# AI 封面生图：部署 image-proxy 云函数后回填（PROXY_KEY 与 llm-proxy 共用同值）
+ai-image:
+  url: https://ccj-d8govrx3z867b6b72-1497228990.ap-shanghai.app.tcloudbase.com/image-proxy
+  proxyKey: ecfeb810d12512a47d73acc72f181f3223056d1f80a62b17    # 与云函数环境变量 PROXY_KEY 相同
+# AI 每日次数上限不在这里覆盖：统一取 application.yml 的 base（荐菜 3 / 识别 5 / 生图 2）
+# 这里曾有一行与 base 同值的 daily-limit: 10 冗余覆盖，降到 3 时若忘改它，线上会悄悄停在 10
+# 微信虚拟支付通道（v12）：只放「怎么收钱」的事实——凭证、消息推送。2026-10-11 从 member.* 拆出，
+# 与卖什么无关，将来任何虚拟商品都共用这一份。
+# notify-token 必须与 MP 后台「开发设置 → 消息推送」的 Token 逐字一致，
+# 否则后台保存时的 GET 校验回不了 echostr，报「Token校验失败」。
+# env 不再在此配置：现网/沙箱由 profile 现算（XpayEnv），prod 恒为现网 env=0。
+# ⚠ app-key 为必填：发放口径已定为「查单复核后再发放」（docs/v12 §7.4），
+# 缺它 prepay 直接拒单、发货通知也确证不了付款（只会回 ErrCode:-1 请微信重推，权益永不落库）。
+# 值只从 MP 后台「虚拟支付 → 基本配置」取**现网**那一个（沙箱 Key 与现网不通用，填错签名全是 -15006）。
+xpay:
+  offer-id: 1450673023
+  app-key: IjExggZZyevZxzcEJQ9XOXjHmRuGWQrB    # 现网 AppKey（2026-10-11 开发者提供，与 prod profile（现网）同环境；沙箱那一个只进 dev/test）
+  notify-token: ccjXpayNotify2026aB7dE9fG1hJ3kL
+  msg-data-format: json

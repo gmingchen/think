@@ -1,0 +1,34 @@
+package com.think.core.validator.config;
+
+import org.hibernate.validator.HibernateValidator;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
+
+/**
+ * hibernate-validator 配置
+ * @author 好市民
+ */
+@Configuration
+public class ValidatorConfig {
+
+    @Bean
+    public Validator validator() {
+        return getValidator();
+    }
+
+    /**
+     * failFast - true: 快速校验模式 false: 普通校验模式
+     * @return
+     */
+    public static Validator getValidator() {
+        ValidatorFactory validatorFactory = Validation.byProvider(HibernateValidator.class)
+                .configure()
+                .failFast(false)
+                .buildValidatorFactory();
+        return validatorFactory.getValidator();
+    }
+}
