@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>众三思 - 决策报告与复盘高保真验证 (report & recap)</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background-color: #1A1C20;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 16px;
+      color: #22262E;
+    }
+
+    .doc-header {
+      text-align: center;
+      color: #F5F6F8;
+      margin-bottom: 24px;
+    }
+    .doc-header h1 {
+      font-family: "Songti SC", "Noto Serif CJK SC", "Source Han Serif SC", STSong, serif;
+      font-size: 22px;
+      letter-spacing: 2px;
+      margin-bottom: 6px;
+    }
+    .doc-header p {
+      font-size: 13px;
+      color: #9AA0AA;
+    }
+
+    .screens-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 36px;
+      justify-content: center;
+    }
+
+    /* 微信小程序标准设备容器：对标 750rpx 逻辑视口 (375px * 812px) */
+    .phone-mockup {
+      width: 375px;
+      height: 812px;
+      background-color: #F5F6F8;
+      border-radius: 40px;
+      overflow: hidden;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45), 0 0 0 10px #2E323B;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 顶部状态栏与微信胶囊条 */
+    .status-bar {
+      height: 44px;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 24px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #22262E;
+      background: #FFFFFF;
+    }
+    .nav-bar {
+      height: 44px;
+      background: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      border-bottom: 0.5px solid #E6E9F0;
+    }
+    .nav-back {
+      font-size: 18px;
+      color: #22262E;
+      cursor: pointer;
+    }
+    .nav-title {
+      font-family: "Songti SC", "Noto Serif CJK SC", serif;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+    .wechat-capsule {
+      width: 80px;
+      height: 30px;
+      background: rgba(0,0,0,0.04);
+      border-radius: 999px;
+      border: 0.5px solid rgba(0,0,0,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 0 6px;
+    }
+
+    /* 视口滚动槽 */
+    .screen-scroll-view {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px 14px 90px 14px;
+    }
+    .screen-scroll-view::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* 衬线宋体 */
+    .font-serif {
+      font-family: "Songti SC", "Noto Serif CJK SC", "Source Han Serif SC", STSong, serif;
+    }
+
+    /* 白底卡片 */
+    .ui-card {
+      background: #FFFFFF;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 16px rgba(34, 38, 46, 0.04);
+    }
+
+    /* 微国风状态印章戳 */
+    .seal-stamp-border {
+      border: 1px solid #B23C2E;
+      color: #B23C2E;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 3px;
+      display: inline-flex;
+      align-items: center;
+      line-height: 1.2;
+      letter-spacing: 0.5px;
+    }
+
+    /* 悬浮主按钮 (主蓝 + 印章红落款点) */
+    .floating-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 84px;
+      background: #FFFFFF;
+      border-top: 0.5px solid #E6E9F0;
+      display: flex;
+      align-items: center;
+      padding: 0 16px 14px 16px;
+      z-index: 30;
+    }
+    .main-capsule-btn {
+      width: 100%;
+      height: 46px;
+      background: #4E75C9;
+      color: #FFFFFF;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 500;
+      gap: 6px;
+      box-shadow: 0 6px 18px rgba(78, 117, 201, 0.3);
+      cursor: pointer;
+    }
+    .seal-dot {
+      width: 5px;
+      height: 5px;
+      background-color: #B23C2E;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    /* ---------------- 页面 1：决策报告细节 ---------------- */
+    .report-meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+    .report-title {
+      font-size: 17px;
+      font-weight: 600;
+      color: #22262E;
+      line-height: 1.4;
+      margin-bottom: 6px;
+    }
+    .report-sub {
+      font-size: 11px;
+      color: #9AA0AA;
+    }
+
+    /* 选项票数对比条 */
+    .vote-item {
+      margin-bottom: 14px;
+    }
+    .vote-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      margin-bottom: 6px;
+    }
+    .vote-option-name {
+      font-weight: 600;
+      color: #22262E;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .vote-stat {
+      color: #9AA0AA;
+      font-size: 11px;
+    }
+    .vote-track {
+      height: 8px;
+      background: #E8EDF7;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .vote-fill-blue {
+      height: 100%;
+      background: #3B5BA5;
+      border-radius: 999px;
+    }
+    .vote-fill-seal {
+      height: 100%;
+      background: #B23C2E;
+      border-radius: 999px;
+    }
+
+    /* 三思切片分类卡 */
+    .perspective-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .perspective-card {
+      background: #F7F9FD;
+      border-radius: 10px;
+      padding: 10px 12px;
+      border-left: 3px solid #3B5BA5;
+    }
+    .perspective-card.danger {
+      border-left-color: #B23C2E;
+    }
+    .perspective-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+    .perspective-badge {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #E8EDF7;
+      color: #3B5BA5;
+    }
+    .perspective-badge.danger {
+      background: #FFF2F0;
+      color: #B23C2E;
+    }
+    .perspective-text {
+      font-size: 12px;
+      color: #22262E;
+      line-height: 1.45;
+    }
+
+    /* 零评议 AI 兜底卡片 */
+    .ai-fallback-box {
+      border: 1px dashed #CAD4E8;
+      background: #FAFBFE;
+      border-radius: 12px;
+      padding: 12px;
+      margin-top: 10px;
+    }
+    .ai-badge {
+      background: #E8EDF7;
+      color: #3B5BA5;
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      display: inline-block;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    /* 免责声明 */
+    .disclaimer-bar {
+      text-align: center;
+      font-size: 11px;
+      color: #9AA0AA;
+      padding: 10px 0;
+      letter-spacing: 0.5px;
+    }
+
+    /* ---------------- 页面 2：决策复盘细节 ---------------- */
+    .recap-container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    .recap-section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      padding-bottom: 4px;
+      border-bottom: 1px dashed #E6E9F0;
+    }
+    .section-title-tag {
+      font-size: 11px;
+      color: #3B5BA5;
+      letter-spacing: 2px;
+      font-weight: 600;
+    }
+
+    /* 上半场：当初评议 */
+    .past-opinions-wrap {
+      max-height: 220px;
+      overflow-y: auto;
+      background: #F9FAFC;
+      border-radius: 12px;
+      padding: 10px;
+      border: 0.5px solid #E6E9F0;
+    }
+    .past-opinion-item {
+      font-size: 11px;
+      color: #22262E;
+      line-height: 1.4;
+      margin-bottom: 8px;
+      padding-bottom: 8px;
+      border-bottom: 0.5px solid #EAECEF;
+    }
+    .past-opinion-item:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    /* 下半场：最终抉择与实际结局 */
+    .choice-pills-row {
+      display: flex;
+      gap: 6px;
+      margin: 10px 0 14px 0;
+    }
+    .choice-pill {
+      flex: 1;
+      height: 38px;
+      border-radius: 999px;
+      border: 1px solid #E6E9F0;
+      background: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: #22262E;
+      cursor: pointer;
+    }
+    .choice-pill.selected {
+      border-color: #4E75C9;
+      background: #E8EDF7;
+      color: #3B5BA5;
+      font-weight: 600;
+    }
+
+    .textarea-recap {
+      width: 100%;
+      height: 110px;
+      background: #F5F6F8;
+      border-radius: 12px;
+      border: 1px solid #E6E9F0;
+      padding: 10px 12px;
+      font-size: 12px;
+      color: #22262E;
+      line-height: 1.5;
+      outline: none;
+      resize: none;
+    }
+    .textarea-recap::placeholder {
+      color: #9AA0AA;
+    }
+
+    /* 复盘归档终态印章效果 */
+    .archived-badge {
+      position: absolute;
+      top: 56px;
+      right: 20px;
+      width: 62px;
+      height: 62px;
+      border: 2px solid #B23C2E;
+      border-radius: 50%;
+      color: #B23C2E;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      transform: rotate(-15deg);
+      opacity: 0.85;
+      pointer-events: none;
+      letter-spacing: 1px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="doc-header">
+    <h1>众三思 · 决策报告与复盘验证原型</h1>
+    <p>subpackages/decision/report & recap · 现代极简 + 微国风（B+方案）</p>
+  </div>
+
+  <div class="screens-container">
+
+    <!-- ======================= 屏幕 1：决策报告 (subpackages/decision/report) ======================= -->
+    <div class="phone-mockup">
+      <!-- 状态栏 -->
+      <div class="status-bar">
+        <span>09:41</span>
+        <span>5G · 100%</span>
+      </div>
+      <!-- 导航栏 -->
+      <div class="nav-bar">
+        <div class="nav-back">‹</div>
+        <div class="nav-title">决策终览报告</div>
+        <div class="wechat-capsule">
+          <span style="font-size:12px;">•••</span>
+          <span style="font-size:12px;">◎</span>
+        </div>
+      </div>
+
+      <!-- 可滚动内容区 -->
+      <div class="screen-scroll-view">
+        <!-- 报告首卡 -->
+        <div class="ui-card">
+          <div class="report-meta-row">
+            <span class="report-sub">决策单 #D20261019 · 发起人独占</span>
+            <!-- 提前结束标记 -->
+            <span class="seal-stamp-border font-serif">未满冷静期</span>
+          </div>
+          <h2 class="report-title font-serif">30岁体制内裸辞，是否全职AI出海创业？</h2>
+          <div class="report-sub">评议周期：18小时提前终止 · 收到 30 位智囊推演视角</div>
+        </div>
+
+        <!-- 选项人数汇总条形图 (无点赞、无精选、品牌深蓝+最高票印章红) -->
+        <div class="ui-card">
+          <div style="font-size:13px; font-weight:600; color:#22262E; margin-bottom:12px;">各选项倾向汇总</div>
+
+          <!-- 选项 A -->
+          <div class="vote-item">
+            <div class="vote-header">
+              <span class="vote-option-name">方案 A：坚守事业单位编制</span>
+              <span class="vote-stat">8 人 · 27%</span>
+            </div>
+            <div class="vote-track">
+              <div class="vote-fill-blue" style="width: 27%;"></div>
+            </div>
+          </div>
+
+          <!-- 选项 B (最高票印章红高亮) -->
+          <div class="vote-item" style="margin-bottom:0;">
+            <div class="vote-header">
+              <span class="vote-option-name" style="color:#B23C2E;">
+                方案 B：全职出海开拓
+                <span class="seal-stamp-border" style="font-size:9px; padding:1px 4px;">最高建议</span>
+              </span>
+              <span class="vote-stat" style="color:#B23C2E; font-weight:600;">22 人 · 73%</span>
+            </div>
+            <div class="vote-track">
+              <div class="vote-fill-seal" style="width: 73%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 结构化三思切片汇总 -->
+        <div class="ui-card">
+          <div style="font-size:13px; font-weight:600; color:#22262E;">众人三思视角切片</div>
+          <div class="perspective-grid">
+            <div class="perspective-card danger">
+              <div class="perspective-head">
+                <span class="perspective-badge danger">思危视角 (共 14 条)</span>
+                <span style="font-size:10px; color:#9AA0AA;">集中于政策与生存底线</span>
+              </div>
+              <div class="perspective-text">
+                重点警示：出海合规门槛极高，海外支付渠道随时可能面临封禁；一旦辞职五险一金断缴，三线城市无容错空间。
+              </div>
+            </div>
+
+            <div class="perspective-card">
+              <div class="perspective-head">
+                <span class="perspective-badge">思退视角 (共 11 条)</span>
+                <span style="font-size:10px; color:#9AA0AA;">止损硬指标</span>
+              </div>
+              <div class="perspective-text">
+                核心建议：务必手握 24 个月纯生活备用金；若 6 个月内 MRR 无法打平成本，需立刻止损，不可恋战。
+              </div>
+            </div>
+
+            <div class="perspective-card">
+              <div class="perspective-head">
+                <span class="perspective-badge">思变视角 (共 5 条)</span>
+                <span style="font-size:10px; color:#9AA0AA;">折中解法</span>
+              </div>
+              <div class="perspective-text">
+                启发提议：无须全职对立，建议以顾问身份技术入股，先让海外合伙人探路，跑通正向现金流后再办停薪留职。
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 零评议时的备用 AI 参考卡展示 (演示态嵌入) -->
+        <div class="ui-card">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div style="font-size:13px; font-weight:600; color:#22262E;">冷启动辅助分析</div>
+            <span class="ai-badge">AI 内容仅供参考</span>
+          </div>
+          <div class="ai-fallback-box">
+            <div style="font-size:11px; color:#22262E; line-height:1.5;">
+              <strong>算法推演：</strong>若本单处于无人响应冷启动期，AI 将基于「思危/思退/思变」模型自动扫描各选项权衡，提供冷峻的刺耳建议。
+            </div>
+          </div>
+        </div>
+
+        <!-- 固定免责声明 -->
+        <div class="disclaimer-bar">
+          ⓘ 仅供参考，不代表最终建议，决定权在你
+        </div>
+      </div>
+
+      <!-- 底部固定复盘入口 -->
+      <div class="floating-bar">
+        <div class="main-capsule-btn">
+          <span>去回填结局 · 开启复盘</span>
+          <span class="seal-dot"></span>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ======================= 屏幕 2：决策复盘 (subpackages/decision/recap) ======================= -->
+    <div class="phone-mockup">
+      <!-- 状态栏 -->
+      <div class="status-bar">
+        <span>09:41</span>
+        <span>5G · 100%</span>
+      </div>
+      <!-- 导航栏 -->
+      <div class="nav-bar">
+        <div class="nav-back">‹</div>
+        <div class="nav-title font-serif">决策终身复盘</div>
+        <div class="wechat-capsule">
+          <span style="font-size:12px;">•••</span>
+          <span style="font-size:12px;">◎</span>
+        </div>
+      </div>
+
+      <!-- 可滚动内容区：并列对照式结构 -->
+      <div class="screen-scroll-view" style="padding-bottom: 96px;">
+
+        <!-- 上半场：当初评议 (历史数据镜像·实时读取) -->
+        <div class="ui-card" style="background:#FFFFFF; border: 1px solid #E6E9F0;">
+          <div class="recap-section-head">
+            <span class="section-title-tag font-serif">当初评议 · 历史镜像</span>
+            <span style="font-size:11px; color:#9AA0AA;">30条观点已归档</span>
+          </div>
+          <div style="font-size:11px; color:#9AA0AA; margin-bottom:8px;">
+            当时智囊主倾向：73% 倾向方案B (出海) · 27% 倾向方案A (坚守)
+          </div>
+          <div class="past-opinions-wrap">
+            <div class="past-opinion-item">
+              <strong style="color:#B23C2E;">[思危 · 方案B]</strong> @林总监：欧美合规风险极大，务必提防海外收款通道冻结风险。
+            </div>
+            <div class="past-opinion-item">
+              <strong style="color:#3B5BA5;">[思退 · 方案B]</strong> @老张：手头没有 24 个月现金流绝对不要裸辞，体制内回头无路。
+            </div>
+            <div class="past-opinion-item">
+              <strong style="color:#22262E;">[思变 · 方案A]</strong> @小陈：建议以副业顾问形式先验证，不要过早非黑即白。
+            </div>
+          </div>
+        </div>
+
+        <!-- 对照中轴装饰线 -->
+        <div style="display:flex; align-items:center; justify-content:center; gap:8px; margin: 4px 0 10px 0;">
+          <div style="height:0.5px; width:40px; background:#CAD4E8;"></div>
+          <span style="font-size:10px; color:#9AA0AA; letter-spacing:1px;">现实终局对照</span>
+          <div style="height:0.5px; width:40px; background:#CAD4E8;"></div>
+        </div>
+
+        <!-- 下半场：最终抉择与实际结局 -->
+        <div class="ui-card">
+          <div class="recap-section-head">
+            <span class="section-title-tag font-serif" style="color:#22262E;">现实结局 · 亲历沉淀</span>
+            <span style="font-size:11px; color:#B23C2E;">事后回填</span>
+          </div>
+
+          <!-- 1. 最终选择单选 -->
+          <div style="font-size:12px; font-weight:600; color:#22262E; margin-top:6px;">
+            您最终做出的实际选择是？
+          </div>
+          <div class="choice-pills-row">
+            <div class="choice-pill">方案 A (编制)</div>
+            <div class="choice-pill selected">方案 B (全职)</div>
+            <div class="choice-pill">其他 / 暂缓</div>
+          </div>
+
+          <!-- 2. 实际结局多行输入 -->
+          <div style="font-size:12px; font-weight:600; color:#22262E; margin-bottom:6px;">
+            实际执行结局与当初预测的偏差：
+          </div>
+          <textarea class="textarea-recap" placeholder="请详述结局：当初众人的推演是否应验？最坏的暗礁发生了吗？如今是否有新的感悟...">事实证明群友提到的合规暗礁确实发生了！在全职出海第3个月Stripe账户被风控，幸好当初听从了思退建议，留足了24个月生活费。目前已在新加坡设立主体重新跑通，虽艰难但没有后悔当初的抉择。</textarea>
+
+          <div style="font-size:11px; color:#9AA0AA; margin-top:8px; line-height:1.4;">
+            💡 提交后决策单将转入「已复盘」终态，成为您人生决策资产库中的一份对照档案。
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 底部固定提交栏 -->
+      <div class="floating-bar">
+        <div class="main-capsule-btn">
+          <span>完成复盘 · 封存档案</span>
+          <span class="seal-dot"></span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

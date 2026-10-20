@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- 纯图形：品牌深蓝 + 印章红 (缩放 1.5，保证 border-radius 50% 时下横不超圆形边缘) -->
+  <g transform="translate(512, 512) scale(1.5)">
+    <!-- 上横 -->
+    <rect x="-230" y="-174" width="460" height="48" rx="24" fill="#3B5BA5" />
+    
+    <!-- 中横短线 + 决策红心 -->
+    <rect x="-170" y="-24" width="112" height="48" rx="24" fill="#3B5BA5" />
+    <circle cx="0" cy="0" r="38" fill="#B23C2E" />
+    <rect x="58" y="-24" width="112" height="48" rx="24" fill="#3B5BA5" />
+
+    <!-- 下横 -->
+    <rect x="-275" y="126" width="550" height="48" rx="24" fill="#3B5BA5" />
+  </g>
+</svg>

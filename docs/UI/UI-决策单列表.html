@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>众三思 - 通用决策单列表高保真规范 (decision/list)</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background-color: #14161A;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 16px;
+      color: #22262E;
+    }
+
+    .doc-intro {
+      text-align: center;
+      color: #F5F6F8;
+      margin-bottom: 28px;
+    }
+    .doc-intro h1 {
+      font-family: "Songti SC", "Noto Serif CJK SC", "Source Han Serif SC", STSong, serif;
+      font-size: 22px;
+      letter-spacing: 2px;
+      margin-bottom: 6px;
+    }
+    .doc-intro p {
+      font-size: 13px;
+      color: #9AA0AA;
+    }
+
+    .viewport-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 32px;
+      justify-content: center;
+    }
+
+    /* 微信小程序标准设备容器 (对标 750rpx 逻辑视口 375px × 812px) */
+    .phone-mockup {
+      width: 375px;
+      height: 812px;
+      background-color: #F5F6F8;
+      border-radius: 40px;
+      overflow: hidden;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45), 0 0 0 10px #2A2D35;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 顶部状态栏与微信胶囊条 */
+    .status-bar {
+      height: 44px;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 24px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #22262E;
+      background: #FFFFFF;
+    }
+    .nav-bar {
+      height: 44px;
+      background: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      border-bottom: 0.5px solid #E6E9F0;
+    }
+    .nav-back {
+      font-size: 18px;
+      color: #22262E;
+      cursor: pointer;
+    }
+    .nav-title {
+      font-family: "Songti SC", "Noto Serif CJK SC", serif;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 180px;
+    }
+    .wechat-capsule {
+      width: 80px;
+      height: 30px;
+      background: rgba(0,0,0,0.04);
+      border-radius: 999px;
+      border: 0.5px solid rgba(0,0,0,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 0 6px;
+    }
+
+    /* 滚动主体区 */
+    .screen-scroll-view {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px 14px 40px 14px;
+    }
+    .screen-scroll-view::-webkit-scrollbar {
+      display: none;
+    }
+
+    .font-serif {
+      font-family: "Songti SC", "Noto Serif CJK SC", "Source Han Serif SC", STSong, serif;
+    }
+
+    /* ---------------- Tab 样式系统 ---------------- */
+    /* 单级状态 Tab (scene=group) */
+    .single-tab-bar {
+      display: flex;
+      background: #FFFFFF;
+      border-bottom: 0.5px solid #E6E9F0;
+      height: 44px;
+    }
+    .single-tab-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      color: #9AA0AA;
+      cursor: pointer;
+      position: relative;
+    }
+    .single-tab-item.active {
+      color: #3B5BA5;
+      font-weight: 600;
+    }
+    .tab-active-line {
+      position: absolute;
+      bottom: 0;
+      width: 24px;
+      height: 3px;
+      background: #3B5BA5;
+      border-radius: 3px 3px 0 0;
+    }
+
+    /* 双层 Tab (scene=mine) */
+    .mine-top-tabs {
+      display: flex;
+      background: #FFFFFF;
+      padding: 8px 16px 4px 16px;
+      gap: 24px;
+      border-bottom: 0.5px solid #E6E9F0;
+    }
+    .mine-tab-item {
+      font-size: 15px;
+      color: #9AA0AA;
+      padding-bottom: 6px;
+      cursor: pointer;
+      position: relative;
+    }
+    .mine-tab-item.active {
+      color: #22262E;
+      font-weight: 600;
+    }
+    .mine-tab-item.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: #3B5BA5;
+      border-radius: 2px;
+    }
+
+    /* 二级分段控制器 (Segment Pill) */
+    .segment-bar {
+      display: flex;
+      background: #EAECEF;
+      border-radius: 999px;
+      padding: 3px;
+      margin: 10px 0 6px 0;
+    }
+    .segment-pill {
+      flex: 1;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: #9AA0AA;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+    .segment-pill.active {
+      background: #FFFFFF;
+      color: #22262E;
+      font-weight: 600;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    }
+
+    /* ---------------- decision-card 决策单通用卡片 ---------------- */
+    .decision-card {
+      background: #FFFFFF;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 16px rgba(34, 38, 46, 0.03);
+      cursor: pointer;
+    }
+    .decision-card.draft-mode {
+      border: 1px dashed #CAD4E8;
+    }
+    .card-meta-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .card-author-info {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: #9AA0AA;
+    }
+
+    /* 状态徽章 */
+    .badge-seal {
+      background: #B23C2E;
+      color: #FFFFFF;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 3px;
+    }
+    .badge-closed {
+      background: #3B5BA5;
+      color: #FFFFFF;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 3px;
+    }
+    .badge-draft {
+      background: #E8EDF7;
+      color: #3B5BA5;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 3px;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #22262E;
+      line-height: 1.4;
+      margin-bottom: 6px;
+      letter-spacing: 0.5px;
+    }
+    .card-summary {
+      font-size: 12px;
+      color: #22262E;
+      line-height: 1.5;
+      opacity: 0.85;
+      margin-bottom: 10px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .thumb-grid {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+    .thumb-item {
+      width: 64px;
+      height: 64px;
+      border-radius: 8px;
+      background: #EAECEF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: #9AA0AA;
+    }
+
+    .card-footer-bar {
+      margin-top: 6px;
+    }
+    .footer-progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      color: #9AA0AA;
+      margin-bottom: 4px;
+    }
+    .progress-track {
+      height: 4px;
+      background: #E8EDF7;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: #4E75C9;
+      border-radius: 999px;
+    }
+
+    /* ---------------- 空态与触底规范 ---------------- */
+    .empty-state-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 20px;
+      text-align: center;
+    }
+    .empty-scroll-icon {
+      width: 56px;
+      height: 56px;
+      border: 1.5px solid #CAD4E8;
+      border-radius: 12px;
+      color: #CAD4E8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin-bottom: 16px;
+      background: #FFFFFF;
+    }
+    .empty-lead-text {
+      font-size: 16px;
+      font-weight: 600;
+      color: #22262E;
+      margin-bottom: 6px;
+    }
+    .empty-sub-desc {
+      font-size: 12px;
+      color: #9AA0AA;
+      line-height: 1.5;
+      margin-bottom: 24px;
+      max-width: 220px;
+    }
+
+    /* 主按钮 */
+    .main-capsule-btn {
+      height: 42px;
+      padding: 0 24px;
+      background: #4E75C9;
+      color: #FFFFFF;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 500;
+      gap: 6px;
+      box-shadow: 0 6px 18px rgba(78, 117, 201, 0.3);
+      cursor: pointer;
+    }
+    .seal-dot {
+      width: 5px;
+      height: 5px;
+      background-color: #B23C2E;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .list-footer-nomore {
+      text-align: center;
+      font-size: 11px;
+      color: #9AA0AA;
+      padding: 16px 0;
+      letter-spacing: 1px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="doc-intro">
+    <h1>众三思 · 通用决策单列表视觉规范</h1>
+    <p>subpackages/decision/list · scene=group 智囊卷宗 ＆ scene=mine 个人资产</p>
+  </div>
+
+  <div class="viewport-group">
+
+    <!-- ================= 屏幕 1：scene=group (群内决策单卷宗) ================= -->
+    <div class="phone-mockup">
+      <div class="status-bar">
+        <span>09:41</span>
+        <span>5G · 100%</span>
+      </div>
+      <div class="nav-bar">
+        <div class="nav-back">‹</div>
+        <div class="nav-title font-serif">AI出海智囊团 · 决策单</div>
+        <div class="wechat-capsule">
+          <span style="font-size:12px;">•••</span>
+          <span style="font-size:12px;">◎</span>
+        </div>
+      </div>
+
+      <!-- 单级状态筛选 Tab -->
+      <div class="single-tab-bar">
+        <div class="single-tab-item active">
+          <span>评议中 (2)</span>
+          <div class="tab-active-line"></div>
+        </div>
+        <div class="single-tab-item">
+          <span>已截止</span>
+        </div>
+        <div class="single-tab-item">
+          <span>已关闭</span>
+        </div>
+        <div class="single-tab-item">
+          <span>已复盘</span>
+        </div>
+      </div>
+
+      <!-- 滚动卡片流 -->
+      <div class="screen-scroll-view">
+        <!-- 卡片 1 (评议中) -->
+        <div class="decision-card">
+          <div class="card-meta-header">
+            <div style="display:flex; align-items:center; gap:6px;">
+              <span class="badge-seal">评议中</span>
+              <span style="font-size: 11px; color:#9AA0AA;">倒计时 14:22:05</span>
+            </div>
+            <div class="card-author-info">沉然 发起</div>
+          </div>
+          <h3 class="card-title font-serif">30岁体制内裸辞，是否全职AI出海创业？</h3>
+          <p class="card-summary">事业单位工作6年，虽安稳但晋升停滞。与海外校友研发的生产力工具已初见微利，顾虑五险一金与海外合规...</p>
+          <div class="thumb-grid">
+            <div class="thumb-item">财务测算.jpg</div>
+            <div class="thumb-item">合规备忘.jpg</div>
+          </div>
+          <div class="card-footer-bar">
+            <div class="footer-progress-label">
+              <span>评议进度</span>
+              <span>12 / 16 人已评</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" style="width: 75%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 卡片 2 (评议中) -->
+        <div class="decision-card">
+          <div class="card-meta-header">
+            <div style="display:flex; align-items:center; gap:6px;">
+              <span class="badge-seal">评议中</span>
+              <span style="font-size: 11px; color:#9AA0AA;">倒计时 03:15:00</span>
+            </div>
+            <div class="card-author-info">林总监 发起</div>
+          </div>
+          <h3 class="card-title font-serif">是否接纳出让25%股权换取早期产业孵化资金？</h3>
+          <p class="card-summary">资方要求一票否决权，但能带来第一批种子B端订单。当前团队自有资金仅可支撑4个月...</p>
+          <div class="card-footer-bar">
+            <div class="footer-progress-label">
+              <span>评议进度</span>
+              <span>15 / 16 人已评</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" style="width: 93%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 触底落款 -->
+        <div class="list-footer-nomore">
+          —— 仅此两卷，三思笃行 ——
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ================= 屏幕 2：scene=mine (我发起的 · 进行中状态流) ================= -->
+    <div class="phone-mockup">
+      <div class="status-bar">
+        <span>09:41</span>
+        <span>5G · 100%</span>
+      </div>
+      <div class="nav-bar">
+        <div class="nav-back">‹</div>
+        <div class="nav-title font-serif">我的决策单</div>
+        <div class="wechat-capsule">
+          <span style="font-size:12px;">•••</span>
+          <span style="font-size:12px;">◎</span>
+        </div>
+      </div>
+
+      <!-- 一级宋体 Tab -->
+      <div class="mine-top-tabs font-serif">
+        <div class="mine-tab-item active">我发起的 (6)</div>
+        <div class="mine-tab-item">我评议过的 (24)</div>
+      </div>
+
+      <div class="screen-scroll-view">
+        <!-- 二级分段控制器 -->
+        <div class="segment-bar">
+          <div class="segment-pill active">进行中 (2)</div>
+          <div class="segment-pill">已结束归档 (4)</div>
+        </div>
+
+        <!-- 卡片 A：草稿待继续编辑/重提态 -->
+        <div class="decision-card draft-mode">
+          <div class="card-meta-header">
+            <div style="display:flex; align-items:center; gap:6px;">
+              <span class="badge-draft">草稿 / 待重提</span>
+              <span style="font-size: 11px; color:#3B5BA5;">仅自己可见</span>
+            </div>
+            <span style="font-size:11px; color:#9AA0AA;">昨日 18:40 存</span>
+          </div>
+          <h3 class="card-title font-serif">是否出让核心算法专利以换取地方母基金配套？</h3>
+          <p class="card-summary">谈判进入最终轮，但国资背景基金要求排他性排产保障。担心丧失后续海外拓展自由度...</p>
+          <div style="font-size: 11px; color: #4E75C9; display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
+            <span>✎ 尚未提交群评议，点击继续完善</span>
+            <span>➔</span>
+          </div>
+        </div>
+
+        <!-- 卡片 B：正在评议中监控态 -->
+        <div class="decision-card">
+          <div class="card-meta-header">
+            <div style="display:flex; align-items:center; gap:6px;">
+              <span class="badge-seal">评议中</span>
+              <span style="font-size: 11px; color:#9AA0AA;">倒计时 14:22:05</span>
+            </div>
+            <span style="font-size:11px; color:#3B5BA5; font-weight:600;">🔒 群内专属</span>
+          </div>
+          <h3 class="card-title font-serif">30岁体制内裸辞，是否全职AI出海创业？</h3>
+          <p class="card-summary">在三线省会事业单位工作6年，虽安稳但晋升完全停滞。海外校友自研工具目前初见微利...</p>
+          <div class="card-footer-bar">
+            <div class="footer-progress-label">
+              <span>收获评议</span>
+              <span>12 / 16 位智囊已回复</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" style="width: 75%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ================= 屏幕 3：空态设计 (Empty State 引导态) ================= -->
+    <div class="phone-mockup">
+      <div class="status-bar">
+        <span>09:41</span>
+        <span>5G · 100%</span>
+      </div>
+      <div class="nav-bar">
+        <div class="nav-back">‹</div>
+        <div class="nav-title font-serif">我的决策单</div>
+        <div class="wechat-capsule">
+          <span style="font-size:12px;">•••</span>
+          <span style="font-size:12px;">◎</span>
+        </div>
+      </div>
+
+      <!-- 一级 Tab (切换至我评议过的空态) -->
+      <div class="mine-top-tabs font-serif">
+        <div class="mine-tab-item">我发起的</div>
+        <div class="mine-tab-item active">我评议过的 (0)</div>
+      </div>
+
+      <div class="screen-scroll-view" style="display:flex; flex-direction:column; justify-content:center;">
+        <div class="empty-state-card">
+          <div class="empty-scroll-icon font-serif">卷</div>
+          <h3 class="empty-lead-text font-serif">暂无评议记录</h3>
+          <p class="empty-sub-desc">
+            旁观者清，众人的清醒刺耳之见尤显珍贵。前往广场或群聊留下您的三思洞见。
+          </p>
+          <div class="main-capsule-btn">
+            <span>前往众议广场</span>
+            <span class="seal-dot"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>
