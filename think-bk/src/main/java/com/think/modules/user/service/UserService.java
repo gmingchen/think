@@ -40,13 +40,5 @@ public interface UserService extends IServiceX<UserEntity> {
      * @param dto 参数
      */
     void update(UserUpdateDTO dto);
-
-    /**
-     * 生成带当前用户 inviterId 参数的小程序码
-     * @param page 扫码落地页路径
-     * @param userId 邀请人用户 ID
-     * @return 小程序码图片 base64 dataURL
-     */
-    String generateQrcode(String page, Long userId);
 }
 

@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.think.common.constant.RedisConstant;
 import com.think.core.mybatisplus.service.ServiceImplX;
 import com.think.core.security.utils.SecurityUtils;
-import com.think.exception.RunException;
 import com.think.modules.os.service.StorageService;
 import com.think.modules.user.convert.UserConvert;
 import com.think.modules.user.entity.UserEntity;
@@ -13,7 +12,6 @@ import com.think.modules.user.model.dto.UserCreateDTO;
 import com.think.modules.user.model.dto.UserDTO;
 import com.think.modules.user.model.dto.UserUpdateDTO;
 import com.think.modules.user.service.UserService;
-import com.think.modules.wechat.service.AppletCodeAndLinkService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,10 +20,8 @@ import org.springframework.stereotype.Service;
 
 import com.think.core.redis.utils.RedisUtils;
 
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Base64;
 import java.util.Optional;
 
 /**
@@ -43,8 +39,6 @@ public class UserServiceImpl extends ServiceImplX<UserMapper, UserEntity> implem
     private RedisUtils redisUtils;
     @Autowired
     private StorageService storageService;
-    @Autowired
-    private AppletCodeAndLinkService appletCodeAndLinkService;
 
     @Override
     public UserDTO info(Long id) {
@@ -67,7 +61,7 @@ public class UserServiceImpl extends ServiceImplX<UserMapper, UserEntity> implem
         UserEntity userEntity = new UserEntity()
                 .setOpenid(dto.getOpenid())
                 .setUnionid(dto.getUnionid())
-                .setNickname("厨师长-" + LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant().getEpochSecond())
+                .setNickname("用户-" + LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant().getEpochSecond())
                 .setInviterId(dto.getInviterId());
         baseMapper.insert(userEntity);
         Long userId = userEntity.getId();
@@ -101,25 +95,5 @@ public class UserServiceImpl extends ServiceImplX<UserMapper, UserEntity> implem
         baseMapper.updateById(entity);
         // 清除用户缓存
         redisUtils.delete(RedisConstant.USER + userId);
-    }
-
-    @Override
-    public String generateQrcode(String page, Long userId) {
-        // scene ≤ 32 字符：仅带邀请人 ID，与全站现有 inviterId 归因机制对齐
-        byte[] bytes = appletCodeAndLinkService.getUnlimitedQrcodeByte("inviterId=" + userId, page);
-        if (isWechatError(bytes)) {
-            String body = bytes == null ? "" : new String(bytes, StandardCharsets.UTF_8);
-            log.warn("小程序码生成失败, userId={}, page={}, resp={}", userId, page, body);
-            throw new RunException("小程序码生成失败");
-        }
-        // 直接以 dataURL 返回，不落库、不传七牛
-        return "data:image/png;base64," + Base64.getEncoder().encodeToString(bytes);
-    }
-
-    /**
-     * 微信 getUnlimited 成功返回 PNG 二进制、失败返回 JSON 错误体，按首字节区分
-     */
-    private boolean isWechatError(byte[] bytes) {
-        return bytes == null || bytes.length < 100 || bytes[0] == '{';
     }
 }

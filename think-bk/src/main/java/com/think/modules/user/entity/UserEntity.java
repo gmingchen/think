@@ -5,8 +5,6 @@ import com.think.common.po.BasePO;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import java.time.LocalDateTime;
-
 /**
  * 用户
  * @author 好市民
@@ -48,14 +46,6 @@ public class UserEntity extends BasePO {
      * 邀请用户数
      */
     private Integer inviteCount;
-    /**
-     * 个人邀请小程序码图片URL（海报归因，一人一码永久）
-     */
-    private String inviteQrcode;
-    /**
-     * 最近登录时间
-     */
-    private LocalDateTime lastLoginAt;
     /**
      * 状态：0-禁用 1-启用
      */

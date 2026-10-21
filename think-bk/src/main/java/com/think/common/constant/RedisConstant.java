@@ -22,6 +22,10 @@ public class RedisConstant {
      */
     public static final String USER = "user:";
     /**
+     * 群组邀请码（短时效，不落库：code -> 目标群ID:邀请人用户ID，见 §3.2）
+     */
+    public static final String GRP_INVITE = "grp:invite:";
+    /**
      * 厨房邀请码
      */
     public static final String KITCHEN_INVITE = "kitchen:invite:";

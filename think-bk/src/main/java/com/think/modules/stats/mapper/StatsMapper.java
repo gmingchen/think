@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 运营数据统计（无后台，替代 docs/stats/运营数据统计.sql 手工查表）
+ * 运营数据统计（用户维度）
  * <p>
  * 全部为只读聚合查询，故不继承 BaseMapperX、不绑实体：结果统一用 Map / List&lt;Map&gt; 承载，
  * 列别名即前端 JSON 字段名（camelCase）。区间类查询带 start / end（yyyy-MM-dd，含首尾两天），
- * 快照类（累计 / 有效会员等）不带区间。所有查询均已过滤软删除（deleted = 0）。
+ * 快照类（累计 / DAU 等）不带区间。所有查询均已过滤软删除（deleted = 0）。
  * </p>
  *
  * @author 好市民
@@ -21,16 +21,16 @@ public interface StatsMapper {
 
     // ── 综合看板 ──────────────────────────────────────────────
 
-    /** 核心指标卡片（快照） */
+    /** 核心指标卡片（快照）：用户总量 / 今日新增 / 今日活跃 */
     Map<String, Object> overviewCards();
 
     /**
-     * 累计走势基准线：截至区间起始日前一天（created_at &lt; start）的各指标全量累计，
+     * 累计走势基准线：截至区间起始日前一天（created_at &lt; start）的用户全量累计，
      * 供 /stats/cumulative 做「基准 + 每日新增前缀和」，避免逐日全表扫描。
      */
     Map<String, Object> cumulativeBaseline(@Param("start") String start);
 
-    // ── 一、用户 ──────────────────────────────────────────────
+    // ── 用户 ──────────────────────────────────────────────
 
     Map<String, Object> userSummary(@Param("start") String start, @Param("end") String end);
 
@@ -56,60 +56,4 @@ public interface StatsMapper {
 
     /** 区间内用户单日登录峰值排行（先按人/天计次，再取每人最高一天的次数，取前 limit） */
     List<Map<String, Object>> loginRankByPeak(@Param("start") String start, @Param("end") String end, @Param("limit") int limit);
-
-    // ── 二、厨房 ──────────────────────────────────────────────
-
-    Map<String, Object> kitchenSummary(@Param("start") String start, @Param("end") String end);
-
-    List<Map<String, Object>> kitchenNewTrend(@Param("start") String start, @Param("end") String end);
-
-    List<Map<String, Object>> kitchenMemberDist();
-
-    List<Map<String, Object>> topKitchens(@Param("limit") int limit);
-
-    // ── 三、菜谱 ──────────────────────────────────────────────
-
-    Map<String, Object> dishSummary(@Param("start") String start, @Param("end") String end);
-
-    List<Map<String, Object>> dishNewTrend(@Param("start") String start, @Param("end") String end);
-
-    List<Map<String, Object>> topDishByCook(@Param("limit") int limit);
-
-    List<Map<String, Object>> topDishByCollect(@Param("limit") int limit);
-
-    Map<String, Object> dishCoverRatio();
-
-    // ── 四、烹饪订单 ──────────────────────────────────────────
-
-    Map<String, Object> orderSummary(@Param("start") String start, @Param("end") String end);
-
-    List<Map<String, Object>> orderTrend(@Param("start") String start, @Param("end") String end);
-
-    List<Map<String, Object>> orderPeriodDist(@Param("start") String start, @Param("end") String end);
-
-    // ── 五、评价 ──────────────────────────────────────────────
-
-    Map<String, Object> reviewSummary(@Param("start") String start, @Param("end") String end);
-
-    List<Map<String, Object>> reviewTrend(@Param("start") String start, @Param("end") String end);
-
-    List<Map<String, Object>> ratingDist(@Param("start") String start, @Param("end") String end);
-
-    // ── 六、会员 ──────────────────────────────────────────────
-
-    Map<String, Object> memberSummary();
-
-    Map<String, Object> memberIncome();
-
-    List<Map<String, Object>> memberTrend(@Param("start") String start, @Param("end") String end);
-
-    List<Map<String, Object>> memberPlanDist();
-
-    Map<String, Object> memberRefund();
-
-    /** 区间会员订单漏斗（建单时间口径）：各状态计数 + 已发放金额 */
-    Map<String, Object> memberOrderSummary(@Param("start") String start, @Param("end") String end);
-
-    /** 区间支付周期偏好：已发放订单按 months 分组 */
-    List<Map<String, Object>> memberMonthsDist(@Param("start") String start, @Param("end") String end);
 }

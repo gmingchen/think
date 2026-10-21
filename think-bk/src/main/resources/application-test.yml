@@ -29,30 +29,11 @@ qiniu:
   accessKey: Xf4rsuKMm4F-wSBzBJVi4VW0vLBR46LPLFx83voK
   secretKey: 7IWWQuTIwcecu4N3OiKXKcevnHGhdahxCjqvJXqX
   domain: https://os.think.mx-studio.cn
-# AI 荐菜：llm-proxy 云函数 HTTP 访问地址 + 与云函数一致的共享密钥
+# AI 参考：llm-proxy 云函数 HTTP 访问地址 + 与云函数一致的共享密钥
 ai-llm:
   url: https://ccj-d8govrx3z867b6b72-1497228990.ap-shanghai.app.tcloudbase.com/llm-proxy
   proxyKey: ecfeb810d12512a47d73acc72f181f3223056d1f80a62b17
-# AI 封面生图：image-proxy 云函数 HTTP 访问地址 + PROXY_KEY（与 llm-proxy 共用同值）
-# 部署 image-proxy 云函数后确认路径与本域名一致，如不同请手工修正
-ai-image:
-  url: https://ccj-d8govrx3z867b6b72-1497228990.ap-shanghai.app.tcloudbase.com/image-proxy
-  proxyKey: ecfeb810d12512a47d73acc72f181f3223056d1f80a62b17
-# 调试期：临时放大每日次数上限（当前 active=test，覆盖仅对此 profile 生效；dev/prod 不覆盖，走 base = 3 / 5 / 2）
+# 调试期：临时放大每日次数上限（当前 active=test，覆盖仅对此 profile 生效；dev/prod 不覆盖，走 base = 3）
 ai:
   llm:
     daily-limit: 999
-    parse-daily-limit: 999
-    pro-daily-limit: 999
-    pro-parse-daily-limit: 999
-  image:
-    daily-limit: 999
-    pro-daily-limit: 999
-# 微信虚拟支付通道（v12）：只放「怎么收钱」的事实——凭证、消息推送。2026-10-11 从 member.* 拆出：
-# 这些项与卖什么无关，将来任何虚拟商品都共用这一份；本地调试走这一套，连的是独立库 think_test
-# env 不再在此配置：沙箱/现网由 profile 现算（XpayEnv），test/dev 为沙箱、prod 为现网
-xpay:
-  offer-id: 1450673023                          # MP 后台“虚拟支付 → 基本配置”的 OfferID（支付应用ID），2026-10-11 由开发者提供
-  app-key: UaYtNfJ8ABNfsDliZInJFCvMkVF5PKDK    # 沙箱 AppKey（不是现网那个；现网值只进 application-prod.yml）
-  notify-token: ccjXpayNotify2026aB7dE9fG1hJ3kL    # 与 MP 后台“开发设置 → 消息推送”的 Token 同值，它服务的是全局唯一的 /wechat/notify
-  msg-data-format: json                         # 与后台“数据格式”选项同值

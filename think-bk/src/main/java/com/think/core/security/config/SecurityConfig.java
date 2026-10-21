@@ -48,7 +48,7 @@ public class SecurityConfig {
                         // 上传凭证
                         "/os/uploadToken",
                         // 微信消息推送（GET 配置校验 + POST 事件推送）：微信不带 token，
-                        // 安全性靠报文上的 signature 与 xpay.notify-token 比对，不靠登录态
+                        // 安全性靠报文上的 signature 与 wechat.notify-token 比对，不靠登录态
                         "/wechat/notify",
                         // 运营数据统计看板（think-admin）：无管理员登录，上来即可看数据，
                         // 全部只读 GET，不暴露写接口，故整组 permitAll

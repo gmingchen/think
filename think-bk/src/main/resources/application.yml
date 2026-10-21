@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: test # 环境 dev|test|prod
+    active: prod # 环境 dev|test|prod
   jackson:
     time-zone: GMT+8 # 时区
     date-format: yyyy-MM-dd HH:mm:ss # 时间格式化
@@ -112,8 +112,9 @@ json-web-token: # json web token
 wechat:
     appId: wx73abf984ff1e6d0f
     appSecret: 055145f31cec0984ab65924d1efe2436
-    template:
-      dailyReminder: CFRZYXIcw3ifgwXIM0_9efD2BireRn5RSkSt2Hsd0uY
+    # 消息推送（/wechat/notify 全局唯一入口）：token 须与 MP 后台「开发设置 → 消息推送」逐字一致
+    notify-token: ccjXpayNotify2026aB7dE9fG1hJ3kL
+    msg-data-format: json
 
 # 对象存储（qiniu / aliyun / tencent）
 storage:
@@ -125,7 +126,7 @@ storage:
     region: huadong
     domain: ${qiniu.domain:}
 
-# AI 荐菜（成长计划赠送额度仅限小程序 SDK / 云函数消耗，故经 CloudBase 云函数 llm-proxy 中转）
+# AI 参考（冷静期零评议时由 LLM 生成三思参考；赠送额度仅限小程序 SDK / 云函数消耗，故经 CloudBase 云函数 llm-proxy 中转）
 # url 为空视为未开通 AI 能力；proxy-key 与云函数 process.env.PROXY_KEY 必须一致
 ai:
   llm:
@@ -133,21 +134,5 @@ ai:
     proxy-key: ${ai-llm.proxyKey:}
     model: hy3
     temperature: 0.7
-    timeout: 50000        # 单次 LLM 调用超时（毫秒），需低于前端 recommend 的 60s，避免后端仍在跑前端已超时却扣了次数
-    daily-limit: 3        # 每人每日推荐次数上限（本文件是唯一数值源，dev/prod 不再覆盖；test=999 调试放大）
-    parse-daily-limit: 5  # 每人每日文案识别次数上限（独立预算，仅 parse 计数；test=999 调试放大）
-    pro-daily-limit: 20        # 畅厨会员每日推荐上限（轻享不加量、走 base；§6.5 畅厨分层）
-    pro-parse-daily-limit: 30  # 畅厨会员每日文案识别上限（轻享不加量；§6.5）
-    recommend-expire: 86400  # 推荐结果 Redis 暂存有效期（秒），即采纳凭证有效期
-
-# AI 封面生图（成长计划二期赠送 10 万张额度仅限小程序 SDK / 云函数消耗，故经 CloudBase 云函数 image-proxy 中转）
-# url 为空视为未开通生图能力；proxy-key 与云函数 process.env.PROXY_KEY 必须一致（与 llm-proxy 共用同值）
-# 云函数内部走 ai.createImageModel('hunyuan-image').generateImage(...)，合规水印由云函数传 footnote 在右下角烧入
-  image:
-    url: ${ai-image.url:}
-    proxy-key: ${ai-image.proxyKey:}
-    model: HY-Image-3.0-Plus-4090-Tob-v1.0   # 二期赠额对应模型（一期 hunyuan-image-v3.0-v1.0.4 已于 2026-07-15 下线）；下传给云函数，换型号只改本行
-    size: 1024x1024       # 混元只认「宽x高」；可选 1024x1024 / 1280x720 / 720x1280 / 1280x1280，本项固定方形与菜谱封面比例一致
-    timeout: 130000       # 单次生图调用超时（毫秒），需 ≥ 云函数侧 120s，避免后端仍在跑前端已超时却扣了次数
-    daily-limit: 2        # 每人每日生图次数上限（本文件是唯一数值源；test=999 调试放大）
-    pro-daily-limit: 10   # 畅厨会员每日生图上限（轻享不加量；§6.5，生图提额=真实赠额成本）
+    timeout: 50000        # 单次 LLM 调用超时（毫秒），需低于前端超时，避免后端仍在跑前端已超时却扣了次数
+    daily-limit: 3        # 每人每日 AI 调用次数上限（本文件是唯一数值源，dev/prod 不再覆盖；test=999 调试放大）

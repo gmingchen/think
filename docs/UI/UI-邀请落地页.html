@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>众三思 - 邀请落地页高保真规范 (subpackages/invite/landing)</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background-color: #14161A;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 16px;
+      color: #22262E;
+    }
+
+    .doc-intro {
+      text-align: center;
+      color: #F5F6F8;
+      margin-bottom: 28px;
+    }
+    .doc-intro h1 {
+      font-family: "Songti SC", "Noto Serif CJK SC", "Source Han Serif SC", STSong, serif;
+      font-size: 22px;
+      letter-spacing: 2px;
+      margin-bottom: 6px;
+    }
+    .doc-intro p {
+      font-size: 13px;
+      color: #9AA0AA;
+    }
+
+    .viewport-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 32px;
+      justify-content: center;
+    }
+
+    /* 微信小程序标准设备容器 (对标 750rpx 逻辑视口 375px × 812px) */
+    .phone-mockup {
+      width: 375px;
+      height: 812px;
+      background-color: #F5F6F8;
+      border-radius: 40px;
+      overflow: hidden;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45), 0 0 0 10px #2A2D35;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* 顶部状态栏与微信胶囊条 */
+    .status-bar {
+      height: 44px;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 24px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #22262E;
+    }
+    .wechat-capsule-bar {
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0 16px;
+    }
+    .wechat-capsule {
+      width: 80px;
+      height: 30px;
+      background: rgba(255,255,255,0.65);
+      border-radius: 999px;
+      border: 0.5px solid rgba(0,0,0,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 0 6px;
+      backdrop-filter: blur(8px);
+    }
+
+    .font-serif {
+      font-family: "Songti SC", "Noto Serif CJK SC", "Source Han Serif SC", STSong, serif;
+    }
+
+    /* 页面内容主体容器 */
+    .landing-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 0 16px;
+    }
+
+    /* 顶部品牌标定 */
+    .brand-hero-block {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .brand-name {
+      font-size: 24px;
+      font-weight: 600;
+      color: #22262E;
+      letter-spacing: 4px;
+      margin-bottom: 6px;
+      display: block;
+    }
+    .brand-slogan {
+      font-size: 11px;
+      color: #9AA0AA;
+      letter-spacing: 1px;
+    }
+
+    /* 核心承载白卡 */
+    .invite-card {
+      background: #FFFFFF;
+      border-radius: 20px;
+      padding: 24px 20px;
+      box-shadow: 0 6px 24px rgba(34, 38, 46, 0.04);
+      margin-bottom: 20px;
+    }
+
+    /* 邀请人简述行 */
+    .inviter-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-bottom: 16px;
+      border-bottom: 0.5px solid #F0F2F5;
+      margin-bottom: 20px;
+    }
+    .inviter-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #E8EDF7;
+      color: #3B5BA5;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+    }
+    .inviter-text {
+      font-size: 13px;
+      color: #22262E;
+    }
+    .inviter-name {
+      font-weight: 600;
+      color: #3B5BA5;
+    }
+
+    /* 群展示展台 */
+    .group-hero-showcase {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .group-avatar-big {
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
+      background: #E8EDF7;
+      color: #3B5BA5;
+      font-size: 24px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 12px rgba(78, 117, 201, 0.15);
+    }
+    .group-title-text {
+      font-size: 18px;
+      font-weight: 600;
+      color: #22262E;
+      margin-bottom: 6px;
+      letter-spacing: 0.5px;
+    }
+    .group-meta-tag {
+      font-size: 11px;
+      color: #9AA0AA;
+    }
+
+    /* 隐私约定微条 */
+    .privacy-compact-notice {
+      background: #E8EDF7;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 11px;
+      color: #3B5BA5;
+      line-height: 1.4;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    /* 主操作按钮 (主蓝胶囊 + 印章红落款点) */
+    .main-capsule-btn {
+      width: 100%;
+      height: 48px;
+      background: #4E75C9;
+      color: #FFFFFF;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 500;
+      gap: 6px;
+      box-shadow: 0 6px 18px rgba(78, 117, 201, 0.3);
+      cursor: pointer;
+    }
+    .seal-dot {
+      width: 5px;
+      height: 5px;
+      background-color: #B23C2E;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    /* 次级线框按钮 */
+    .ghost-capsule-btn {
+      width: 100%;
+      height: 44px;
+      background: #FFFFFF;
+      border: 1px solid #CAD4E8;
+      color: #22262E;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    /* 状态指示戳 (印章红勾 / 灰度失效) */
+    .status-seal-circle {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: #FFF2F0;
+      border: 1.5px solid #B23C2E;
+      color: #B23C2E;
+      font-size: 22px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 8px auto 14px auto;
+    }
+    .status-seal-circle.expired {
+      background: #F5F6F8;
+      border-color: #CAD4E8;
+      color: #9AA0AA;
+    }
+
+    /* 底部声明 */
+    .landing-footer {
+      text-align: center;
+      font-size: 11px;
+      color: #9AA0AA;
+      padding-bottom: 24px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="doc-intro">
+    <h1>众三思 · 邀请落地页高保真规范</h1>
+    <p>subpackages/invite/landing · 同页多态无感流转（待加入 / 成功 / 过期）</p>
+  </div>
+
+  <div class="viewport-group">
+
+    <!-- ================= 状态 1：待加入正常邀请态 (静默登录前驱) ================= -->
+    <div class="phone-mockup">
+      <div>
+        <div class="status-bar">
+          <span>09:41</span>
+          <span>5G · 100%</span>
+        </div>
+        <div class="wechat-capsule-bar">
+          <div class="wechat-capsule">
+            <span style="font-size:12px;">•••</span>
+            <span style="font-size:12px;">◎</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="landing-body">
+        <!-- 品牌冠部 -->
+        <div class="brand-hero-block">
+          <span class="brand-name font-serif">众 三 思</span>
+          <span class="brand-slogan">集众人所见，众三思而后抉择</span>
+        </div>
+
+        <!-- 邀请信息卡 -->
+        <div class="invite-card">
+          <div class="inviter-bar">
+            <div class="inviter-avatar">沉</div>
+            <div class="inviter-text">
+              <span class="inviter-name">沉然</span> 邀请你加入智囊群
+            </div>
+          </div>
+
+          <div class="group-hero-showcase">
+            <div class="group-avatar-big font-serif">海</div>
+            <h2 class="group-title-text font-serif">AI 商业化出海智囊团</h2>
+            <div class="group-meta-tag">已有 16 位在席智囊 · 正在评议 2 个决策</div>
+          </div>
+
+          <div class="privacy-compact-notice">
+            🛡️ <strong>智囊约定：</strong>群内决策遵循知情圈闭环，加入后即可查阅并从「思危/思退/思变」提交刺耳洞见。
+          </div>
+
+          <!-- 主加入按钮 (点击触发静默登录建档/直接加入) -->
+          <div class="main-capsule-btn">
+            <span>加入群聊</span>
+            <span class="seal-dot"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="landing-footer">
+        建议仅供参考，最终决定权归你
+      </div>
+    </div>
+
+
+    <!-- ================= 状态 2：入群成功态 (完成加入后原地切换) ================= -->
+    <div class="phone-mockup">
+      <div>
+        <div class="status-bar">
+          <span>09:41</span>
+          <span>5G · 100%</span>
+        </div>
+        <div class="wechat-capsule-bar">
+          <div class="wechat-capsule">
+            <span style="font-size:12px;">•••</span>
+            <span style="font-size:12px;">◎</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="landing-body">
+        <div class="brand-hero-block">
+          <span class="brand-name font-serif">众 三 思</span>
+          <span class="brand-slogan">集众人所见，众三思而后抉择</span>
+        </div>
+
+        <div class="invite-card" style="text-align: center;">
+          <!-- 印章红勾 -->
+          <div class="status-seal-circle">✓</div>
+          <h2 class="font-serif" style="font-size: 17px; font-weight:600; color:#22262E; margin-bottom: 6px;">
+            已成功加入智囊群
+          </h2>
+          <div style="font-size: 13px; color:#3B5BA5; font-weight: 500; margin-bottom: 6px;">
+            「AI 商业化出海智囊团」
+          </div>
+          <div style="font-size: 11px; color: #9AA0AA; line-height: 1.5; margin-bottom: 24px;">
+            你已正式成为在席智囊，成员专属决策单现已开放评议权限。
+          </div>
+
+          <!-- 双出口动作按钮 -->
+          <div class="main-capsule-btn">
+            <span>进入群详情 · 查阅在评决策</span>
+            <span class="seal-dot"></span>
+          </div>
+          <div class="ghost-capsule-btn">
+            <span>随便看看</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="landing-footer">
+        建议仅供参考，最终决定权归你
+      </div>
+    </div>
+
+
+    <!-- ================= 状态 3：邀请过期 / 失效 / 解散态 ================= -->
+    <div class="phone-mockup">
+      <div>
+        <div class="status-bar">
+          <span>09:41</span>
+          <span>5G · 100%</span>
+        </div>
+        <div class="wechat-capsule-bar">
+          <div class="wechat-capsule">
+            <span style="font-size:12px;">•••</span>
+            <span style="font-size:12px;">◎</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="landing-body">
+        <div class="brand-hero-block">
+          <span class="brand-name font-serif">众 三 思</span>
+          <span class="brand-slogan">集众人所见，众三思而后抉择</span>
+        </div>
+
+        <div class="invite-card" style="text-align: center;">
+          <div class="status-seal-circle expired">✕</div>
+          <h2 class="font-serif" style="font-size: 17px; font-weight:600; color:#22262E; margin-bottom: 8px;">
+            邀请已失效
+          </h2>
+          <div style="font-size: 12px; color: #9AA0AA; line-height: 1.5; margin-bottom: 24px; padding: 0 10px;">
+            该专属邀请链接已逾 72 小时时效限制，或该智囊群已被发起人归档解散。
+          </div>
+
+          <!-- 兜底出口 -->
+          <div class="main-capsule-btn">
+            <span>去众议广场看看</span>
+            <span class="seal-dot"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="landing-footer">
+        建议仅供参考，最终决定权归你
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

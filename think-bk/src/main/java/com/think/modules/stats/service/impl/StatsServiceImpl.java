@@ -8,14 +8,13 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * 运营数据统计服务实现
+ * 运营数据统计服务实现（用户维度）
  * <p>
  * 只做编排：区间归一 + 趋势按天补零对齐。真正的聚合都在 {@link StatsMapper} 的 XML 里。
  * 缺省区间为「近 30 天（含今日）」；start / end 均按 yyyy-MM-dd 处理，任一为空则各自回退。
@@ -81,33 +80,12 @@ public class StatsServiceImpl implements StatsService {
         List<String> axis = buildAxis(s, e);
 
         Map<String, Object> base = statsMapper.cumulativeBaseline(s);
-
-        // 各指标区间内每日新增（按天索引），与基准一起做前缀和得到每日累计总量
         Map<String, Map<String, Object>> userIdx = toDtIndex(statsMapper.userNewTrend(s, e));
-        Map<String, Map<String, Object>> kitchenIdx = toDtIndex(statsMapper.kitchenNewTrend(s, e));
-        Map<String, Map<String, Object>> dishIdx = toDtIndex(statsMapper.dishNewTrend(s, e));
-        Map<String, Map<String, Object>> orderIdx = toDtIndex(statsMapper.orderTrend(s, e));
-        Map<String, Map<String, Object>> reviewIdx = toDtIndex(statsMapper.reviewTrend(s, e));
-        Map<String, Map<String, Object>> memberIdx = toDtIndex(statsMapper.memberTrend(s, e));
 
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("range", rangeMap(s, e));
         result.put("users", runningSum(axis, userIdx, "num", base.get("userBase")));
-        result.put("kitchens", runningSum(axis, kitchenIdx, "num", base.get("kitchenBase")));
-        result.put("dishes", runningSum(axis, dishIdx, "num", base.get("dishBase")));
-        result.put("orders", runningSum(axis, orderIdx, "total", base.get("orderBase")));
-        result.put("reviews", runningSum(axis, reviewIdx, "num", base.get("reviewBase")));
-        result.put("memberOpens", runningSum(axis, memberIdx, "num", base.get("memberOpenBase")));
-        result.put("revenues", runningSumDecimal(axis, memberIdx, "revenue", base.get("revenueBase")));
-
-        // 每日新增（非累计）：与上面累计同源于已查的 idx，不额外查库，供「每日增量」图复用
         result.put("userDailyNew", dailySeries(axis, userIdx, "num"));
-        result.put("kitchenDailyNew", dailySeries(axis, kitchenIdx, "num"));
-        result.put("dishDailyNew", dailySeries(axis, dishIdx, "num"));
-        result.put("orderDailyNew", dailySeries(axis, orderIdx, "total"));
-        result.put("reviewDailyNew", dailySeries(axis, reviewIdx, "num"));
-        result.put("memberOpenDailyNew", dailySeries(axis, memberIdx, "num"));
-        result.put("revenueDailyNew", dailySeriesDecimal(axis, memberIdx, "revenue"));
         return result;
     }
 
@@ -158,128 +136,6 @@ public class StatsServiceImpl implements StatsService {
         return result;
     }
 
-    /** 榜单取数上限归一：null / 非正数回退默认 10，最大 1000 兜底防大结果集（前端选项只放 10/20/50/100） */
-    private int normalizeLimit(Integer limit) {
-        if (limit == null || limit <= 0) {
-            return DEFAULT_RANK_LIMIT;
-        }
-        return Math.min(limit, MAX_RANK_LIMIT);
-    }
-
-    @Override
-    public Map<String, Object> kitchen(String start, String end, Integer limit) {
-        String[] range = normalize(start, end);
-        String s = range[0];
-        String e = range[1];
-        int top = normalizeLimit(limit);
-        Map<String, Object> result = new LinkedHashMap<>();
-        result.put("range", rangeMap(s, e));
-        result.put("limit", top);
-        result.put("summary", statsMapper.kitchenSummary(s, e));
-        result.put("memberDist", statsMapper.kitchenMemberDist());
-        result.put("topKitchens", statsMapper.topKitchens(top));
-        return result;
-    }
-
-    @Override
-    public Map<String, Object> dish(String start, String end, Integer limit) {
-        String[] range = normalize(start, end);
-        String s = range[0];
-        String e = range[1];
-        int top = normalizeLimit(limit);
-        Map<String, Object> result = new LinkedHashMap<>();
-        result.put("range", rangeMap(s, e));
-        result.put("limit", top);
-        result.put("summary", statsMapper.dishSummary(s, e));
-        result.put("trend", singleTrend(statsMapper.dishNewTrend(s, e), buildAxis(s, e), "num", "newDishes"));
-        result.put("topCook", statsMapper.topDishByCook(top));
-        result.put("topCollect", statsMapper.topDishByCollect(top));
-        result.put("cover", statsMapper.dishCoverRatio());
-        return result;
-    }
-
-    @Override
-    public Map<String, Object> order(String start, String end) {
-        String[] range = normalize(start, end);
-        String s = range[0];
-        String e = range[1];
-        List<String> axis = buildAxis(s, e);
-
-        Map<String, Map<String, Object>> idx = toDtIndex(statsMapper.orderTrend(s, e));
-        List<Map<String, Object>> trend = new ArrayList<>();
-        for (String d : axis) {
-            Map<String, Object> row = idx.get(d);
-            Map<String, Object> out = new LinkedHashMap<>();
-            out.put("date", d);
-            out.put("total", pick(row, "total", 0));
-            out.put("done", pick(row, "done", 0));
-            trend.add(out);
-        }
-
-        Map<String, Object> result = new LinkedHashMap<>();
-        result.put("range", rangeMap(s, e));
-        result.put("summary", statsMapper.orderSummary(s, e));
-        result.put("trend", trend);
-        result.put("periodDist", statsMapper.orderPeriodDist(s, e));
-        return result;
-    }
-
-    @Override
-    public Map<String, Object> review(String start, String end) {
-        String[] range = normalize(start, end);
-        String s = range[0];
-        String e = range[1];
-        List<String> axis = buildAxis(s, e);
-
-        Map<String, Map<String, Object>> idx = toDtIndex(statsMapper.reviewTrend(s, e));
-        List<Map<String, Object>> trend = new ArrayList<>();
-        for (String d : axis) {
-            Map<String, Object> row = idx.get(d);
-            Map<String, Object> out = new LinkedHashMap<>();
-            out.put("date", d);
-            out.put("num", pick(row, "num", 0));
-            out.put("avgRating", pick(row, "avgRating", 0));
-            trend.add(out);
-        }
-
-        Map<String, Object> result = new LinkedHashMap<>();
-        result.put("range", rangeMap(s, e));
-        result.put("summary", statsMapper.reviewSummary(s, e));
-        result.put("trend", trend);
-        result.put("ratingDist", statsMapper.ratingDist(s, e));
-        return result;
-    }
-
-    @Override
-    public Map<String, Object> member(String start, String end) {
-        String[] range = normalize(start, end);
-        String s = range[0];
-        String e = range[1];
-        List<String> axis = buildAxis(s, e);
-
-        Map<String, Map<String, Object>> idx = toDtIndex(statsMapper.memberTrend(s, e));
-        List<Map<String, Object>> trend = new ArrayList<>();
-        for (String d : axis) {
-            Map<String, Object> row = idx.get(d);
-            Map<String, Object> out = new LinkedHashMap<>();
-            out.put("date", d);
-            out.put("num", pick(row, "num", 0));
-            out.put("revenue", pick(row, "revenue", 0));
-            trend.add(out);
-        }
-
-        Map<String, Object> result = new LinkedHashMap<>();
-        result.put("range", rangeMap(s, e));
-        result.put("summary", statsMapper.memberSummary());
-        result.put("income", statsMapper.memberIncome());
-        result.put("trend", trend);
-        result.put("planDist", statsMapper.memberPlanDist());
-        result.put("refund", statsMapper.memberRefund());
-        result.put("orders", statsMapper.memberOrderSummary(s, e));
-        result.put("monthsDist", statsMapper.memberMonthsDist(s, e));
-        return result;
-    }
-
     // ── 私有工具 ──────────────────────────────────────────────
 
     /** 归一化区间：都为空则取近 30 天（含今日）；单边为空则各回退 30 天 */
@@ -305,18 +161,12 @@ public class StatsServiceImpl implements StatsService {
         return axis;
     }
 
-    /** 单指标趋势补零对齐到完整日期轴 */
-    private List<Map<String, Object>> singleTrend(List<Map<String, Object>> rows, List<String> axis,
-                                                   String valueKey, String outKey) {
-        Map<String, Map<String, Object>> idx = toDtIndex(rows);
-        List<Map<String, Object>> trend = new ArrayList<>();
-        for (String d : axis) {
-            Map<String, Object> out = new LinkedHashMap<>();
-            out.put("date", d);
-            out.put(outKey, pick(idx.get(d), valueKey, 0));
-            trend.add(out);
+    /** 榜单取数上限归一：null / 非正数回退默认 10，最大 1000 兜底防大结果集（前端选项只放 10/20/50/100） */
+    private int normalizeLimit(Integer limit) {
+        if (limit == null || limit <= 0) {
+            return DEFAULT_RANK_LIMIT;
         }
-        return trend;
+        return Math.min(limit, MAX_RANK_LIMIT);
     }
 
     private Map<String, Map<String, Object>> toDtIndex(List<Map<String, Object>> rows) {
@@ -381,21 +231,6 @@ public class StatsServiceImpl implements StatsService {
         return out;
     }
 
-    /** 金额类累计（保留 2 位）：基准金额 + 区间内每日新增收入的前缀和，逐日输出 {date, amount} */
-    private List<Map<String, Object>> runningSumDecimal(List<String> axis, Map<String, Map<String, Object>> idx,
-                                                        String valueKey, Object base) {
-        BigDecimal acc = toDecimal(base);
-        List<Map<String, Object>> out = new ArrayList<>();
-        for (String d : axis) {
-            acc = acc.add(toDecimal(pick(idx.get(d), valueKey, 0)));
-            Map<String, Object> row = new LinkedHashMap<>();
-            row.put("date", d);
-            row.put("amount", acc.setScale(2, BigDecimal.ROUND_HALF_UP));
-            out.add(row);
-        }
-        return out;
-    }
-
     private long toLong(Object v) {
         return v == null ? 0L : ((Number) v).longValue();
     }
@@ -410,27 +245,5 @@ public class StatsServiceImpl implements StatsService {
             out.add(row);
         }
         return out;
-    }
-
-    /** 每日新增金额序列（非累计，保留 2 位），输出 {date, amount} */
-    private List<Map<String, Object>> dailySeriesDecimal(List<String> axis, Map<String, Map<String, Object>> idx, String valueKey) {
-        List<Map<String, Object>> out = new ArrayList<>();
-        for (String d : axis) {
-            Map<String, Object> row = new LinkedHashMap<>();
-            row.put("date", d);
-            row.put("amount", toDecimal(pick(idx.get(d), valueKey, 0)).setScale(2, BigDecimal.ROUND_HALF_UP));
-            out.add(row);
-        }
-        return out;
-    }
-
-    private BigDecimal toDecimal(Object v) {
-        if (v == null) {
-            return BigDecimal.ZERO;
-        }
-        if (v instanceof BigDecimal) {
-            return (BigDecimal) v;
-        }
-        return new BigDecimal(String.valueOf(v));
     }
 }

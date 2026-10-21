@@ -16,11 +16,10 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum SubscribeTypeEnum {
     /**
-     * 会员到期提醒（v12）：到期前 3 天推送续费提醒
+     * 冷静期到期提醒（§3.3）：决策单冷静期截止时提醒发起人查看报告
      */
-    MEMBER_EXPIRE("MEMBER_EXPIRE", "会员到期提醒"),
-    // 以下三类是 v9 设计给 cook-order 预留（接单/上菜/取消通知），本版未接入发送、模板 ID 也仍空，
-    // 待 v9 那套下厨订单通知落地时再放开，故此处先不定义，避免留下没有实现方的枚举值
+    COOL_DOWN_END("COOL_DOWN_END", "冷静期到期提醒"),
+    // 预留其类通知待后续需求接入时再定义，避免留下没有实现方的枚举值
     ;
 
     /**

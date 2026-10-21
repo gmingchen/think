@@ -4,9 +4,9 @@
 <mapper namespace="com.think.modules.stats.mapper.StatsMapper">
 
     <!-- ============================================================
-         运营数据统计：docs/stats/运营数据统计.sql 的接口化落地
+         运营数据统计（用户维度）
          · 区间类：start / end（yyyy-MM-dd，含首尾），右边界用 < 次日 0 点
-         · 快照类：累计 / 有效会员等，不带区间
+         · 快照类：累计 / DAU 等，不带区间
          · 全部过滤软删除 deleted = 0；聚合空表用 COALESCE 兜 0
          ============================================================ -->
 
@@ -17,51 +17,19 @@
           (SELECT COUNT(*) FROM `user` WHERE deleted = 0 AND created_at &gt;= CURDATE())                        AS todayNewUsers,
           (SELECT COUNT(DISTINCT user_id) FROM user_login_log WHERE deleted = 0 AND created_at &gt;= CURDATE()
              AND created_at &lt; CURDATE() + INTERVAL 1 DAY)                                                       AS activeToday,
-          (SELECT COUNT(*) FROM kitchen WHERE deleted = 0)                                                      AS totalKitchens,
-          (SELECT COUNT(*) FROM dish WHERE deleted = 0)                                                         AS totalDishes,
-          (SELECT COUNT(*) FROM cook_order WHERE deleted = 0)                                                   AS totalOrders,
-          (SELECT COUNT(*) FROM cook_order WHERE deleted = 0 AND created_at &gt;= CURDATE())                    AS todayOrders,
-          (SELECT COUNT(*) FROM cook_review WHERE deleted = 0)                                                  AS totalReviews,
-          (SELECT COUNT(*) FROM `member` WHERE deleted = 0 AND expire_at &gt; NOW())                            AS validMembers,
-          (SELECT COALESCE(ROUND(SUM(actual_price) / 100.0, 2), 0) FROM member_order WHERE deleted = 0 AND status = 1) AS memberRevenue,
           (SELECT COUNT(*) FROM `user` WHERE deleted = 0 AND created_at &gt;= CURDATE() - INTERVAL 1 DAY
              AND created_at &lt; CURDATE())                                                                     AS yesterdayNewUsers,
           (SELECT COUNT(DISTINCT user_id) FROM user_login_log WHERE deleted = 0 AND created_at &gt;= CURDATE() - INTERVAL 1 DAY
-             AND created_at &lt; CURDATE())                                                                       AS yesterdayActive,
-          (SELECT COUNT(*) FROM cook_order WHERE deleted = 0 AND created_at &gt;= CURDATE() - INTERVAL 1 DAY
-             AND created_at &lt; CURDATE())                                                                        AS yesterdayOrders,
-          (SELECT COALESCE(ROUND(SUM(actual_price) / 100.0, 2), 0) FROM member_order WHERE deleted = 0 AND status = 1
-             AND paid_at &gt;= CURDATE() - INTERVAL 1 DAY AND paid_at &lt; CURDATE())                              AS yesterdayRevenue,
-          (SELECT COUNT(*) FROM kitchen WHERE deleted = 0 AND created_at &gt;= CURDATE())                       AS todayNewKitchens,
-          (SELECT COUNT(*) FROM kitchen WHERE deleted = 0 AND created_at &gt;= CURDATE() - INTERVAL 1 DAY
-             AND created_at &lt; CURDATE())                                                                     AS yesterdayNewKitchens,
-          (SELECT COUNT(*) FROM dish WHERE deleted = 0 AND created_at &gt;= CURDATE())                         AS todayNewDishes,
-          (SELECT COUNT(*) FROM dish WHERE deleted = 0 AND created_at &gt;= CURDATE() - INTERVAL 1 DAY
-             AND created_at &lt; CURDATE())                                                                     AS yesterdayNewDishes,
-          (SELECT COUNT(*) FROM cook_review WHERE deleted = 0 AND created_at &gt;= CURDATE())                  AS todayReviews,
-          (SELECT COUNT(*) FROM cook_review WHERE deleted = 0 AND created_at &gt;= CURDATE() - INTERVAL 1 DAY
-             AND created_at &lt; CURDATE())                                                                     AS yesterdayReviews,
-          (SELECT COUNT(*) FROM member_order WHERE deleted = 0 AND status = 1 AND paid_at &gt;= CURDATE())      AS todayMemberOpens,
-          (SELECT COUNT(*) FROM member_order WHERE deleted = 0 AND status = 1
-             AND paid_at &gt;= CURDATE() - INTERVAL 1 DAY AND paid_at &lt; CURDATE())                              AS yesterdayMemberOpens,
-          (SELECT COALESCE(ROUND(SUM(actual_price) / 100.0, 2), 0) FROM member_order WHERE deleted = 0 AND status = 1
-             AND paid_at &gt;= CURDATE())                                                                        AS todayRevenue
+             AND created_at &lt; CURDATE())                                                                       AS yesterdayActive
     </select>
 
-    <!-- 累计走势基准线：截至区间起始日前一天的各指标全量累计（created_at / paid_at &lt; start） -->
+    <!-- 累计走势基准线：截至区间起始日前一天的用户全量累计（created_at &lt; start） -->
     <select id="cumulativeBaseline" resultType="map">
         SELECT
-          (SELECT COUNT(*) FROM `user` WHERE deleted = 0 AND created_at &lt; #{start})                          AS userBase,
-          (SELECT COUNT(*) FROM kitchen WHERE deleted = 0 AND created_at &lt; #{start})                         AS kitchenBase,
-          (SELECT COUNT(*) FROM dish WHERE deleted = 0 AND created_at &lt; #{start})                            AS dishBase,
-          (SELECT COUNT(*) FROM cook_order WHERE deleted = 0 AND created_at &lt; #{start})                      AS orderBase,
-          (SELECT COUNT(*) FROM cook_review WHERE deleted = 0 AND created_at &lt; #{start})                     AS reviewBase,
-          (SELECT COUNT(*) FROM member_order WHERE deleted = 0 AND status = 1 AND paid_at &lt; #{start})         AS memberOpenBase,
-          (SELECT COALESCE(ROUND(SUM(actual_price) / 100.0, 2), 0) FROM member_order
-             WHERE deleted = 0 AND status = 1 AND paid_at &lt; #{start})                                          AS revenueBase
+          (SELECT COUNT(*) FROM `user` WHERE deleted = 0 AND created_at &lt; #{start})                          AS userBase
     </select>
 
-    <!-- ── 一、用户 ── -->
+    <!-- ── 用户 ── -->
     <select id="userSummary" resultType="map">
         SELECT
           (SELECT COUNT(*) FROM `user` WHERE deleted = 0)                                                       AS totalUsers,
@@ -69,10 +37,6 @@
              AND created_at &lt; DATE_ADD(#{end}, INTERVAL 1 DAY))                                              AS newUsers,
           (SELECT COUNT(DISTINCT user_id) FROM user_login_log WHERE deleted = 0 AND created_at &gt;= #{start}
              AND created_at &lt; DATE_ADD(#{end}, INTERVAL 1 DAY))                                                 AS activeUsers,
-          (SELECT COUNT(*) FROM `user` WHERE deleted = 0
-             AND (last_login_at IS NULL OR last_login_at &lt; NOW() - INTERVAL 14 DAY))                         AS silentUsers,
-          (SELECT COUNT(*) FROM `user` WHERE deleted = 0 AND created_at &gt;= #{start}
-             AND created_at &lt; DATE_ADD(#{end}, INTERVAL 1 DAY) AND last_login_at &gt; created_at)                AS newReturnedUsers,
           <!-- 区间新增按邀请来源拆分：inviter_id 非空 = 经分享/邀请码归因注册，为空 = 自然新增 -->
           (SELECT COUNT(*) FROM `user` WHERE deleted = 0 AND inviter_id IS NOT NULL AND created_at &gt;= #{start}
              AND created_at &lt; DATE_ADD(#{end}, INTERVAL 1 DAY))                                              AS newInvitedUsers,
@@ -176,219 +140,6 @@
         GROUP BY t.user_id, u.nickname
         ORDER BY num DESC, t.user_id ASC
         LIMIT #{limit}
-    </select>
-
-    <!-- ── 二、厨房 ── -->
-    <select id="kitchenSummary" resultType="map">
-        SELECT
-          (SELECT COUNT(*) FROM kitchen WHERE deleted = 0)                                                      AS totalKitchens,
-          (SELECT COUNT(*) FROM kitchen WHERE deleted = 0 AND created_at &gt;= #{start}
-             AND created_at &lt; DATE_ADD(#{end}, INTERVAL 1 DAY))                                              AS newKitchens
-    </select>
-
-    <select id="kitchenNewTrend" resultType="map">
-        SELECT DATE(created_at) AS dt, COUNT(*) AS num
-        FROM kitchen
-        WHERE deleted = 0 AND created_at &gt;= #{start} AND created_at &lt; DATE_ADD(#{end}, INTERVAL 1 DAY)
-        GROUP BY DATE(created_at)
-        ORDER BY dt
-    </select>
-
-    <select id="kitchenMemberDist" resultType="map">
-        SELECT member_count AS memberCount, COUNT(*) AS num
-        FROM (
-          SELECT k.id, COUNT(ku.id) AS member_count
-          FROM kitchen k
-          LEFT JOIN kitchen__user ku ON ku.kitchen_id = k.id AND ku.deleted = 0
-          WHERE k.deleted = 0
-          GROUP BY k.id
-        ) t
-        GROUP BY member_count
-        ORDER BY member_count
-    </select>
-
-    <select id="topKitchens" resultType="map">
-        SELECT k.id AS id, k.name AS name, u.nickname AS owner, COUNT(d.id) AS dishCount
-        FROM kitchen k
-        JOIN `user` u ON u.id = k.owner_id
-        LEFT JOIN dish d ON d.kitchen_id = k.id AND d.deleted = 0
-        WHERE k.deleted = 0
-        GROUP BY k.id
-        ORDER BY dishCount DESC
-        LIMIT #{limit}
-    </select>
-
-    <!-- ── 三、菜谱 ── -->
-    <select id="dishSummary" resultType="map">
-        SELECT
-          (SELECT COUNT(*) FROM dish WHERE deleted = 0)                                                         AS totalDishes,
-          (SELECT COUNT(*) FROM dish WHERE deleted = 0 AND created_at &gt;= #{start}
-             AND created_at &lt; DATE_ADD(#{end}, INTERVAL 1 DAY))                                              AS newDishes,
-          (SELECT COALESCE(SUM(cook_count &gt; 0), 0) FROM dish WHERE deleted = 0)                             AS cookedDishes,
-          (SELECT COALESCE(SUM(collect_count &gt; 0), 0) FROM dish WHERE deleted = 0)                          AS collectedDishes
-    </select>
-
-    <select id="dishNewTrend" resultType="map">
-        SELECT DATE(created_at) AS dt, COUNT(*) AS num
-        FROM dish
-        WHERE deleted = 0 AND created_at &gt;= #{start} AND created_at &lt; DATE_ADD(#{end}, INTERVAL 1 DAY)
-        GROUP BY DATE(created_at)
-        ORDER BY dt
-    </select>
-
-    <select id="topDishByCook" resultType="map">
-        SELECT d.id AS id, d.name AS name, d.cook_count AS cookCount, d.collect_count AS collectCount,
-               d.rating AS rating, k.name AS kitchen
-        FROM dish d
-        JOIN kitchen k ON k.id = d.kitchen_id
-        WHERE d.deleted = 0 AND d.cook_count &gt; 0
-        ORDER BY d.cook_count DESC
-        LIMIT #{limit}
-    </select>
-
-    <select id="topDishByCollect" resultType="map">
-        SELECT d.id AS id, d.name AS name, d.collect_count AS collectCount, k.name AS kitchen
-        FROM dish d
-        JOIN kitchen k ON k.id = d.kitchen_id
-        WHERE d.deleted = 0 AND d.collect_count &gt; 0
-        ORDER BY d.collect_count DESC
-        LIMIT #{limit}
-    </select>
-
-    <select id="dishCoverRatio" resultType="map">
-        SELECT
-          COALESCE(SUM(cover IS NOT NULL AND cover != ''), 0) AS withCover,
-          COALESCE(SUM(cover IS NULL OR cover = ''), 0)       AS withoutCover
-        FROM dish WHERE deleted = 0
-    </select>
-
-    <!-- ── 四、烹饪订单 ── -->
-    <select id="orderSummary" resultType="map">
-        SELECT
-          (SELECT COUNT(*) FROM cook_order WHERE deleted = 0)                                                   AS totalOrders,
-          (SELECT COUNT(*) FROM cook_order WHERE deleted = 0 AND created_at &gt;= #{start}
-             AND created_at &lt; DATE_ADD(#{end}, INTERVAL 1 DAY))                                              AS newOrders,
-          (SELECT COUNT(*) FROM cook_order WHERE deleted = 0 AND status IN (3, 4) AND created_at &gt;= #{start}
-             AND created_at &lt; DATE_ADD(#{end}, INTERVAL 1 DAY))                                              AS doneInRange,
-          (SELECT COALESCE(SUM(status = 3), 0) FROM cook_order WHERE deleted = 0)                              AS servedOrders,
-          (SELECT COALESCE(SUM(status = 4), 0) FROM cook_order WHERE deleted = 0)                              AS reviewedOrders,
-          (SELECT COALESCE(SUM(status = 5), 0) FROM cook_order WHERE deleted = 0)                              AS canceledOrders,
-          (SELECT ROUND(COALESCE(SUM(status IN (3, 4)), 0) * 100.0 / NULLIF(SUM(status != 5), 0), 1)
-             FROM cook_order WHERE deleted = 0)                                                                 AS completionRate
-    </select>
-
-    <select id="orderTrend" resultType="map">
-        SELECT DATE(created_at) AS dt, COUNT(*) AS total, COALESCE(SUM(status IN (3, 4)), 0) AS done
-        FROM cook_order
-        WHERE deleted = 0 AND created_at &gt;= #{start} AND created_at &lt; DATE_ADD(#{end}, INTERVAL 1 DAY)
-        GROUP BY DATE(created_at)
-        ORDER BY dt
-    </select>
-
-    <select id="orderPeriodDist" resultType="map">
-        SELECT
-          CASE time_period WHEN 1 THEN '早餐' WHEN 2 THEN '午餐' WHEN 3 THEN '晚餐' WHEN 4 THEN '宵夜' END AS label,
-          COUNT(*) AS num
-        FROM cook_order
-        WHERE deleted = 0 AND created_at &gt;= #{start} AND created_at &lt; DATE_ADD(#{end}, INTERVAL 1 DAY)
-        GROUP BY time_period
-        ORDER BY time_period
-    </select>
-
-    <!-- ── 五、评价 ── -->
-    <select id="reviewSummary" resultType="map">
-        SELECT
-          COALESCE(COUNT(*), 0)               AS reviewCount,
-          COALESCE(ROUND(AVG(rating), 2), 0)  AS avgRating,
-          COALESCE(SUM(rating = 5), 0)        AS five,
-          COALESCE(SUM(rating = 4), 0)        AS four,
-          COALESCE(SUM(rating &lt;= 2), 0)    AS low
-        FROM cook_review
-        WHERE deleted = 0 AND created_at &gt;= #{start} AND created_at &lt; DATE_ADD(#{end}, INTERVAL 1 DAY)
-    </select>
-
-    <select id="reviewTrend" resultType="map">
-        SELECT DATE(created_at) AS dt, COUNT(*) AS num, COALESCE(ROUND(AVG(rating), 1), 0) AS avgRating
-        FROM cook_review
-        WHERE deleted = 0 AND created_at &gt;= #{start} AND created_at &lt; DATE_ADD(#{end}, INTERVAL 1 DAY)
-        GROUP BY DATE(created_at)
-        ORDER BY dt
-    </select>
-
-    <select id="ratingDist" resultType="map">
-        SELECT rating, COUNT(*) AS num
-        FROM cook_review
-        WHERE deleted = 0 AND created_at &gt;= #{start} AND created_at &lt; DATE_ADD(#{end}, INTERVAL 1 DAY)
-        GROUP BY rating
-        ORDER BY rating
-    </select>
-
-    <!-- ── 六、会员 ── -->
-    <select id="memberSummary" resultType="map">
-        SELECT
-          COALESCE(COUNT(*), 0)                                          AS totalOpened,
-          COALESCE(SUM(expire_at &gt; NOW()), 0)                         AS validMembers,
-          COALESCE(SUM(tier = 1 AND expire_at &gt; NOW()), 0)            AS liteValid,
-          COALESCE(SUM(tier = 2 AND expire_at &gt; NOW()), 0)            AS proValid,
-          COALESCE(SUM(expire_at BETWEEN NOW() AND NOW() + INTERVAL 7 DAY), 0) AS expiringSoon
-        FROM `member` WHERE deleted = 0
-    </select>
-
-    <select id="memberIncome" resultType="map">
-        SELECT
-          COALESCE(COUNT(*), 0)                              AS paidOrders,
-          COALESCE(ROUND(SUM(actual_price) / 100.0, 2), 0)   AS totalRevenue,
-          COALESCE(ROUND(AVG(actual_price) / 100.0, 2), 0)   AS avgOrder
-        FROM member_order WHERE deleted = 0 AND status = 1
-    </select>
-
-    <select id="memberTrend" resultType="map">
-        SELECT DATE(paid_at) AS dt, COUNT(*) AS num,
-               COALESCE(ROUND(SUM(actual_price) / 100.0, 2), 0) AS revenue
-        FROM member_order
-        WHERE deleted = 0 AND status = 1 AND paid_at &gt;= #{start} AND paid_at &lt; DATE_ADD(#{end}, INTERVAL 1 DAY)
-        GROUP BY DATE(paid_at)
-        ORDER BY dt
-    </select>
-
-    <select id="memberPlanDist" resultType="map">
-        SELECT plan_code AS planCode, tier AS tier, COUNT(*) AS num,
-               COALESCE(ROUND(SUM(actual_price) / 100.0, 2), 0) AS revenue
-        FROM member_order
-        WHERE deleted = 0 AND status = 1
-        GROUP BY plan_code, tier
-        ORDER BY num DESC
-    </select>
-
-    <select id="memberRefund" resultType="map">
-        SELECT
-          COALESCE(COUNT(*), 0)                              AS refundOrders,
-          COALESCE(ROUND(SUM(actual_price) / 100.0, 2), 0)   AS refundAmount
-        FROM member_order WHERE deleted = 0 AND status = 2
-    </select>
-
-    <!-- 会员订单漏斗：建单时间口径，区间内创建的订单按状态计数（与收入的支付口径不同） -->
-    <select id="memberOrderSummary" resultType="map">
-        SELECT
-          COALESCE(COUNT(*), 0)                              AS createdOrders,
-          COALESCE(SUM(status = 0), 0)                       AS pendingOrders,
-          COALESCE(SUM(status = 1), 0)                       AS paidOrders,
-          COALESCE(SUM(status = 2), 0)                       AS refundedOrders,
-          COALESCE(SUM(status = 3), 0)                       AS closedOrders,
-          COALESCE(ROUND(SUM(CASE WHEN status = 1 THEN actual_price ELSE 0 END) / 100.0, 2), 0) AS paidAmount
-        FROM member_order
-        WHERE deleted = 0 AND created_at &gt;= #{start} AND created_at &lt; DATE_ADD(#{end}, INTERVAL 1 DAY)
-    </select>
-
-    <!-- 支付周期偏好：区间建单且已发放，按月数聚合看出月卡/季卡/年卡倾向 -->
-    <select id="memberMonthsDist" resultType="map">
-        SELECT months, COUNT(*) AS num,
-               COALESCE(ROUND(SUM(actual_price) / 100.0, 2), 0) AS revenue
-        FROM member_order
-        WHERE deleted = 0 AND status = 1
-          AND created_at &gt;= #{start} AND created_at &lt; DATE_ADD(#{end}, INTERVAL 1 DAY)
-        GROUP BY months
-        ORDER BY months
     </select>
 
 </mapper>

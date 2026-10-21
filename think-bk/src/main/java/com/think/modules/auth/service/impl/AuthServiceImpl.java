@@ -69,13 +69,12 @@ public class AuthServiceImpl implements AuthService {
 
         UserEntity userEntity = new UserEntity()
                 .setId(userId)
-                .setUnionid(unionid)
-                .setLastLoginAt(LocalDateTime.now());
+                .setUnionid(unionid);
         userService.updateById(userEntity);
         // 登录时清除本人用户信息缓存，下次鉴权从库重建 LoginUser 快照（login 里的 updateById 绕开了 update() 的删缓存逻辑）
         redisUtils.delete(RedisConstant.USER + userId);
-        // v14 登录流水：每次登录落一行，日活 DAU 按本表 COUNT(DISTINCT user_id) 精确统计，
-        // 修复 user.last_login_at 单值覆盖导致的历史日活低估（同一事务内，登录失败回滚则流水也不落）
+        // v14 登录流水：每次登录落一行，日活 DAU 按本表 COUNT(DISTINCT user_id) 精确统计
+        // （同一事务内，登录失败回滚则流水也不落）
         userLoginLogService.record(userId, openid);
 
         String token = jwtUtils.generate(userId);

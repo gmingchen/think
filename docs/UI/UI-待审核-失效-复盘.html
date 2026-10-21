@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>众三思 - 结果态、失效拦截与已复盘档案高保真验证</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background-color: #14161A;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 16px;
+      color: #22262E;
+    }
+
+    .doc-intro {
+      text-align: center;
+      color: #F5F6F8;
+      margin-bottom: 28px;
+    }
+    .doc-intro h1 {
+      font-family: "Songti SC", "Noto Serif CJK SC", "Source Han Serif SC", STSong, serif;
+      font-size: 22px;
+      letter-spacing: 2px;
+      margin-bottom: 6px;
+    }
+    .doc-intro p {
+      font-size: 13px;
+      color: #9AA0AA;
+    }
+
+    .viewport-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 32px;
+      justify-content: center;
+    }
+
+    /* 微信小程序标准设备容器 (对标 750rpx 逻辑视口 375px × 812px) */
+    .phone-mockup {
+      width: 375px;
+      height: 812px;
+      background-color: #F5F6F8;
+      border-radius: 40px;
+      overflow: hidden;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45), 0 0 0 10px #2A2D35;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* 顶部状态栏与微信胶囊条 */
+    .status-bar {
+      height: 44px;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 24px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #22262E;
+    }
+    .nav-bar-sub {
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      background: #FFFFFF;
+      border-bottom: 0.5px solid #E6E9F0;
+    }
+    .wechat-capsule-bar {
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0 16px;
+    }
+    .wechat-capsule {
+      width: 80px;
+      height: 30px;
+      background: rgba(255,255,255,0.65);
+      border-radius: 999px;
+      border: 0.5px solid rgba(0,0,0,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 0 6px;
+      backdrop-filter: blur(8px);
+    }
+
+    .font-serif {
+      font-family: "Songti SC", "Noto Serif CJK SC", "Source Han Serif SC", STSong, serif;
+    }
+
+    /* 通用按钮 */
+    .main-capsule-btn {
+      width: 100%;
+      height: 46px;
+      background: #4E75C9;
+      color: #FFFFFF;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 500;
+      gap: 6px;
+      box-shadow: 0 6px 18px rgba(78, 117, 201, 0.3);
+      cursor: pointer;
+    }
+    .ghost-capsule-btn {
+      width: 100%;
+      height: 44px;
+      background: #FFFFFF;
+      border: 1px solid #CAD4E8;
+      color: #22262E;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .seal-dot {
+      width: 5px;
+      height: 5px;
+      background-color: #B23C2E;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    /* 底部声明 */
+    .safe-disclaimer-footer {
+      text-align: center;
+      font-size: 11px;
+      color: #9AA0AA;
+      padding-bottom: 24px;
+    }
+
+    /* ---------------- 页面 1 & 2：结果态卡片组件 ---------------- */
+    .result-content-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 0 16px;
+    }
+    .result-card {
+      background: #FFFFFF;
+      border-radius: 20px;
+      padding: 32px 20px 24px 20px;
+      text-align: center;
+      box-shadow: 0 6px 24px rgba(34, 38, 46, 0.04);
+    }
+
+    /* 图标：审核中 (浅蓝钟漏) */
+    .icon-box-auditing {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: #E8EDF7;
+      color: #3B5BA5;
+      font-size: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px auto;
+    }
+
+    /* 图标：未通过 (浅朱红印章戳) */
+    .icon-box-rejected {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: #FFF2F0;
+      border: 1.5px solid #B23C2E;
+      color: #B23C2E;
+      font-size: 22px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px auto;
+    }
+
+    .result-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #22262E;
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+    }
+    .result-desc {
+      font-size: 12px;
+      color: #9AA0AA;
+      line-height: 1.5;
+      margin-bottom: 24px;
+      padding: 0 8px;
+    }
+
+    /* ---------------- 页面 3：失效提示页组件 ---------------- */
+    .invalid-content-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 0 24px;
+      text-align: center;
+    }
+    .icon-box-invalid {
+      width: 64px;
+      height: 64px;
+      border-radius: 18px;
+      background: #FFFFFF;
+      border: 1.5px solid #CAD4E8;
+      color: #CAD4E8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+    }
+
+    /* ---------------- 页面 4：已复盘终身档案组件 ---------------- */
+    .recap-scroll-view {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px 14px 20px 14px;
+    }
+    .recap-scroll-view::-webkit-scrollbar {
+      display: none;
+    }
+    .ui-card {
+      background: #FFFFFF;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 16px rgba(34, 38, 46, 0.03);
+      position: relative;
+    }
+    .split-head-tag {
+      font-size: 11px;
+      color: #3B5BA5;
+      letter-spacing: 2px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .past-quote-item {
+      font-size: 11px;
+      color: #22262E;
+      line-height: 1.45;
+      margin-bottom: 6px;
+      padding-bottom: 6px;
+      border-bottom: 0.5px solid #F0F2F5;
+    }
+    .past-quote-item:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    /* 朱砂印：已复盘 */
+    .seal-reviewed-stamp {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 58px;
+      height: 58px;
+      border: 1.5px solid #B23C2E;
+      border-radius: 50%;
+      color: #B23C2E;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: bold;
+      transform: rotate(-12deg);
+      opacity: 0.88;
+      letter-spacing: 1px;
+    }
+    .chosen-option-pill {
+      background: #E8EDF7;
+      color: #3B5BA5;
+      border: 1px solid #4E75C9;
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      display: inline-block;
+      margin: 8px 0 12px 0;
+    }
+    .verbatim-outcome {
+      background: #F9FAFC;
+      border-left: 2px solid #3B5BA5;
+      border-radius: 4px;
+      padding: 10px 12px;
+      font-size: 12px;
+      color: #22262E;
+      line-height: 1.6;
+      text-align: justify;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="doc-intro">
+    <h1>众三思 · 结果态、失效拦截与已复盘档案规范</h1>
+    <p>克制理性 · 现代极简 + 微国风（B+方案）· 750rpx 微信小程序端标准还原</p>
+  </div>
+
+  <div class="viewport-group">
+
+    <!-- ================= 屏幕 1：公开档「已提交，正在审核中」 ================= -->
+    <div class="phone-mockup">
+      <div>
+        <div class="status-bar">
+          <span>09:41</span>
+          <span>5G · 100%</span>
+        </div>
+        <div class="wechat-capsule-bar">
+          <div class="wechat-capsule">
+            <span style="font-size:12px;">•••</span>
+            <span style="font-size:12px;">◎</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="result-content-body">
+        <div style="text-align: center; margin-bottom: 20px;">
+          <span class="font-serif" style="font-size: 20px; font-weight:600; color:#22262E; letter-spacing: 3px;">众 三 思</span>
+          <div style="font-size: 11px; color:#9AA0AA; margin-top: 4px;">集众人所见，众三思而后抉择</div>
+        </div>
+
+        <div class="result-card">
+          <!-- 浅蓝底信息图标 (非印章红) -->
+          <div class="icon-box-auditing font-serif">⏳</div>
+          <h2 class="result-title font-serif">已提交，正在审核中</h2>
+          <p class="result-desc">
+            通过审核后将出现在众议广场并接收评议。在此期间，您可随时在「我的决策单」中查看进展。
+          </p>
+
+          <div class="main-capsule-btn">
+            <span>查看我的决策单</span>
+            <span class="seal-dot"></span>
+          </div>
+          <div class="ghost-capsule-btn">
+            <span>返回首页</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="safe-disclaimer-footer">
+        建议仅供参考，最终决定权归你
+      </div>
+    </div>
+
+
+    <!-- ================= 屏幕 2：审核未通过对应态「内容暂未能发布」 ================= -->
+    <div class="phone-mockup">
+      <div>
+        <div class="status-bar">
+          <span>09:41</span>
+          <span>5G · 100%</span>
+        </div>
+        <div class="wechat-capsule-bar">
+          <div class="wechat-capsule">
+            <span style="font-size:12px;">•••</span>
+            <span style="font-size:12px;">◎</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="result-content-body">
+        <div style="text-align: center; margin-bottom: 20px;">
+          <span class="font-serif" style="font-size: 20px; font-weight:600; color:#22262E; letter-spacing: 3px;">众 三 思</span>
+          <div style="font-size: 11px; color:#9AA0AA; margin-top: 4px;">集众人所见，众三思而后抉择</div>
+        </div>
+
+        <div class="result-card">
+          <!-- 印章红未通过图标 -->
+          <div class="icon-box-rejected font-serif">✕</div>
+          <h2 class="result-title font-serif">内容暂未能发布</h2>
+          <p class="result-desc">
+            您的决策单部分表述暂未符合公开广场安全规范。建议调整敏感措辞后重新提请评议。
+          </p>
+
+          <!-- 去修改重提 (带原表单数据) -->
+          <div class="main-capsule-btn">
+            <span>去修改并重新提请</span>
+            <span class="seal-dot"></span>
+          </div>
+          <div class="ghost-capsule-btn">
+            <span>返回首页</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="safe-disclaimer-footer">
+        建议仅供参考，最终决定权归你
+      </div>
+    </div>
+
+
+    <!-- ================= 屏幕 3：决策单失效提示页 (被删 / 无权 / 解散) ================= -->
+    <div class="phone-mockup">
+      <div>
+        <div class="status-bar">
+          <span>09:41</span>
+          <span>5G · 100%</span>
+        </div>
+        <div class="nav-bar-sub">
+          <div style="font-size:16px; cursor:pointer;">‹</div>
+          <div class="font-serif" style="font-size:14px; font-weight:600;">决策详情</div>
+          <div style="width:20px;"></div>
+        </div>
+      </div>
+
+      <div class="invalid-content-body">
+        <div class="icon-box-invalid font-serif">卷</div>
+        <h2 class="font-serif" style="font-size: 17px; font-weight:600; color:#22262E; margin-bottom: 8px;">
+          该决策单已失效或暂不可见
+        </h2>
+        <p style="font-size: 12px; color: #9AA0AA; line-height: 1.6; margin-bottom: 28px; max-width: 240px;">
+          可能已被发起人撤回归档，或暂无当前群组查看权限。欢迎前往广场探索更多众人见解。
+        </p>
+
+        <div class="main-capsule-btn" style="max-width: 220px;">
+          <span>去众议广场看看</span>
+          <span class="seal-dot"></span>
+        </div>
+        <div class="ghost-capsule-btn" style="max-width: 220px;">
+          <span>返回首页</span>
+        </div>
+      </div>
+
+      <div class="safe-disclaimer-footer">
+        建议仅供参考，最终决定权归你
+      </div>
+    </div>
+
+
+    <!-- ================= 屏幕 4：已复盘终身档案态 (detail status=reviewed) ================= -->
+    <div class="phone-mockup">
+      <div>
+        <div class="status-bar">
+          <span>09:41</span>
+          <span>5G · 100%</span>
+        </div>
+        <div class="nav-bar-sub">
+          <div style="font-size:16px; cursor:pointer;">‹</div>
+          <div class="font-serif" style="font-size:14px; font-weight:600;">决策终身档案</div>
+          <div class="wechat-capsule">
+            <span style="font-size:12px;">•••</span>
+            <span style="font-size:12px;">◎</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="recap-scroll-view">
+        <!-- 头部概述卡 -->
+        <div class="ui-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <span style="font-size:10px; color:#3B5BA5; background:#E8EDF7; padding:2px 6px; border-radius:4px; font-weight:600;">已复盘终态</span>
+            <span style="font-size:11px; color:#4E75C9; cursor:pointer;">查看完整报告 ➔</span>
+          </div>
+          <h2 class="font-serif" style="font-size: 16px; font-weight:600; color:#22262E; line-height:1.4;">
+            30岁体制内裸辞，是否全职AI出海创业？
+          </h2>
+          <div style="font-size:11px; color:#9AA0AA; margin-top:4px;">
+            沉然 2026.10 发起 · 共沉淀 30 位智囊三思见解
+          </div>
+        </div>
+
+        <!-- 并列对照卡片 (并列呈现当初评议与现实终局) -->
+        <div class="ui-card">
+          <!-- 朱砂印章：已复盘 -->
+          <div class="seal-reviewed-stamp font-serif">已复盘</div>
+
+          <!-- 上半场：当初评议 (只读镜像) -->
+          <div class="split-head-tag font-serif">
+            <span>【 当 初 众 议 】</span>
+            <span style="font-size:10px; font-weight:normal; color:#9AA0AA;">73% 倾向出海 · 27% 留守</span>
+          </div>
+          <div style="margin-bottom:12px;">
+            <div class="past-quote-item">
+              <strong style="color:#B23C2E;">[思危]</strong> @老张：欧美合规与收款风控是最大暗礁，无容错空间。
+            </div>
+            <div class="past-quote-item">
+              <strong style="color:#3B5BA5;">[思退]</strong> @王总监：留足24个月生活费，若半年无正向现金流即刻止损。
+            </div>
+          </div>
+
+          <!-- 对照分割线 -->
+          <div style="display:flex; align-items:center; justify-content:center; gap:8px; margin: 12px 0;">
+            <div style="height:0.5px; width:40px; background:#CAD4E8;"></div>
+            <span style="font-size:9px; color:#9AA0AA; letter-spacing:1px;">现实终局对照</span>
+            <div style="height:0.5px; width:40px; background:#CAD4E8;"></div>
+          </div>
+
+          <!-- 下半场：最终抉择与实际结局 -->
+          <div class="split-head-tag font-serif" style="color:#22262E;">
+            <span>【 现 实 终 局 】</span>
+            <span style="font-size:10px; font-weight:normal; color:#B23C2E;">当事人亲历沉淀</span>
+          </div>
+
+          <div style="font-size:11px; color:#9AA0AA;">最终执行抉择：</div>
+          <div class="chosen-option-pill">
+            ✓ 方案 B：全职出海开拓
+          </div>
+
+          <div style="font-size:11px; color:#9AA0AA; margin-bottom:4px;">实际结局自述：</div>
+          <div class="verbatim-outcome font-serif">
+            “事实证明智囊团提到的合规暗礁确实发生了！在全职出海第3个月Stripe账户被风控，幸好当初听从了思退建议，留足了24个月生活费。目前已在新加坡设立主体重新跑通，虽艰难但没有后悔当初的抉择。”
+          </div>
+        </div>
+      </div>
+
+      <div class="safe-disclaimer-footer">
+        建议仅供参考，最终决定权归你
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

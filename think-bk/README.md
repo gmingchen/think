@@ -1,6 +1,6 @@
-# 厨菜记后端（think-bk）
+# 众三思后端（think-bk）
 
-厨菜记微信小程序后端服务。
+众三思微信小程序后端服务。
 
 ## 技术栈
 
@@ -22,9 +22,9 @@
 
 ```
 think-bk/
-├── src/main/java/com/dishes/
-│   ├── core/           # 核心模块（安全、配置等）
-│   ├── module/         # 业务模块
+├── src/main/java/com/think/
+│   ├── core/           # 核心模块（安全、数据源、Redis、校验等）
+│   ├── modules/        # 业务模块（auth/user/wechat/os/subscribe/ai/stats）
 │   └── common/         # 公共模块（工具类、枚举、异常等）
 ├── src/main/resources/
 │   ├── application.yml
@@ -33,6 +33,10 @@ think-bk/
 │   └── application-prod.yml
 └── pom.xml
 ```
+
+> 业务模块当前仅保留底座能力（微信登录、用户建档、内容安全、订阅消息、对象存储、LLM 中转、用户维度统计）；
+> 众三思核心业务（决策单 decision、评议 review、群组 grp、报告 report、复盘 recap、标签 tag、举报 abuse_report 等）
+> 尚未落地，表结构见 `docs/数据库设计.md` 与 `docs/众三思.sql`。
 
 ## 环境要求
 

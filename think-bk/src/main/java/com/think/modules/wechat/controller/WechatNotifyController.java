@@ -2,8 +2,8 @@ package com.think.modules.wechat.controller;
 
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import com.think.modules.wechat.config.WechatProperties;
 import com.think.modules.wechat.utils.WechatUtils;
-import com.think.modules.wechat.xpay.config.XpayProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +48,7 @@ public class WechatNotifyController {
     private static final int NOTIFY_RETRY = -1;
 
     @Autowired
-    private XpayProperties xpayProperties;
+    private WechatProperties wechatProperties;
 
     /**
      * MP 后台保存「消息推送」配置时，微信服务器发来的 GET 校验
@@ -64,10 +64,10 @@ public class WechatNotifyController {
                         @RequestParam(required = false) String timestamp,
                         @RequestParam(required = false) String nonce,
                         @RequestParam(required = false) String echostr) {
-        String token = xpayProperties.getNotifyToken();
+        String token = wechatProperties.getNotifyToken();
         if (StringUtils.isBlank(token)) {
             // 微信侧只会回一句「Token校验失败」，看不出是配置缺失，故这里必须把配置项点名出来
-            log.error("微信消息推送校验失败：xpay.notify-token 未配置，须与 MP 后台「开发设置 → 消息推送」的 Token 逐字一致");
+            log.error("微信消息推送校验失败：wechat.notify-token 未配置，须与 MP 后台「开发设置 → 消息推送」的 Token 逐字一致");
             return "notify token not configured";
         }
         if (!WechatUtils.checkSignature(token, signature, timestamp, nonce)) {
@@ -99,7 +99,7 @@ public class WechatNotifyController {
                                        @RequestBody(required = false) String body) {
         try {
             // 明文模式下 body 不加密，signature 是唯一的来源证明：能挡掉不知道 Token 的伪造者，挡不住链路中间对 body 的篡改
-            if (!WechatUtils.checkSignature(xpayProperties.getNotifyToken(), signature, timestamp, nonce)) {
+            if (!WechatUtils.checkSignature(wechatProperties.getNotifyToken(), signature, timestamp, nonce)) {
                 log.error("微信消息推送 POST 验签不通过，signature：{}，timestamp：{}，nonce：{}，body：{}",
                         signature, timestamp, nonce, body);
                 return notifyResult(NOTIFY_RETRY, "signature mismatch");
@@ -110,7 +110,7 @@ public class WechatNotifyController {
             }
             String message = body.trim();
             if (message.startsWith("<")) {
-                // 后台「数据格式」被改成 XML，或 xpay.msg-data-format 与它不一致；本版不实现 XML 解析
+                // 后台「数据格式」被改成 XML，或 wechat.msg-data-format 与它不一致；本版不实现 XML 解析
                 log.error("收到 XML 报文但本端只实现 JSON 解析，请把 MP 后台「数据格式」保持为 JSON。body：{}", message);
                 return notifyResult(NOTIFY_RETRY, "xml not supported");
             }
