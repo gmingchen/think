@@ -1,0 +1,6 @@
+<view class="decision-entry">
+  <iconfont class="decision-entry__icon" name="talk" size="{{ 30 }}" color="#4E75C9" />
+  <text class="decision-entry__title">群内决策单</text>
+  <text class="decision-entry__count">共 {{ total }} 条</text>
+  <iconfont class="decision-entry__arrow" name="right" size="{{ 24 }}" color="#9AA0AA" />
+</view>

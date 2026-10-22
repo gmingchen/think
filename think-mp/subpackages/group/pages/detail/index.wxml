@@ -1,0 +1,46 @@
+<container use-back use-scroll use-navbar-middle>
+  <!-- 自定义导航标题：群名过长省略，成员数始终完整展示 -->
+  <view slot="navbar-middle" class="gd__nav-title">
+    <text class="gd__nav-name">{{ group.name || '群详情' }}</text>
+    <text wx:if="{{ group.name }}" class="gd__nav-count">（{{ group.memberCount || 0 }}）</text>
+  </view>
+  <view class="gd">
+    <!-- 群核心资料卡（纯 UI 组件，交互经事件回抛页面处理） -->
+    <info
+      data="{{ group }}"
+      bind:edit="onEditTap"
+      bind:members="onMembersTap"
+      bind:invite="onInviteTap"
+      bind:dissolve="onDissolveTap"
+      bind:leave="onLeaveTap"
+    />
+
+    <!-- 群内决策单列表页入口（数量取自 group.decisionCount；tap 由组件内冒泡至页面直接处理） -->
+    <decision-entry total="{{ group.decisionCount }}" bindtap="onDecisionListTap" />
+
+    <!-- 群内进行中（未结束）的决策单 -->
+    <view class="gd__section">
+      <view class="gd__feed-head">
+        <text class="gd__feed-title font-serif">进行中的决策单</text>
+      </view>
+
+      <view wx:if="{{ loading }}" class="gd__loading">加载中...</view>
+      <block wx:elif="{{ list.length }}">
+        <view class="gd__item" wx:for="{{ list }}" wx:key="id">
+          <ts-decision-card item="{{ item }}" bind:click="onCardTap" />
+        </view>
+        <view wx:if="{{ list.length < page.total }}" class="gd__more" bindtap="loadPageData">加载更多</view>
+      </block>
+      <view wx:else class="gd__empty">还没有进行中的决策单</view>
+    </view>
+
+  </view>
+</container>
+
+<!-- 邀请入群弹窗（组件自管理显隐，通过 id 打开；转发由页面 onShareAppMessage 处理） -->
+<invite-popup id="invitePopup" />
+
+<!-- 编辑群名弹窗（组件自管理显隐，通过 id 打开） -->
+<edit-popup id="editPopup" bind:confirm="onEditConfirm" />
+
+<confirm-popup id="actionConfirmPopup" bind:confirm="onConfirmDone" />

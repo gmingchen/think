@@ -1,8 +1,8 @@
 import { TABBAR_ENUM } from '../../enums/index'
 
 export const TABBAR_LIST = [
-  { label: '小舍', value: TABBAR_ENUM.HOME, emoji: '🏡', url: '/pages/index/index' },
-  { label: '菜谱', value: TABBAR_ENUM.RECIPE, emoji: '📖', url: '/pages/recipe/index' },
-  { label: '下厨', value: TABBAR_ENUM.COOK, emoji: '🍳', url: '/pages/cook/index' },
-  { label: '我的', value: TABBAR_ENUM.MINE, emoji: '📇', url: '/pages/mine/index' },
+  { label: '三思', value: TABBAR_ENUM.HOME, icon: 'home', url: '/pages/index/index' },
+  { label: '众思', value: TABBAR_ENUM.SQUARE, icon: 'talk', url: '/pages/square/index' },
+  { label: '群组', value: TABBAR_ENUM.GROUP, icon: 'group', url: '/pages/group/index' },
+  { label: '我的', value: TABBAR_ENUM.MINE, icon: 'mine', url: '/pages/mine/index' },
 ]

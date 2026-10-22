@@ -1,10 +1,8 @@
 import { storePageBehavior, sharePageBehavior } from '../../../../behaviors/index'
-import { AD_UNIT_ABOUT_BANNER } from '../../../../common/constants/index'
 
 Page({
   behaviors: [storePageBehavior, sharePageBehavior],
   data: {
-    AD_UNIT_ABOUT_BANNER,
   },
   onLoad() {
     this.bindStore({ fields: ['system'] })

@@ -1,0 +1,8 @@
+{
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "empty": "/components/empty/index",
+    "confirm-popup": "/components/confirm-popup/index",
+    "invite-popup": "../detail/components/invite-popup/index"
+  }
+}

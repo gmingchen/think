@@ -7,6 +7,7 @@ import com.think.common.enums.DecisionStatusEnum;
 import com.think.common.enums.GrpMemberRoleEnum;
 import com.think.common.enums.GrpStatusEnum;
 import com.think.common.enums.ResultCodeEnum;
+import com.think.common.enums.VisibilityEnum;
 import com.think.common.pojo.PageResult;
 import com.think.common.utils.CollectionUtils;
 import com.think.core.mybatisplus.service.ServiceImplX;
@@ -21,6 +22,7 @@ import com.think.modules.grp.model.dto.GrpCreateDTO;
 import com.think.modules.grp.model.dto.GrpIdDTO;
 import com.think.modules.grp.model.dto.GrpJoinDTO;
 import com.think.modules.grp.model.dto.GrpMemberDTO;
+import com.think.modules.grp.model.dto.GrpMemberPageDTO;
 import com.think.modules.grp.model.dto.GrpPageDTO;
 import com.think.modules.grp.model.dto.GrpRemoveMemberDTO;
 import com.think.modules.grp.model.dto.GrpUpdateDTO;
@@ -40,7 +42,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 /**
@@ -52,9 +54,9 @@ import java.util.stream.Collectors;
 public class GrpServiceImpl extends ServiceImplX<GrpMapper, GrpEntity> implements GrpService {
 
     /**
-     * 邀请码有效期（秒）：7 天
+     * 邀请码有效期（秒）：1 天
      */
-    private static final long INVITE_EXPIRE = 7 * 24 * 60 * 60L;
+    private static final long INVITE_EXPIRE = 24 * 60 * 60L;
 
     @Autowired
     private GrpMemberService grpMemberService;
@@ -106,7 +108,12 @@ public class GrpServiceImpl extends ServiceImplX<GrpMapper, GrpEntity> implement
         if (myRole == null) {
             throw new RunException(ResultCodeEnum.NOT_ALLOWED);
         }
-        return toDetailVO(grp, userId);
+        GrpDetailVO vo = toDetailVO(grp, userId);
+        // 群内决策单总数（群内可见、全状态）：随详情一并返回，省去前端额外分页请求
+        Integer decisionCount = decisionMapper.selectCount(new LambdaQueryWrapper<DecisionEntity>()
+                .eq(DecisionEntity::getGrpId, grp.getId())
+                .eq(DecisionEntity::getVisibility, VisibilityEnum.GRP.getCode())).intValue();
+        return vo.setDecisionCount(decisionCount);
     }
 
     @Override
@@ -143,7 +150,8 @@ public class GrpServiceImpl extends ServiceImplX<GrpMapper, GrpEntity> implement
                 || !grpMemberService.isMember(grp.getId(), userId)) {
             throw new RunException(ResultCodeEnum.NOT_ALLOWED);
         }
-        String code = UUID.randomUUID().toString().replace("-", "");
+        // 邀请码规则：群组 id + 5 位随机数（10000~99999 保证恰好 5 位），短且可读
+        String code = grp.getId() + String.valueOf(ThreadLocalRandom.current().nextInt(10000, 100000));
         redisUtils.set(RedisConstant.GRP_INVITE + code, grp.getId() + ":" + userId, INVITE_EXPIRE);
         return code;
     }
@@ -161,8 +169,12 @@ public class GrpServiceImpl extends ServiceImplX<GrpMapper, GrpEntity> implement
             throw new RunException("该群已解散");
         }
         Long userId = SecurityUtils.getLoginUserId();
+        // 已在群（含群主）：直接提示，不再入群，避免 addMember 将群主降级为成员
+        if (grpMemberService.isMember(grpId, userId)) {
+            throw new RunException("你已在该群组中");
+        }
         grpMemberService.addMember(grpId, userId, GrpMemberRoleEnum.MEMBER.getCode());
-        redisUtils.delete(RedisConstant.GRP_INVITE + dto.getCode());
+        // 邀请码不核销：入群后保留，有效期内（1 天）可反复使用，到期由 Redis TTL 自然过期
     }
 
     @Override
@@ -189,25 +201,30 @@ public class GrpServiceImpl extends ServiceImplX<GrpMapper, GrpEntity> implement
     }
 
     @Override
-    public List<GrpMemberVO> members(Long grpId) {
+    public PageResult<GrpMemberVO> pageMembers(GrpMemberPageDTO dto) {
+        Long grpId = dto.getGrpId();
         validateExists(grpId);
         Long userId = SecurityUtils.getLoginUserId();
         if (!grpMemberService.isMember(grpId, userId)) {
             throw new RunException(ResultCodeEnum.NOT_ALLOWED);
         }
-        List<GrpMemberDTO> memberList = grpMemberService.listByGrp(grpId);
+        PageResult<GrpMemberDTO> memberPage = grpMemberService.pageByGrp(dto);
+        List<GrpMemberDTO> memberList = memberPage.getList();
         if (CollectionUtils.isEmpty(memberList)) {
-            return Collections.emptyList();
+            return new PageResult<GrpMemberVO>(memberPage.getTotal(), memberPage.getPages(), Collections.emptyList())
+                    .setCurrent(memberPage.getCurrent());
         }
         List<Long> userIds = CollectionUtils.mapList(memberList, GrpMemberDTO::getUserId);
         Map<Long, UserBriefVO> userMap = userService.listByIds(userIds).stream()
                 .collect(Collectors.toMap(UserEntity::getId, this::toBrief, (a, b) -> a));
-        return memberList.stream().map(member -> new GrpMemberVO()
+        List<GrpMemberVO> list = memberList.stream().map(member -> new GrpMemberVO()
                         .setUserId(member.getUserId())
                         .setRole(member.getRole())
                         .setJoinedAt(member.getCreatedAt())
                         .setUser(userMap.get(member.getUserId())))
                 .collect(Collectors.toList());
+        return new PageResult<>(memberPage.getTotal(), memberPage.getPages(), list)
+                .setCurrent(memberPage.getCurrent());
     }
 
     /**

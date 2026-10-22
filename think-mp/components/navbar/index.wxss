@@ -4,7 +4,6 @@
   background: rgba(245, 239, 235, 0.92);
   backdrop-filter: blur(8rpx);
   -webkit-backdrop-filter: blur(8rpx);
-  border-bottom: 1rpx solid rgba(221, 211, 200, 0.4);
 }
 .navbar__left > view {
   width: fit-content;

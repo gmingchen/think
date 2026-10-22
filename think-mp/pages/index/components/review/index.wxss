@@ -1,0 +1,52 @@
+/* 评议中状态卡（可点入口） */
+:host {
+  display: block;
+}
+
+.review {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--ts-card);
+  border-radius: var(--ts-radius);
+  box-shadow: var(--ts-shadow);
+  padding: 28rpx 32rpx;
+  margin-bottom: 32rpx;
+}
+
+.review:active {
+  opacity: 0.9;
+}
+
+.review__left {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.review__icon {
+  width: 56rpx;
+  height: 56rpx;
+  flex-shrink: 0;
+  background: var(--ts-tag-bg);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.review__title {
+  font-size: 28rpx;
+  font-weight: var(--font-weight-6);
+  color: var(--ts-text);
+}
+
+.review__sub {
+  font-size: 22rpx;
+  color: var(--ts-text-sub);
+  margin-top: 4rpx;
+}
+
+.review__go {
+  flex-shrink: 0;
+}

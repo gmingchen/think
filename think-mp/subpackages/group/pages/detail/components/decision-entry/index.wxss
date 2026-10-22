@@ -1,0 +1,41 @@
+/* 群内决策单列表页入口（白底横条，标题左、数量+箭头右；组件自管理数量与跳转） */
+:host {
+  display: block;
+}
+
+.decision-entry {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24rpx;
+  padding: 28rpx 32rpx;
+  background: var(--ts-card);
+  border-radius: var(--ts-radius);
+  box-shadow: var(--ts-shadow);
+}
+
+.decision-entry:active {
+  opacity: .9;
+}
+
+.decision-entry__icon {
+  flex-shrink: 0;
+  margin-right: 16rpx;
+}
+
+.decision-entry__title {
+  flex: 1;
+  font-size: 30rpx;
+  font-weight: var(--font-weight-6);
+  color: var(--ts-text);
+}
+
+.decision-entry__count {
+  flex-shrink: 0;
+  margin-right: 8rpx;
+  font-size: 24rpx;
+  color: var(--ts-text-sub);
+}
+
+.decision-entry__arrow {
+  flex-shrink: 0;
+}

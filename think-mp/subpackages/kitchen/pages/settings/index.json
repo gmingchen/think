@@ -1,6 +1,0 @@
-{
-  "usingComponents": {
-    "skeleton": "./components/skeleton/index",
-    "name-popup": "./components/name-popup/index"
-  }
-}

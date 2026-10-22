@@ -1,19 +1,13 @@
 import { storeComponentBehavior } from '../../behaviors/index'
-import { TABBAR_ENUM } from '../../common/enums/index'
+import { ROUTE } from '../../common/constants/index'
 
 Component({
   behaviors: [
     storeComponentBehavior({
-      fields: ['tabbar', 'kitchen'],
-      actions: ['updateActive', 'switchTabbar', 'updateRoleTabs']
+      fields: ['tabbar'],
+      actions: ['updateActive', 'switchTabbar']
     })
   ],
-  observers: {
-    'kitchen.active'(active) {
-      if (!active) return
-      this.updateRoleTabs(active.role)
-    }
-  },
   pageLifetimes: {
     show: function () {
       const pages = getCurrentPages();
@@ -26,6 +20,10 @@ Component({
     onTap(event) {
       const { value, url } = event.currentTarget.dataset.row
       this.switchTabbar({ value, url })
+    },
+    // 中间凸起按钮：跳转创建决策单
+    onCreateTap() {
+      wx.$navigateTo(ROUTE.DECISION_CREATE)
     }
   }
 })

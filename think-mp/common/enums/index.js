@@ -1,5 +1,6 @@
 export * from './system/index'
-export * from './kitchen/index'
+export * from './decision/index'
+export * from './grp/index'
 export * from './tabbar/index'
 export * from './file/index'
 export * from './user/index'

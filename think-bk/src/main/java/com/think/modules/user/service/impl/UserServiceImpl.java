@@ -61,7 +61,7 @@ public class UserServiceImpl extends ServiceImplX<UserMapper, UserEntity> implem
         UserEntity userEntity = new UserEntity()
                 .setOpenid(dto.getOpenid())
                 .setUnionid(dto.getUnionid())
-                .setNickname("用户-" + LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant().getEpochSecond())
+                .setNickname("决策者-" + LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant().getEpochSecond())
                 .setInviterId(dto.getInviterId());
         baseMapper.insert(userEntity);
         Long userId = userEntity.getId();

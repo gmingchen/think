@@ -24,6 +24,11 @@ Component({
     lockScroll: {
       type: Boolean,
       value: true
+    },
+    // 面板宽度（如 '680rpx'）：仅 center 弹窗需要加宽时传入，留空则用默认 max-width
+    panelWidth: {
+      type: String,
+      value: ''
     }
   },
 

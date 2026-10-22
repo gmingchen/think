@@ -1,0 +1,43 @@
+<wxs src="../../../../../../wxs/index.wxs" module="s" />
+
+<view class="info">
+  <view class="info__hero">
+    <view class="info__avatar">{{ s.first(data.name, '群') }}</view>
+    <view class="info__info">
+      <view class="info__name-row">
+        <text class="info__name">{{ data.name }}</text>
+        <iconfont
+          wx:if="{{ data.myRole === GRP_ROLE_ENUM.OWNER && data.status !== GRP_STATUS_ENUM.DISSOLVED }}"
+          class="info__edit-btn"
+          name="edit"
+          size="{{ 26 }}"
+          color="#4E75C9"
+          bindtap="onEditTap"
+        />
+      </view>
+      <view class="info__role-line" bindtap="onMembersTap">
+        <text wx:if="{{ data.status === GRP_STATUS_ENUM.DISSOLVED }}" class="info__role info__role--dissolved">已解散</text>
+        <text wx:elif="{{ data.myRole === GRP_ROLE_ENUM.OWNER }}" class="info__role info__role--owner">群主</text>
+        <text wx:else class="info__role info__role--member">成员</text>
+        <text class="info__role-sep">·</text>
+        <text class="info__role-count">成员共 {{ data.memberCount || 0 }} 人</text>
+        <iconfont class="info__role-arrow" name="right" size="{{ 24 }}" color="#4E75C9" />
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{ data.status !== GRP_STATUS_ENUM.DISSOLVED }}" class="info__actions">
+    <view class="info__action info__action--primary" bindtap="onInviteTap">
+      <iconfont name="invite" size="{{ 34 }}" color="#FFFFFF" />
+      <text>邀请</text>
+    </view>
+    <view wx:if="{{ data.myRole === GRP_ROLE_ENUM.OWNER }}" class="info__action info__action--danger" bindtap="onDissolveTap">
+      <iconfont name="dissolve" size="{{ 34 }}" color="#B23C2E" />
+      <text>解散</text>
+    </view>
+    <view wx:else class="info__action info__action--danger" bindtap="onLeaveTap">
+      <iconfont name="exit" size="{{ 34 }}" color="#B23C2E" />
+      <text>退出</text>
+    </view>
+  </view>
+</view>

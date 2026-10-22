@@ -18,9 +18,4 @@
       <iconfont name="arrow-right" size="28" color="#8C7E72" />
     </view>
   </view>
-
-  <!-- Banner 广告（协议列表卡片之后、页面末尾；本页卡片用 margin 0 32rpx，故用 p_h-32 包裹对齐；无 loading 态常驻展示，受 store.ad.enabled 总开关控制，无填充自动隐藏） -->
-  <view class="p_h-32">
-    <ad-unit ad-unit-id="{{ AD_UNIT_ABOUT_BANNER }}" cls="page__ad" />
-  </view>
 </container>

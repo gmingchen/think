@@ -1,7 +1,0 @@
-{
-  "usingComponents": {
-    "skeleton": "./components/skeleton/index",
-    "review-card": "../../components/review-card/index",
-    "van-rate": "@vant/weapp/rate/index"
-  }
-}

@@ -1,81 +1,21 @@
-<container use-scroll use-footer use-navbar-left>
-  <!-- 厨房切换头部 -->
-  <kitchen-header slot="navbar-left" bind:tap="onOpenKitchenSwitch" />
+<container use-navbar-left use-scroll use-footer>
+  <view slot="navbar-left" class="home__nav-brand font-serif">众三思</view>
+  <view class="home">
+    <!-- 引导区：问候 + 大标题（用户信息、问候语均由组件自管） -->
+    <header />
 
-  <!-- 骨架屏遮罩 -->
-  <skeleton wx:if="{{ loading }}" />
+    <!-- 决策总览卡（大数字 + 摘要） -->
+    <overview stats="{{ stats }}" />
 
-  <!-- 正式内容 -->
-  <view wx:else class="page__content">
-    <!-- 功能入口图 -->
-    <view class="banner">
-      <view class="banner__row">
-        <image class="banner__img" src="/common/images/pick.jpg" mode="widthFix" bind:tap="onPickTap" />
-        <image class="banner__img" src="/common/images/draw.jpg" mode="widthFix" bind:tap="onDrawTap" />
-      </view>
-      <view class="banner__row">
-        <image class="banner__img" src="/common/images/ai.jpg" mode="widthFix" bind:tap="onAiRecommendTap" />
-        <button
-          wx:if="{{ showInvite }}"
-          class="banner__btn"
-          open-type="share"
-          data-type="invite"
-          data-id="{{ kitchen.active.id }}"
-          data-name="{{ kitchen.active.name }}"
-          data-role="{{ KITCHEN_ROLE_ENUM.GUEST }}"
-        >
-          <image class="banner__img" src="/common/images/invite.jpg" mode="widthFix" />
-        </button>
-      </view>
-    </view>
+    <!-- 评议中状态卡（可点入口，跳转由组件自管） -->
+    <review />
 
-    <!-- Banner 广告（最近一餐上方，受 store.ad.enabled 总开关控制，无填充自动隐藏） -->
-    <ad-unit ad-unit-id="{{ AD_UNIT_INDEX_BANNER }}" cls="page__ad" />
+    <!-- 三指标卡（横排等宽） -->
+    <metrics stats="{{ stats }}" />
 
-    <!-- 最近一餐 -->
-    <latest bind:dishTap="onLatestDishTap" />
-
-    <!-- 厨房晒图（基础库 3.9.3+） -->
-    <view wx:if="{{ canShowOfficialPublish }}">
-      <section title="📸 厨房晒图" />
-      <official-account-publish
-        class="zk__card official__publish"
-        topic="{{ OFFICIAL_TOPIC }}"
-        limit="{{ OFFICIAL_LIMIT }}"
-        background-color="{{ OFFICIAL_BG_COLOR }}"
-        placeholder="{{ OFFICIAL_PLACEHOLDER }}"
-        recommend-path="{{ OFFICIAL_RECOMMEND_PATH }}"
-        recommend-title="{{ OFFICIAL_RECOMMEND_TITLE }}"
-      />
-    </view>
+    <!-- 去责任化声明（常驻） -->
+    <view class="home__notice">建议仅供参考，最终决定权归你</view>
   </view>
-
-  <!-- 拿手好菜（通栏滚动） -->
-  <best wx:if="{{ !loading }}" bind:itemTap="onBestItemTap" />
-
-  <!-- 原生广告（页面底部） -->
-  <ad-unit ad-unit-id="{{ AD_UNIT_INDEX_NATIVE }}" cls="page__ad" />
 
   <tabbar slot="footer"></tabbar>
 </container>
-
-<!-- 切换厨房弹窗 -->
-<kitchen-picker
-  visible="{{ showKitchenSwitch }}"
-  bind:close="onCloseKitchenSwitch"
-  bind:switch="onSwitchKitchenConfirm" />
-
-<!-- 邀请加入厨房弹窗 -->
-<invite
-  invite="{{ invite }}"
-  bind:accept="onInviteAccept"
-  bind:reject="onInviteReject" />
-
-<!-- 菜谱详情弹窗 -->
-<dish-popup
-  id="dishPopup"
-  bind:add="onAddDish"
-  bind:detail="onViewDishDetail" />
-
-<!-- 新用户引导弹窗 -->
-<guide wx:if="{{ useGuide }}" stats="{{ stats }}" bind:confirm="onGuideConfirm" />

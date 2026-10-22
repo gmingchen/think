@@ -1,7 +1,7 @@
 import { storePageBehavior, fieldBehavior, sharePageBehavior } from '../../../../behaviors/index'
 import { userUpdateApi, uploadAvatar } from '../../../../apis/index'
 import { SEX_ENUM, SEX_LIST } from '../../../../common/enums/index'
-import { DEFAULT_AVATAR, AD_UNIT_EDIT_BANNER } from '../../../../common/constants/index'
+import { DEFAULT_AVATAR } from '../../../../common/constants/index'
 
 Page({
   behaviors: [storePageBehavior, fieldBehavior, sharePageBehavior],
@@ -11,7 +11,6 @@ Page({
     defaultAvatar: DEFAULT_AVATAR,
     sex: SEX_ENUM.UNKNOWN,
     SEX_LIST,
-    AD_UNIT_EDIT_BANNER,
   },
 
   onLoad() {

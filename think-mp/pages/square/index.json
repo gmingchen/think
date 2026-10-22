@@ -1,0 +1,7 @@
+{
+  "usingComponents": {
+    "ts-decision-card": "/components/ts-decision-card/index",
+    "ts-fab": "/components/ts-fab/index",
+    "empty": "/components/empty/index"
+  }
+}

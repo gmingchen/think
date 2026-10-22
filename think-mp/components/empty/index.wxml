@@ -1,5 +1,5 @@
 <view class="empty f-center f_d-c">
   <view wx:if="{{ title }}" class="empty__title">{{ title }}</view>
-  <view wx:if="{{ desc }}" class="empty__desc">{{ desc }}</view>
+  <view wx:if="{{ desc || text }}" class="empty__desc">{{ desc || text }}</view>
   <slot></slot>
 </view>

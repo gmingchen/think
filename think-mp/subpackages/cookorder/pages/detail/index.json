@@ -1,8 +1,0 @@
-{
-  "usingComponents": {
-    "skeleton": "./components/skeleton/index",
-    "review-popup": "/components/review-popup/index",
-    "confirm-popup": "/components/confirm-popup/index",
-    "van-rate": "@vant/weapp/rate/index"
-  }
-}

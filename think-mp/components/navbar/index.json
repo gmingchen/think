@@ -1,7 +1,4 @@
 {
   "component": true,
-  "styleIsolation": "shared",
-  "usingComponents": {
-    "iconfont": "/components/iconfont/iconfont"
-  }
+  "styleIsolation": "shared"
 }

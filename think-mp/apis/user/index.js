@@ -15,19 +15,3 @@ export const userUpdateApi = params => {
     params,
   })
 }
-
-export const userPresetDataApi = params => {
-  return service({
-    url: '/user/presetData',
-    method: 'POST',
-    params: params
-  })
-}
-
-export const userUpdateLastKitchenApi = params => {
-  return service({
-    url: '/user/update/lastKitchen',
-    method: 'POST',
-    params,
-  })
-}

@@ -106,6 +106,15 @@ function statFontSize() {
 }
 
 /**
+ * 取字符串首字（头像占位用）
+ * @param str 原字符串
+ * @param fallback 空值兜底字，默认空串；各页占位字不同（如「群」「智」）由调用方传
+ */
+function first(str, fallback = '') {
+  return str ? str.substring(0, 1) : fallback
+}
+
+/**
  * 根据菜谱ID获取购物车中的数量
  * @param dishId 菜谱ID
  * @param cartItems 购物车items数组
@@ -130,5 +139,6 @@ module.exports = {
   formatDistance: formatDistance,
   toChineseNum: toChineseNum,
   statFontSize: statFontSize,
+  first: first,
   getCartQuantity: getCartQuantity,
 };

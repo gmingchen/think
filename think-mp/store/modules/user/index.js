@@ -1,5 +1,5 @@
 import { action } from 'mobx-miniprogram'
-import { authUserApi, userUpdateLastKitchenApi } from '../../../apis/index'
+import { authUserApi } from '../../../apis/index'
 
 export default {
   user: {},
@@ -9,8 +9,4 @@ export default {
       this.user = r.data
     }
   }),
-  updateLastKitchenId: action(async function(kitchenId) {
-    await userUpdateLastKitchenApi({ kitchenId })
-    this.user = { ...this.user, lastKitchenId: kitchenId }
-  })
 }

@@ -1,0 +1,32 @@
+/* 三指标卡（横排等宽，数字用主文字色） */
+:host {
+  display: block;
+}
+
+.metrics {
+  display: flex;
+  gap: 18rpx;
+  margin-bottom: 32rpx;
+}
+
+.metrics__item {
+  flex: 1;
+  background: var(--ts-card);
+  border-radius: 28rpx;
+  box-shadow: 0 8rpx 24rpx rgba(34, 38, 46, 0.03);
+  padding: 32rpx 12rpx;
+  text-align: center;
+}
+
+.metrics__num {
+  font-size: 56rpx;
+  font-weight: var(--font-weight-bold);
+  color: var(--ts-text);
+  line-height: 1.1;
+  margin-bottom: 8rpx;
+}
+
+.metrics__label {
+  font-size: 26rpx;
+  color: var(--ts-text-sub);
+}

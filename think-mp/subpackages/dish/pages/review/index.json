@@ -1,7 +1,0 @@
-{
-  "usingComponents": {
-    "empty": "/components/empty/index",
-    "skeleton": "./components/skeleton/index",
-    "review-card": "../../components/review-card/index"
-  }
-}

@@ -11,7 +11,7 @@
   style="{{ utils.computeStyle(statusBarHeight, height + statusBarHeight, backgroundColor) }}">
   <view wx:if="{{ !useLeft }}" class="navbar__left f-i_f-1">
     <view class="navbar__back" wx:if="{{ useBack }}" bind:tap="onBack">
-      <iconfont name="arrow-left" size="36" color="#8C7E72" />
+      <iconfont name="left" size="36" color="#22262E" />
     </view>
     {{ leftText }}
   </view>

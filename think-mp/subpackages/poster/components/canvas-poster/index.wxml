@@ -1,6 +1,0 @@
-<canvas
-  type="2d"
-  id="posterCanvas"
-  class="canvas-poster__canvas"
-  style="width: {{ styleW }}px; height: {{ styleH }}px;"
-></canvas>

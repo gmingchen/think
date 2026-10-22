@@ -1,0 +1,66 @@
+<wxs module="s">
+module.exports.first = function (str) { return str ? str.substring(0, 1) : '智' }
+</wxs>
+<container title="群成员" use-back use-scroll bind:on-scroll-lower="loadPageData">
+  <view wx:if="{{ loading }}" class="gm__loading">加载中...</view>
+
+  <view wx:else class="gm">
+    <!-- 群组头部：群名称 / 成员数 + 邀请 · 退出 · 解散 图标按钮 -->
+    <view class="gm__header">
+      <view class="gm__header-info">
+        <view class="gm__group-name e font-serif">{{ group.name }}</view>
+        <view class="gm__group-count">共 {{ group.memberCount || 0 }} 人</view>
+      </view>
+      <view wx:if="{{ group.status !== GRP_STATUS_ENUM.DISSOLVED }}" class="gm__header-actions">
+        <view class="gm__icon-btn gm__icon-btn--primary" bindtap="onInviteTap">
+          <iconfont name="invite" size="{{ 30 }}" color="#4E75C9" />
+        </view>
+        <view wx:if="{{ myRole === GRP_ROLE_ENUM.OWNER }}" class="gm__icon-btn gm__icon-btn--danger" bindtap="onDissolveTap">
+          <iconfont name="dissolve" size="{{ 30 }}" color="#B23C2E" />
+        </view>
+        <view wx:else class="gm__icon-btn gm__icon-btn--danger" bindtap="onLeaveTap">
+          <iconfont name="exit" size="{{ 30 }}" color="#B23C2E" />
+        </view>
+      </view>
+    </view>
+
+    <!-- 成员须知 -->
+    <view class="gm__notice">🛡️ 私密群单严格遵循知情闭环。群主可对失联或无互动意愿的成员进行移出治理。</view>
+
+    <view wx:if="{{ list.length }}" class="gm__card">
+      <view class="gm__row" wx:for="{{ list }}" wx:key="userId">
+        <view class="gm__left">
+          <view class="gm__avatar">{{ s.first(item.user.nickname) }}</view>
+          <view class="gm__info">
+            <view class="gm__name e">
+              {{ item.user.nickname }}<text wx:if="{{ item.userId === user.id }}"> (我)</text>
+            </view>
+            <view class="gm__sub">
+              <text wx:if="{{ item.role === GRP_ROLE_ENUM.OWNER }}">发起人 · 群创建者</text>
+              <text wx:else>{{ item.joinedAt }} 入群</text>
+            </view>
+          </view>
+        </view>
+        <view class="gm__right">
+          <text wx:if="{{ item.role === GRP_ROLE_ENUM.OWNER }}" class="gm__badge gm__badge--owner">群主</text>
+          <text wx:else class="gm__badge gm__badge--member">智囊</text>
+          <text
+            wx:if="{{ myRole === GRP_ROLE_ENUM.OWNER && item.userId !== user.id }}"
+            class="gm__remove"
+            data-userid="{{ item.userId }}"
+            data-nickname="{{ item.user.nickname }}"
+            bindtap="onRemove"
+          >移除</text>
+        </view>
+      </view>
+    </view>
+    <view wx:else class="gm__empty"><empty desc="暂无成员" /></view>
+  </view>
+</container>
+
+<!-- 邀请入群弹窗（复用 detail 页私有 invite-popup，转发由本页 onShareAppMessage 处理） -->
+<invite-popup id="invitePopup" />
+<!-- 移出成员确认 -->
+<confirm-popup id="removeConfirmPopup" bind:confirm="onRemoveConfirm" />
+<!-- 解散 / 退出确认 -->
+<confirm-popup id="actionConfirmPopup" bind:confirm="onActionConfirm" />

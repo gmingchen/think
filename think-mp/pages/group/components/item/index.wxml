@@ -1,0 +1,14 @@
+<wxs src="../../../../wxs/index.wxs" module="s" />
+
+<view class="item">
+  <view class="item__avatar">{{ s.first(data.name) }}</view>
+  <view class="item__info">
+    <view class="item__title-row">
+      <text class="item__name">{{ data.name }}</text>
+      <text wx:if="{{ data.myRole === GRP_ROLE_ENUM.OWNER }}" class="item__role item__role--owner">群主</text>
+      <text wx:else class="item__role item__role--member">成员</text>
+    </view>
+    <view class="item__meta">{{ data.memberCount }} 位成员</view>
+  </view>
+  <iconfont class="item__go" name="right" size="{{ 20 }}" color="#CAD4E8" />
+</view>

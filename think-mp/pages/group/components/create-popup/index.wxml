@@ -1,0 +1,13 @@
+<popup show="{{ show }}" title="创建智囊群组" use-footer bind:close="onClose">
+  <view class="create-popup__body">
+    <view class="create-popup__tip">立规而后行，邀请信赖者担任私密决策智囊</view>
+    <input
+      class="create-popup__input"
+      placeholder="输入群名称（例：军师帮帮团）"
+      value="{{ name }}"
+      maxlength="30"
+      bindinput="onInput"
+    />
+  </view>
+  <view slot="footer" class="create-popup__btn" bindtap="onConfirm">立即创建</view>
+</popup>

@@ -1,8 +1,0 @@
-<view class="previewer__video" style="width: {{ width }}; height: {{ height }}; border-radius: {{ radius }};">
-  <video
-    src="{{ value }}"
-    object-fit="{{ fit }}"
-    show-center-play-btn="{{ false }}"
-    controls="{{ false }}">
-  </video>
-</view>

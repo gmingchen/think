@@ -1,10 +1,158 @@
-/* 右上角按钮 */
-.mine__nav-right {
-  font-size: 26rpx;
-  color: var(--color-primary);
-  padding: 0 8rpx;
+page {
+  background: var(--ts-bg);
 }
-/* Banner 广告：左右间距由外层 view（p_h-32）的 padding 承担，原生 ad 上只加上下 margin */
-.page__ad {
-  margin: 24rpx 0rpx 24rpx;
+
+.mine {
+  padding: 24rpx 28rpx 32rpx;
+}
+
+/* 个人信息卡 */
+.mine__profile {
+  display: flex;
+  align-items: center;
+  gap: 28rpx;
+  background: var(--ts-card);
+  border-radius: var(--ts-radius);
+  box-shadow: var(--ts-shadow);
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+}
+
+.mine__avatar {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  background: var(--ts-tag-bg);
+  border: 3rpx solid var(--ts-line-dash);
+  flex-shrink: 0;
+}
+
+.mine__profile-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.mine__nickname {
+  font-size: 36rpx;
+  font-weight: var(--font-weight-6);
+  color: var(--ts-text);
+  letter-spacing: 1rpx;
+  margin-bottom: 8rpx;
+}
+
+.mine__profile-sub {
+  font-size: 22rpx;
+  color: var(--ts-text-sub);
+}
+
+.mine__go {
+  flex-shrink: 0;
+  font-size: 28rpx;
+  color: var(--ts-line-dash);
+}
+
+/* 统计看板 */
+.mine__stats {
+  display: flex;
+  background: var(--ts-card);
+  border-radius: var(--ts-radius);
+  box-shadow: var(--ts-shadow);
+  padding: 28rpx 16rpx;
+  margin-bottom: 24rpx;
+}
+
+.mine__stat {
+  flex: 1;
+  text-align: center;
+}
+
+.mine__stat--line {
+  border-right: 1rpx solid var(--ts-line);
+}
+
+.mine__stat-num {
+  font-size: 40rpx;
+  font-weight: var(--font-weight-6);
+  color: var(--ts-brand);
+  margin-bottom: 4rpx;
+}
+
+.mine__stat-label {
+  font-size: 22rpx;
+  color: var(--ts-text-sub);
+}
+
+/* Cell 组 */
+.mine__group {
+  background: var(--ts-card);
+  border-radius: var(--ts-radius);
+  box-shadow: var(--ts-shadow);
+  overflow: hidden;
+  margin-bottom: 24rpx;
+}
+
+.mine__cell {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28rpx 32rpx;
+  border-bottom: 1rpx solid var(--ts-line-weak);
+}
+
+.mine__cell:last-child {
+  border-bottom: none;
+}
+
+.mine__cell:active {
+  background: var(--ts-fill-blue);
+}
+
+.mine__cell-left {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.mine__cell-icon {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 16rpx;
+  background: var(--ts-fill);
+  color: var(--ts-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26rpx;
+}
+
+.mine__cell-icon--brand {
+  background: var(--ts-tag-bg);
+  color: var(--ts-brand);
+}
+
+.mine__cell-label {
+  font-size: 26rpx;
+  font-weight: 500;
+  color: var(--ts-text);
+}
+
+.mine__cell-right {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  color: var(--ts-text-sub);
+  font-size: 24rpx;
+}
+
+.mine__cell-tip {
+  color: var(--ts-primary);
+  font-size: 22rpx;
+}
+
+/* 去责任化声明 */
+.mine__notice {
+  margin-top: 28rpx;
+  text-align: center;
+  font-size: 22rpx;
+  color: var(--ts-text-sub);
 }

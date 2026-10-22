@@ -1,9 +1,0 @@
-<view class="skeleton">
-  <view class="skeleton__card">
-    <view class="skeleton__item" wx:for="{{ [1,2,3,4,5] }}" wx:key="*this">
-      <view class="skeleton__block skeleton__block--drag"></view>
-      <view class="skeleton__block skeleton__block--name"></view>
-      <view class="skeleton__block skeleton__block--edit"></view>
-    </view>
-  </view>
-</view>

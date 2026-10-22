@@ -1,0 +1,10 @@
+<view class="review" bindtap="onTap">
+  <view class="review__left">
+    <view class="review__icon"><iconfont name="tick" size="{{ 28 }}" color="#4E75C9" /></view>
+    <view>
+      <view class="review__title">评议中的决策单</view>
+      <view class="review__sub">新的评议会在这里提醒你</view>
+    </view>
+  </view>
+  <iconfont class="review__go" name="right" size="{{ 28 }}" color="#9AA0AA" />
+</view>

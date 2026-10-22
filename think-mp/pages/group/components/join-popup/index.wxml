@@ -1,0 +1,16 @@
+<popup show="{{ show }}" title="加入智囊群组" use-footer bind:close="onClose">
+  <view class="join-popup__body">
+    <view class="join-popup__tip">收到邀请码？粘贴即可加入对应的智囊群组</view>
+    <view class="join-popup__field">
+      <input
+        class="join-popup__input"
+        placeholder="粘贴 / 输入邀请码"
+        value="{{ code }}"
+        maxlength="64"
+        bindinput="onInput"
+      />
+      <view class="join-popup__paste" bindtap="onPaste">粘贴</view>
+    </view>
+  </view>
+  <view slot="footer" class="join-popup__btn" bindtap="onConfirm">立即加入</view>
+</popup>

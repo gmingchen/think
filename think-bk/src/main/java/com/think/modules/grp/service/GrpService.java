@@ -6,13 +6,12 @@ import com.think.modules.grp.entity.GrpEntity;
 import com.think.modules.grp.model.dto.GrpCreateDTO;
 import com.think.modules.grp.model.dto.GrpIdDTO;
 import com.think.modules.grp.model.dto.GrpJoinDTO;
+import com.think.modules.grp.model.dto.GrpMemberPageDTO;
 import com.think.modules.grp.model.dto.GrpPageDTO;
 import com.think.modules.grp.model.dto.GrpRemoveMemberDTO;
 import com.think.modules.grp.model.dto.GrpUpdateDTO;
 import com.think.modules.grp.model.vo.GrpDetailVO;
 import com.think.modules.grp.model.vo.GrpMemberVO;
-
-import java.util.List;
 
 /**
  * 群组
@@ -80,9 +79,9 @@ public interface GrpService extends IServiceX<GrpEntity> {
     void removeMember(GrpRemoveMemberDTO dto);
 
     /**
-     * 群成员列表（仅成员可见）
-     * @param grpId 群ID
-     * @return 成员列表
+     * 群成员列表（分页，仅成员可见）
+     * @param dto 分页参数（含群ID）
+     * @return 成员分页（VO）
      */
-    List<GrpMemberVO> members(Long grpId);
+    PageResult<GrpMemberVO> pageMembers(GrpMemberPageDTO dto);
 }

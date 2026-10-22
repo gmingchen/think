@@ -1,0 +1,60 @@
+page {
+  background: var(--ts-bg);
+}
+
+.square__filter {
+  padding: 16rpx 32rpx;
+  background: var(--ts-bg);
+}
+
+.square__tags {
+  flex: 1;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.square__tag-row {
+  grid-gap: 16rpx;
+}
+
+.square__tag {
+  flex-shrink: 0;
+  padding: 12rpx 28rpx;
+  font-size: 24rpx;
+  color: var(--ts-text);
+  background: var(--ts-card);
+  border: 1rpx solid var(--ts-line);
+  border-radius: var(--ts-radius-pill);
+}
+
+.square__tag--active {
+  color: #FFFFFF;
+  background: var(--ts-primary);
+  border-color: var(--ts-primary);
+  font-weight: 500;
+}
+
+.square__random {
+  flex-shrink: 0;
+  margin-left: 20rpx;
+  font-size: 24rpx;
+  color: var(--ts-brand);
+  font-weight: 500;
+}
+
+.square__item {
+  margin: 24rpx 32rpx 0;
+}
+
+.square__loading,
+.square__empty,
+.square__more {
+  padding: 60rpx 0;
+  text-align: center;
+  font-size: 26rpx;
+  color: var(--ts-text-sub);
+}
+
+.square__more {
+  color: var(--ts-brand);
+}

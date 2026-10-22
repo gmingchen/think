@@ -1,0 +1,38 @@
+/* 决策总览卡（大数字 + 摘要） */
+:host {
+  display: block;
+}
+
+.overview {
+  background: var(--ts-card);
+  border: 1rpx solid rgba(230, 233, 240, 0.8);
+  border-radius: var(--ts-radius);
+  box-shadow: var(--ts-shadow);
+  padding: 36rpx;
+  margin-bottom: 32rpx;
+}
+
+.overview__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 16rpx;
+}
+
+.overview__label {
+  font-size: 30rpx;
+  font-weight: var(--font-weight-5);
+  color: var(--ts-text);
+}
+
+.overview__num {
+  font-size: 84rpx;
+  font-weight: var(--font-weight-bold);
+  color: var(--ts-brand);
+  line-height: 1;
+}
+
+.overview__sub {
+  font-size: 28rpx;
+  color: var(--ts-text-sub);
+}

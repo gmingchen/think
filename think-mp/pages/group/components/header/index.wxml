@@ -1,0 +1,17 @@
+<view class="header">
+  <view class="header__titles">
+    <view class="header__title">我的智囊群</view>
+    <view class="header__subtitle">私密决策闭环，仅同道可见</view>
+  </view>
+  <view class="header__actions">
+    <view class="header__join" bindtap="onJoin">
+      <iconfont name="invite" size="{{ 26 }}" color="#4E75C9" />
+      <text>加入</text>
+    </view>
+    <view class="header__create" bindtap="onCreate">
+      <iconfont name="plus" size="{{ 28 }}" color="#FFFFFF" />
+      <text>创建群组</text>
+      <view class="header__create-seal"></view>
+    </view>
+  </view>
+</view>

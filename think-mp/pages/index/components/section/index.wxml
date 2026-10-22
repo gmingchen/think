@@ -1,4 +1,0 @@
-<view class="section">
-  <text class="section__title">{{ title }}</text>
-  <text wx:if="{{ link }}" class="section__link" bind:tap="onTap">{{ link }}</text>
-</view>

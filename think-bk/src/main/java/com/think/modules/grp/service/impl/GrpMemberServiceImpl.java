@@ -1,12 +1,14 @@
 package com.think.modules.grp.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.think.common.pojo.PageResult;
 import com.think.common.utils.CollectionUtils;
 import com.think.core.mybatisplus.service.ServiceImplX;
 import com.think.modules.grp.convert.GrpMemberConvert;
 import com.think.modules.grp.entity.GrpMemberEntity;
 import com.think.modules.grp.mapper.GrpMemberMapper;
 import com.think.modules.grp.model.dto.GrpMemberDTO;
+import com.think.modules.grp.model.dto.GrpMemberPageDTO;
 import com.think.modules.grp.service.GrpMemberService;
 import org.springframework.stereotype.Service;
 
@@ -21,12 +23,15 @@ import java.util.List;
 public class GrpMemberServiceImpl extends ServiceImplX<GrpMemberMapper, GrpMemberEntity> implements GrpMemberService {
 
     @Override
-    public List<GrpMemberDTO> listByGrp(Long grpId) {
+    public PageResult<GrpMemberDTO> pageByGrp(GrpMemberPageDTO dto) {
         LambdaQueryWrapper<GrpMemberEntity> wrapper = new LambdaQueryWrapper<GrpMemberEntity>()
-                .eq(GrpMemberEntity::getGrpId, grpId)
+                .eq(GrpMemberEntity::getGrpId, dto.getGrpId())
                 .orderByAsc(GrpMemberEntity::getRole)
                 .orderByAsc(GrpMemberEntity::getCreatedAt);
-        return CollectionUtils.mapList(baseMapper.selectList(wrapper), GrpMemberConvert.INSTANCE::convert);
+        PageResult<GrpMemberEntity> entityPage = baseMapper.selectPage(dto, wrapper);
+        List<GrpMemberDTO> list = CollectionUtils.mapList(entityPage.getList(), GrpMemberConvert.INSTANCE::convert);
+        return new PageResult<>(entityPage.getTotal(), entityPage.getPages(), list)
+                .setCurrent(entityPage.getCurrent());
     }
 
     @Override

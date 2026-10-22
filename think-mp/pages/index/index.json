@@ -1,13 +1,8 @@
 {
   "usingComponents": {
-    "kitchen-header": "/components/kitchen-header/index",
-    "kitchen-picker": "/components/kitchen-picker/index",
-    "dish-popup": "/components/dish-popup/index",
-    "section": "./components/section",
-    "latest": "./components/latest",
-    "best": "./components/best",
-    "skeleton": "./components/skeleton",
-    "guide": "./components/guide",
-    "invite": "./components/invite"
+    "header": "./components/header/index",
+    "overview": "./components/overview/index",
+    "review": "./components/review/index",
+    "metrics": "./components/metrics/index"
   }
 }

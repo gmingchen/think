@@ -1,0 +1,5 @@
+<view class="header">
+  <view class="header__greet">{{ greet }}，{{ user.nickname }}</view>
+  <view class="header__lead">今天有什么</view>
+  <view class="header__lead">两难抉择？</view>
+</view>

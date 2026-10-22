@@ -1,6 +1,0 @@
-{
-  "usingComponents": {
-    "skeleton": "./components/skeleton/index",
-    "empty": "/components/empty/index"
-  }
-}

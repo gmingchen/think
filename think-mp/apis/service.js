@@ -7,10 +7,7 @@ import { print, toast } from '../utils/index'
 export const service = (options) => {
   const { url, method, params, headers, timeout } = options
   const host = HOST_ENUM[store.system.envVersion]
-  const data = { 
-    ...params,
-    kitchenId: params?.kitchenId || store.kitchen.active?.id || ''
-  }
+  const data = { ...params }
   return new Promise((resolve, reject) => {
     const title = `API: ${ url }`
     print(title, data)

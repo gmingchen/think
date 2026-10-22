@@ -1,11 +1,49 @@
 <view class="tabbar">
+  <!-- 左侧两项 -->
   <view
     class="tabbar__item {{ tabbar.active === item.value ? 'tabbar__item--active' : '' }}"
     wx:for="{{ tabbar.list }}"
     wx:key="value"
+    wx:if="{{ index < 2 }}"
     data-row="{{ item }}"
     bind:tap="onTap">
-    <text class="tabbar__icon">{{ item.emoji }}</text>
+    <view class="tabbar__icon">
+      <iconfont
+        name="{{ item.icon }}"
+        size="{{ 44 }}"
+        color="{{ tabbar.active === item.value ? '#4E75C9' : '#9AA0AA' }}"
+      />
+    </view>
+    <text>{{ item.label }}</text>
+  </view>
+
+  <!-- 中间凸起按钮 -->
+  <view class="tabbar__center" bind:tap="onCreateTap">
+    <view class="tabbar__center-btn">
+      <iconfont name="plus" size="{{ 40 }}" color="#FFFFFF" />
+      <view class="tabbar__center-seal"></view>
+    </view>
+    <!-- 凸起顶弧描边（只露出与底栏不重叠的部分） -->
+    <view class="tabbar__center-arc">
+      <view class="tabbar__center-ring"></view>
+    </view>
+  </view>
+
+  <!-- 右侧两项 -->
+  <view
+    class="tabbar__item {{ tabbar.active === item.value ? 'tabbar__item--active' : '' }}"
+    wx:for="{{ tabbar.list }}"
+    wx:key="value"
+    wx:if="{{ index >= 2 }}"
+    data-row="{{ item }}"
+    bind:tap="onTap">
+    <view class="tabbar__icon">
+      <iconfont
+        name="{{ item.icon }}"
+        size="{{ 44 }}"
+        color="{{ tabbar.active === item.value ? '#4E75C9' : '#9AA0AA' }}"
+      />
+    </view>
     <text>{{ item.label }}</text>
   </view>
 </view>

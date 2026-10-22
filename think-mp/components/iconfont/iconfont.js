@@ -1,6 +1,6 @@
 Component({
   properties: {
-    // sticker | share | add | minus | arrow-left | arrow-bottom | arrow-right | arrow-top
+    // invite | exit | dissolve | share | edit | fork | tick | plus | left | right | mine | group | talk | home
     name: {
       type: String,
     },

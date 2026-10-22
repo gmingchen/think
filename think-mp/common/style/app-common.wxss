@@ -142,6 +142,12 @@
 .f-i_f-1  { flex: 1; }
 .f-i_fs-0 { flex-shrink: 0; }
 .f-center { display: flex; justify-content: center; align-items: center; }
+.f_w-wrap { flex-wrap: wrap; }
+.f_f-1  { flex: 1; }
+/* 微国风品牌字体层（宋体系），用于标题/决策单主标题 */
+.font-serif {
+  font-family: 'Songti SC', 'STSong', 'SimSun', serif;
+}
 
 /* ===== 日系手账风公共类 ===== */
 /* 页面底色 */
@@ -242,4 +248,105 @@
   color: var(--color-danger);
   transform: rotate(-12deg);
   opacity: 0.85;
+}
+
+/* ===================================================================
+ * 众三思 UI 原子样式（严格取自 UI 高保真稿，px×2=rpx），供各页复用
+ * =================================================================== */
+/* 白底卡片：圆角 32 / 内边距 32 / 轻投影 */
+.ts-card {
+  background: var(--ts-card);
+  border-radius: var(--ts-radius);
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: var(--ts-shadow);
+  box-sizing: border-box;
+}
+/* 状态印章徽章（红底白字） */
+.ts-badge-seal {
+  display: inline-flex;
+  align-items: center;
+  background: var(--ts-seal);
+  color: #FFFFFF;
+  font-size: 20rpx;
+  font-weight: 600;
+  line-height: 1.2;
+  padding: 4rpx 12rpx;
+  border-radius: 6rpx;
+}
+/* 常规标签徽章（浅蓝底深蓝字，胶囊） */
+.ts-badge-subtle {
+  display: inline-flex;
+  align-items: center;
+  background: var(--ts-tag-bg);
+  color: var(--ts-brand);
+  font-size: 20rpx;
+  line-height: 1.2;
+  padding: 4rpx 14rpx;
+  border-radius: var(--ts-radius-pill);
+  white-space: nowrap;
+}
+/* 朱砂落款点（胶囊主按钮尾部） */
+.ts-seal-dot {
+  width: 10rpx;
+  height: 10rpx;
+  background: var(--ts-seal);
+  border-radius: 50%;
+  display: inline-block;
+}
+/* 进度条轨道 + 填充 */
+.ts-progress {
+  height: 8rpx;
+  background: var(--ts-tag-bg);
+  border-radius: var(--ts-radius-pill);
+  overflow: hidden;
+}
+.ts-progress__fill {
+  height: 100%;
+  background: var(--ts-primary);
+  border-radius: var(--ts-radius-pill);
+}
+/* 主胶囊按钮（操作主蓝底白字，尾部落款点） */
+.ts-capsule-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  width: 100%;
+  height: 92rpx;
+  background: var(--ts-primary);
+  color: #FFFFFF;
+  border-radius: var(--ts-radius-pill);
+  font-size: 30rpx;
+  font-weight: 500;
+  box-shadow: var(--ts-shadow-btn);
+}
+.ts-capsule-btn::after { border: none; }
+/* 幽灵线框胶囊按钮 */
+.ts-ghost-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 88rpx;
+  background: #FFFFFF;
+  border: 2rpx solid var(--ts-line-dash);
+  color: var(--ts-text);
+  border-radius: var(--ts-radius-pill);
+  font-size: 26rpx;
+  font-weight: 500;
+}
+.ts-ghost-btn::after { border: none; }
+/* 通用分隔线 */
+.ts-divider {
+  height: 1rpx;
+  background: var(--ts-line);
+  margin: 20rpx 0;
+}
+/* 去责任化声明 */
+.ts-disclaimer {
+  text-align: center;
+  font-size: 22rpx;
+  color: var(--ts-text-sub);
+  letter-spacing: 1rpx;
 }

@@ -1,0 +1,213 @@
+<wxs module="l">
+module.exports.n = function (v) {
+  return v ? v.length : 0
+}
+module.exports.letter = function (i) {
+  return String.fromCharCode(65 + i)
+}
+</wxs>
+
+<container title="发起决策单" use-back use-scroll use-footer>
+  <view class="form">
+    <!-- 强隐私引导条 -->
+    <view class="form__privacy-lead">
+      <text class="form__privacy-lead-icon">🛡️</text>
+      <view>涉及薪酬、家事等私密抉择？建议使用「群内评议」，仅定向受邀亲友或顾问可见。</view>
+    </view>
+
+    <!-- 卡片 1：两难核心描述 -->
+    <view class="form__card">
+      <view class="form__title-row">
+        <view class="form__card-title font-serif">决策标题<text class="form__req">*</text></view>
+        <text class="form__counter">{{ l.n(form.title) }} / {{ TITLE_MAX }}</text>
+      </view>
+      <view class="form__input-box">
+        <input
+          class="form__input"
+          placeholder="概括你的两难抉择"
+          value="{{ form.title }}"
+          maxlength="{{ TITLE_MAX }}"
+          bindinput="onTitleInput"
+        />
+      </view>
+
+      <view class="form__title-row form__title-row--gap">
+        <view class="form__card-title font-serif">处境与诉求<text class="form__req">*</text></view>
+        <text class="form__counter">{{ l.n(form.content) }} / {{ CONTENT_MAX }}</text>
+      </view>
+      <view class="form__textarea-box">
+        <view class="form__warn-badge">⚠️ 严禁输入身份证、手机号、银行卡等个人敏感隐私</view>
+        <textarea
+          class="form__textarea"
+          placeholder="详细陈述背景、顾虑以及希望众人重点侧重评议的角度…"
+          value="{{ form.content }}"
+          maxlength="{{ CONTENT_MAX }}"
+          bindinput="onContentInput"
+        />
+      </view>
+
+      <view class="form__title-row form__title-row--gap">
+        <view class="form__card-title form__card-title--sm">凭证与背景图<text class="form__optional">(可选，最多 {{ IMAGE_MAX }} 张)</text></view>
+        <text class="form__counter">{{ l.n(form.images) }} / {{ IMAGE_MAX }}</text>
+      </view>
+      <view class="form__img-row">
+        <view class="form__img-slot form__img-slot--filled" wx:for="{{ form.images }}" wx:key="*this">
+          <image class="form__img" src="{{ item }}" mode="aspectFill" />
+          <text class="form__img-del" data-index="{{ index }}" catchtap="onImageDelete">×</text>
+        </view>
+        <view wx:if="{{ form.images.length < IMAGE_MAX }}" class="form__img-slot" bindtap="onImageUpload">
+          <text class="form__img-plus">+</text>
+          <text>相册/拍摄</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 卡片 2：备选方案 -->
+    <view class="form__card">
+      <view class="form__title-row">
+        <view class="form__card-title font-serif">备选方案<text class="form__req">*</text></view>
+        <text class="form__counter">至少 2 项</text>
+      </view>
+      <view class="form__option" wx:for="{{ form.options }}" wx:key="index">
+        <view class="form__option-prefix">{{ l.letter(index) }}</view>
+        <view class="form__option-box">
+          <input
+            class="form__option-input"
+            placeholder="方案 {{ index + 1 }}"
+            value="{{ item.label }}"
+            data-index="{{ index }}"
+            bindinput="onOptionInput"
+          />
+        </view>
+        <text
+          wx:if="{{ form.options.length > 2 }}"
+          class="form__option-del"
+          data-index="{{ index }}"
+          bindtap="onOptionDelete"
+        >✕</text>
+      </view>
+      <view class="form__option-add" bindtap="onOptionAdd">＋ 添加新备选方案</view>
+    </view>
+
+    <!-- 卡片 3：可见范围与分发 -->
+    <view class="form__card">
+      <view class="form__title-row">
+        <view class="form__card-title font-serif">可见范围<text class="form__req">*</text></view>
+      </view>
+      <view class="form__scope">
+        <view
+          class="form__scope-card {{ form.visibility === VISIBILITY_ENUM.SELF ? 'form__scope-card--active' : '' }}"
+          data-value="{{ VISIBILITY_ENUM.SELF }}"
+          bindtap="onVisibilitySelect"
+        >
+          <view class="form__scope-name">仅自己</view>
+          <view class="form__scope-sub">存草稿箱</view>
+        </view>
+        <view
+          class="form__scope-card {{ form.visibility === VISIBILITY_ENUM.GRP ? 'form__scope-card--active' : '' }}"
+          data-value="{{ VISIBILITY_ENUM.GRP }}"
+          bindtap="onVisibilitySelect"
+        >
+          <view class="form__scope-name">群内评议</view>
+          <view class="form__scope-sub">精准定向</view>
+        </view>
+        <view
+          class="form__scope-card {{ form.visibility === VISIBILITY_ENUM.PUBLIC ? 'form__scope-card--active' : '' }}"
+          data-value="{{ VISIBILITY_ENUM.PUBLIC }}"
+          bindtap="onVisibilitySelect"
+        >
+          <view class="form__scope-name">公开发布</view>
+          <view class="form__scope-sub">众议广场</view>
+        </view>
+      </view>
+
+      <!-- 群内 → 选群 -->
+      <block wx:if="{{ form.visibility === VISIBILITY_ENUM.GRP }}">
+        <view class="form__sub-label">选择目标群聊</view>
+        <view class="form__picker-box" bindtap="onOpenGrpPicker">
+          <view class="form__picker-info">
+            <text wx:if="{{ form.grpName }}" class="form__group-tag">已选</text>
+            <text class="{{ form.grpName ? 'form__picker-name' : 'form__picker-ph' }}">{{ form.grpName || '请选择群组' }}</text>
+          </view>
+          <text class="form__picker-change">更换群 ▾</text>
+        </view>
+      </block>
+
+      <!-- 公开 → 标签 -->
+      <block wx:if="{{ form.visibility === VISIBILITY_ENUM.PUBLIC }}">
+        <view class="form__title-row form__title-row--gap">
+          <view class="form__sub-label form__sub-label--mb0">选择决策领域标签</view>
+          <text class="form__counter">最多 {{ TAG_MAX }} 个</text>
+        </view>
+        <view class="form__tag-pool">
+          <view
+            wx:for="{{ tags }}"
+            wx:key="id"
+            class="form__tag-chip {{ form.tagIds.indexOf(item.id) > -1 ? 'form__tag-chip--active' : '' }}"
+            data-id="{{ item.id }}"
+            bindtap="onTagToggle"
+          >{{ form.tagIds.indexOf(item.id) > -1 ? '✓ ' : '' }}{{ item.name }}</view>
+        </view>
+      </block>
+
+      <!-- 评议人数上限 -->
+      <view class="form__stepper-row">
+        <view>
+          <view class="form__stepper-label">评议人数上限</view>
+          <view class="form__stepper-sub">{{ form.visibility === VISIBILITY_ENUM.PUBLIC ? '广场公开评议上限 50 人' : '不超过受邀评议人数' }}</view>
+        </view>
+        <view class="form__stepper">
+          <view class="form__stepper-btn" bindtap="onReviewLimitMinus">-</view>
+          <view class="form__stepper-val">{{ form.reviewLimit }}</view>
+          <view class="form__stepper-btn" bindtap="onReviewLimitPlus">+</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 卡片 4：冷静期 -->
+    <view class="form__card">
+      <view class="form__title-row">
+        <view class="form__card-title font-serif">冷静期时长<text class="form__req">*</text></view>
+        <text class="form__counter">到期后出具报告</text>
+      </view>
+      <view class="form__cooloff">
+        <view
+          wx:for="{{ coolDownList }}"
+          wx:key="value"
+          class="form__cooloff-pill {{ form.coolDownHours === item.value ? 'form__cooloff-pill--active' : '' }}"
+          data-value="{{ item.value }}"
+          bindtap="onCoolDownSelect"
+        >{{ item.label }}</view>
+      </view>
+    </view>
+
+    <view class="form__disclaimer">建议仅供参考，最终决定权归你</view>
+  </view>
+
+  <!-- 底部操作 -->
+  <view slot="footer" class="form__actions">
+    <view class="form__btn form__btn--ghost" bindtap="onSave">存草稿</view>
+    <view class="form__btn form__btn--primary" bindtap="onPublish">
+      <text>发布评议</text>
+      <view class="form__btn-seal"></view>
+    </view>
+  </view>
+</container>
+
+<!-- 群选择弹窗 -->
+<popup show="{{ showGrpPicker }}" title="选择群组" bind:close="onCloseGrpPicker">
+  <view wx:if="{{ grps.length }}">
+    <view
+      class="form__grp-item"
+      wx:for="{{ grps }}"
+      wx:key="id"
+      data-id="{{ item.id }}"
+      data-name="{{ item.name }}"
+      bindtap="onGrpSelect"
+    >
+      <text class="form__grp-name">{{ item.name }}</text>
+      <text class="form__grp-meta">{{ item.memberCount }} 人</text>
+    </view>
+  </view>
+  <view wx:else class="form__grp-empty">你还没有群组，请先到「群组」创建</view>
+</popup>

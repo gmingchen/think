@@ -1,8 +1,10 @@
 package com.think.modules.grp.service;
 
+import com.think.common.pojo.PageResult;
 import com.think.core.mybatisplus.service.IServiceX;
 import com.think.modules.grp.entity.GrpMemberEntity;
 import com.think.modules.grp.model.dto.GrpMemberDTO;
+import com.think.modules.grp.model.dto.GrpMemberPageDTO;
 
 import java.util.List;
 
@@ -14,11 +16,11 @@ import java.util.List;
 public interface GrpMemberService extends IServiceX<GrpMemberEntity> {
 
     /**
-     * 查询群成员列表
-     * @param grpId 群ID
-     * @return 成员列表
+     * 分页查询群成员（按角色、加入时间排序）
+     * @param dto 分页参数（含群ID）
+     * @return 成员分页（DTO）
      */
-    List<GrpMemberDTO> listByGrp(Long grpId);
+    PageResult<GrpMemberDTO> pageByGrp(GrpMemberPageDTO dto);
 
     /**
      * 查询某用户所在的全部群ID

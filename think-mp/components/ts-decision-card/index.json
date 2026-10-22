@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "ts-status-badge": "/components/ts-status-badge/index"
+  }
+}

@@ -1,34 +1,88 @@
 /*
-  手账风底部 TabBar
-  由于该组件在 custom-tab-bar 中使用，无法使用 CSS 变量，色值硬编码
+  底部 TabBar（对齐 UI：白底 + 品牌蓝高亮 + 中间凸起「发起决策」）
+  该组件作为 custom-tab-bar / 页内 footer 使用，无法稳定取用页面 CSS 变量，色值硬编码
 */
 .tabbar {
-  height: 88rpx;
-  background: #FAF5EE;
-  border-top: 1rpx solid #DFD3C4;
+  position: relative;
+  height: 100rpx;
+  background: #FFFFFF;
+  border-top: 1rpx solid #E6E9F0;
   display: flex;
-  justify-content: space-around;
-  padding-top: 16rpx;
+  align-items: center;
   padding-bottom: env(safe-area-inset-bottom);
 }
 .tabbar__item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6rpx;
-  font-size: 22rpx;
-  color: #8C7E72;
+  justify-content: center;
+  gap: 4rpx;
+  font-size: 20rpx;
+  color: #9AA0AA;
   flex: 1;
   transition: all 0.2s;
 }
 .tabbar__item--active {
-  color: #C86D51;
-  font-weight: bold;
+  color: #4E75C9;
+  font-weight: 600;
 }
 .tabbar__icon {
-  font-size: 44rpx;
-  transition: transform 0.2s;
+  height: 44rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.tabbar__item--active .tabbar__icon {
-  transform: scale(1.15);
+
+/* 中间凸起按钮：作为第 3 列参与均分，按钮压在顶边形成鼓包 */
+.tabbar__center {
+  position: relative;
+  flex: 1;
+  height: 100%;
+  z-index: 3;
+}
+/* 白色描边 + 主蓝圆形按钮：描边与底栏同色，视觉上像底栏顶出圆形凸起 */
+.tabbar__center-btn {
+  position: absolute;
+  top: -28rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 76rpx;
+  height: 76rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #4E75C9;
+  border: 8rpx solid #FFFFFF;
+  border-radius: 50%;
+}
+/* 裁剪容器：只保留顶弧（与底栏不重叠的部分） */
+.tabbar__center-arc {
+  position: absolute;
+  top: -28rpx;
+  left: 0;
+  right: 0;
+  height: 28rpx;
+  overflow: hidden;
+  pointer-events: none;
+}
+/* 圆形描边环：与按钮外缘对齐，线条颜色同底栏顶边 */
+.tabbar__center-ring {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 92rpx;
+  height: 92rpx;
+  box-sizing: border-box;
+  border: 1rpx solid #E6E9F0;
+  border-radius: 50%;
+}
+.tabbar__center-seal {
+  position: absolute;
+  right: 8rpx;
+  top: 10rpx;
+  width: 8rpx;
+  height: 8rpx;
+  border-radius: 50%;
+  background: #B23C2E;
 }

@@ -1,6 +1,0 @@
-<image
-  class="previewer__img"
-  src="{{ value }}"
-  mode="{{ fitMode }}"
-  style="width: {{ width }}; height: {{ height }}; border-radius: {{ radius }};">
-</image>

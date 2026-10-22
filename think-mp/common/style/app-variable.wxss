@@ -1,22 +1,21 @@
 page {
-  /* ===== 日系手账风 (Zakka Style) ===== */
-  /* 风格定位：温暖、手写感、棉麻质感 */
+  /* ===== 众三思主题（B+微国风），全局令牌已切换为微国风冷调 ===== */
 
   /* 主题色 */
-  --color-primary: #C86D51;              /* 陶土砖红（手账主色） */
-  --color-primary-deep: #A85A42;         /* 深砖红（按压态） */
-  --color-secondary: #688B58;            /* 抹茶青绿 */
-  --color-accent: #E0A94F;               /* 芥末黄（高亮/印章） */
+  --color-primary: #4E75C9;              /* 操作主蓝 */
+  --color-primary-deep: #3B5BA5;         /* 品牌深蓝（按压态） */
+  --color-secondary: #4E75C9;            /* 与主色统一 */
+  --color-accent: #B23C2E;               /* 印章红（高亮/强调） */
 
   /* 背景色 */
-  --bg-base: #F5EFEB;                    /* 水洗牛皮纸底 */
-  --bg-card: #FAF6F0;                    /* 手账内页贴纸白 */
-  --bg-section: #EDE4D8;                 /* 侧栏/分区底色 */
+  --bg-base: #F5F6F8;                    /* 页面底色 */
+  --bg-card: #FFFFFF;                    /* 卡片白底 */
+  --bg-section: #EEF1F6;                 /* 侧栏/分区底色 */
 
   /* 文字颜色 */
-  --font-color: #3D352E;                 /* 墨水深棕黑 */
-  --font-color-sub: #8C7E72;             /* 铅笔灰棕 */
-  --font-color-weak: #B5A99C;            /* 弱文字/占位符 */
+  --font-color: #22262E;                 /* 主文字 */
+  --font-color-sub: #9AA0AA;             /* 次文字 */
+  --font-color-weak: #B7BCC4;            /* 弱文字/占位符 */
   --font-color-white: #FFFFFF;
   --font-color-black: #000000;
   --font-color-primary: var(--color-primary);
@@ -25,28 +24,28 @@ page {
   /* 语义色 */
   --color-white: #FFFFFF;
   --color-black: #000000;
-  --color-info: #8C7E72;
-  --color-success: #688B58;
-  --color-danger: #B84A39;
+  --color-info: #9AA0AA;
+  --color-success: #4E9A6B;
+  --color-danger: #B23C2E;
   --color-warning: #E0A94F;
 
   /* 卡片令牌 */
-  --card-bg: #FAF6F0;
-  --card-radius: 24rpx;
-  --card-shadow: 4rpx 6rpx 16rpx rgba(100, 80, 60, 0.05);
-  --card-border: 1rpx solid #E5DBD0;
+  --card-bg: #FFFFFF;
+  --card-radius: 32rpx;
+  --card-shadow: 0 4rpx 20rpx rgba(59, 91, 165, 0.08);
+  --card-border: 1rpx solid #EAECEF;
 
   /* 按钮令牌 */
   --btn-primary-bg: var(--color-primary);
   --btn-primary-color: #FFFFFF;
-  --btn-primary-shadow: 2rpx 2rpx 6rpx rgba(200, 109, 81, 0.3);
+  --btn-primary-shadow: 2rpx 2rpx 6rpx rgba(78, 117, 201, 0.3);
 
   /* 边框 */
   --border-width: 1rpx;
   --border-width-large: 2rpx;
   --border-style: solid;
-  --border-color: #DDD3C8;
-  --border-dashed: 1rpx dashed #DDD3C8;
+  --border-color: #EAECEF;
+  --border-dashed: 1rpx dashed #EAECEF;
   --border: var(--border-width) var(--border-style) var(--border-color);
 
   /* 纸胶带 */
@@ -81,4 +80,33 @@ page {
 
   /* 顶部导航高度 */
   --tabbar-height: 88rpx;
+
+  /* ===== 众三思主题（B+微国风），新组件统一引用，P2 全局切换前独立于旧 --color-* ===== */
+  --ts-primary: #4E75C9;                 /* 操作主蓝：主按钮/进度条/选中态 */
+  --ts-brand: #3B5BA5;                   /* 品牌深蓝：文字链接/报告强调 */
+  --ts-seal: #B23C2E;                    /* 印章红：状态徽章/截止提醒 */
+  --ts-bg: #F5F6F8;                      /* 页面底色 */
+  --ts-card: #FFFFFF;                    /* 卡片白底 */
+  --ts-text: #22262E;                    /* 主文字 */
+  --ts-text-sub: #9AA0AA;                /* 次文字 */
+  --ts-tag-bg: #E8EDF7;                  /* 常规标签浅蓝底 */
+  --ts-radius: 32rpx;                    /* 卡片圆角 */
+  --ts-radius-pill: 999rpx;              /* 胶囊按钮 */
+  --ts-radius-input: 24rpx;              /* 输入框/弹窗圆角 */
+  --ts-shadow: 0 8rpx 32rpx rgba(34, 38, 46, 0.04);   /* 通用卡片轻投影（对齐 UI） */
+  --ts-shadow-fab: 0 12rpx 36rpx rgba(78, 117, 201, 0.35); /* 悬浮主按钮投影 */
+  --ts-shadow-btn: 0 12rpx 36rpx rgba(78, 117, 201, 0.30);  /* 主胶囊按钮投影 */
+
+  /* ===== 众三思扩展色板（严格取自 UI 高保真稿） ===== */
+  --ts-line: #E6E9F0;                    /* 主分隔线/描边 */
+  --ts-line-weak: #F0F2F5;               /* 列表细分隔线 */
+  --ts-line-dash: #CAD4E8;               /* 虚线框/失效图标描边 */
+  --ts-fill: #F5F6F8;                    /* 输入框/占位底色 */
+  --ts-fill-blue: #F7F9FD;               /* 选中卡片浅蓝底 */
+  --ts-fill-gray: #F9FAFC;               /* 引导条/引用底 */
+  --ts-fill-thumb: #EAECEF;              /* 图片缩略图占位底 */
+  --ts-fill-seg: #EAECEF;                /* 分段控制器底 */
+  --ts-seal-bg: #FFF2F0;                 /* 印章红浅底（移除/失效/私密） */
+  --ts-dissolved-bg: #ECEFF4;            /* 已解散归档底 */
+  --ts-avatar-bg: #F0F4FA;               /* 成员头像备选底 */
 }

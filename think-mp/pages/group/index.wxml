@@ -1,0 +1,26 @@
+<container use-scroll use-footer bind:on-scroll-lower="loadPageData">
+  <!-- 顶部操作行（页面私有组件，点击创建抛出 create） -->
+  <header slot="header" bind:create="onOpenCreate" bind:join="onOpenJoin" />
+
+  <!-- 群列表 -->
+  <view wx:if="{{ list.length }}">
+    <item
+      wx:for="{{ list }}"
+      wx:key="id"
+      data="{{ item }}"
+      data-id="{{ item.id }}"
+      bindtap="onTap"
+    />
+  </view>
+
+  <!-- 空态（页面私有组件） -->
+  <empty wx:else />
+
+  <tabbar slot="footer"></tabbar>
+</container>
+
+<!-- 创建群组弹窗（组件自管理显隐，通过 id 打开） -->
+<create-popup id="createPopup" bind:confirm="onConfirm" />
+
+<!-- 邀请码入群弹窗（组件自管理显隐，通过 id 打开） -->
+<join-popup id="joinPopup" bind:confirm="onConfirm" />

@@ -1,0 +1,7 @@
+page {
+  background: var(--ts-bg);
+}
+
+/* 顶部操作行样式已迁移至 header 页面私有组件 */
+
+/* 群组列表项样式已迁移至 item 页面私有组件 */

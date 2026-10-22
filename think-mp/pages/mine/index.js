@@ -1,43 +1,50 @@
-import { storePageBehavior, sharePageBehavior } from '../../behaviors/index'
-import { showRewardedAd } from '../../utils/index'
-import { AD_UNIT_MINE_BANNER, AD_UNIT_MINE_REWARD } from '../../common/constants/index'
+import { storePageBehavior } from '../../behaviors/index'
+import { decisionStatsMineApi } from '../../apis/index'
+import { ROUTE, decisionListUrl } from '../../common/constants/index'
+import { DECISION_SCENE_ENUM } from '../../common/enums/index'
 
-// 激励视频单例（createRewardedVideoAd 同一 adUnitId 返回单例，模块级缓存避免监听重复注册）
-let rewardAd = null
-const getRewardAd = () => {
-  if (!rewardAd && wx.createRewardedVideoAd) {
-    rewardAd = wx.createRewardedVideoAd({ adUnitId: AD_UNIT_MINE_REWARD })
-    rewardAd.onClose((res) => {
-      if (res && res.isEnded) {
-        wx.$toast('感谢支持 ❤️')
-      }
-    })
-  } 
-  return rewardAd
-}
+const DEFAULT_STATS = { createdCount: 0, reviewedCount: 0, receivedCount: 0 }
 
 Page({
-  behaviors: [storePageBehavior, sharePageBehavior],
+  behaviors: [storePageBehavior],
   data: {
-    loading: true,
-    AD_UNIT_MINE_BANNER,
-  },
-  async onLoad() {
-    await wx.$onLogined
-    this.bindStore({ fields: ['auth', 'kitchen'] })
-    // 等待用户数据加载
-    setTimeout(() => {
-      this.setData({ loading: false })
-    }, 300)
+    ROUTE,
+    stats: { ...DEFAULT_STATS },
   },
 
-  // 看广告支持一下（用户主动行为，不强制）
-  onWatchAdTap() {
-    const ad = getRewardAd()
-    if (!ad) {
-      wx.$toast('当前环境暂不支持广告')
-      return
+  async onLoad() {
+    this.bindStore({ fields: ['user', 'system', 'tabbar'] })
+  },
+
+  async onShow() {
+    await wx.$onLogined
+    this.getData()
+  },
+
+  async getData() {
+    const r = await decisionStatsMineApi()
+    if (r.data) {
+      this.setData({ stats: r.data })
     }
-    showRewardedAd(ad, '广告加载失败，请稍后再试')
+  },
+
+  onCreateTap() {
+    wx.$navigateTo(ROUTE.DECISION_CREATE)
+  },
+  onProfileTap() {
+    wx.$navigateTo(ROUTE.USER_EDIT)
+  },
+  onDecisionTap() {
+    wx.$navigateTo(decisionListUrl(DECISION_SCENE_ENUM.MINE))
+  },
+  // 群组为 Tab 页，P2 完成 tabBar 切换后生效
+  onGroupTap() {
+    wx.switchTab({ url: ROUTE.TAB_GROUP })
+  },
+  onFeedbackTap() {
+    wx.$navigateTo(ROUTE.FEEDBACK)
+  },
+  onAboutTap() {
+    wx.$navigateTo(ROUTE.USER_ABOUT)
   },
 })

@@ -1,8 +1,0 @@
-{
-  "component": true,
-  "styleIsolation": "apply-shared",
-  "usingComponents": {
-    "popup": "/components/popup/index",
-    "van-rate": "@vant/weapp/rate/index"
-  }
-}

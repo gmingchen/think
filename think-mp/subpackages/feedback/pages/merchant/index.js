@@ -1,5 +1,4 @@
 import { fieldBehavior } from '../../../../behaviors/index'
-import { AD_UNIT_MERCHANT_BANNER } from '../../../../common/constants/index'
 import { feedbackMerchantCreateApi } from '../../../../apis/index'
 import {
   BUSINESS_TYPE_LIST,
@@ -11,7 +10,6 @@ import {
 Page({
   behaviors: [fieldBehavior],
   data: {
-    AD_UNIT_MERCHANT_BANNER,
     BUSINESS_TYPE_LIST,
     CURRENT_TOOL_LIST,
     DISH_SCALE_LIST,

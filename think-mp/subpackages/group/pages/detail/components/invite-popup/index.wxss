@@ -1,0 +1,74 @@
+/* 邀请入群弹窗（页面私有组件，内嵌全局 popup） */
+
+.invite-popup__body {
+  padding: 8rpx 40rpx 0;
+}
+
+.invite-popup__tip {
+  font-size: 24rpx;
+  line-height: 1.5;
+  color: var(--ts-text-sub);
+  text-align: center;
+  margin-bottom: 28rpx;
+}
+
+/* 邀请码卡片：虚线浅底框，突出展示 */
+.invite-popup__code-card {
+  padding: 32rpx;
+  text-align: center;
+  background: var(--ts-fill);
+  border: 1rpx dashed var(--ts-line-dash);
+  border-radius: var(--ts-radius-input);
+}
+
+.invite-popup__code-label {
+  font-size: 22rpx;
+  color: var(--ts-text-sub);
+  margin-bottom: 12rpx;
+}
+
+.invite-popup__code {
+  font-size: 48rpx;
+  font-weight: 700;
+  letter-spacing: 8rpx;
+  text-indent: 8rpx; /* 抵消末位字符的 letter-spacing，保证视觉居中 */
+  color: var(--ts-brand);
+}
+
+/* 底部双按钮：footer 插槽独立于内容区，左右外边距与内容留白对齐 */
+.invite-popup__actions {
+  display: flex;
+  gap: 20rpx;
+  margin: 32rpx 40rpx 0;
+}
+
+.invite-popup__btn {
+  flex: 1;
+  height: 72rpx;
+  line-height: 72rpx;
+  padding: 0;
+  text-align: center;
+  font-size: 28rpx;
+  font-weight: var(--font-weight-5);
+  border-radius: var(--ts-radius-pill);
+}
+
+/* 重置原生 button 默认边框 */
+.invite-popup__btn::after {
+  border: none;
+}
+
+.invite-popup__btn--ghost {
+  color: var(--ts-brand);
+  background: var(--ts-tag-bg);
+}
+
+.invite-popup__btn--primary {
+  color: #FFFFFF;
+  background: var(--ts-primary);
+  box-shadow: var(--ts-shadow-btn);
+}
+
+.invite-popup__btn:active {
+  opacity: .9;
+}

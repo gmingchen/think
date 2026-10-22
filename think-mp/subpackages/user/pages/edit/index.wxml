@@ -37,9 +37,4 @@
   <view class="edit__save-section">
     <view class="btn--primary edit__save-btn" bind:tap="onSave">保存</view>
   </view>
-
-  <!-- Banner 广告（页面末尾，受 store.ad.enabled 总开关控制，无填充自动隐藏） -->
-  <view class="p_h-32">
-    <ad-unit ad-unit-id="{{ AD_UNIT_EDIT_BANNER }}" cls="page__ad" />
-  </view>
 </container>

@@ -39,4 +39,8 @@ public class GrpDetailVO {
      * 我在该群的角色：1-群主 2-成员（非成员为 null）
      */
     private Integer myRole;
+    /**
+     * 群内决策单总数（群内可见档、全状态）：仅群详情接口返回，列表不查避免 N+1
+     */
+    private Integer decisionCount;
 }

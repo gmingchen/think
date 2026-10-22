@@ -1,0 +1,40 @@
+<container title="众议广场" use-scroll use-footer>
+  <!-- 顶部筛选：标签横滑 + 随机入口 -->
+  <view class="square__filter f f_a_i-c" slot="header">
+    <scroll-view class="square__tags" scroll-x>
+      <view class="square__tag-row f">
+        <view
+          class="square__tag {{ activeTagId === TAG_ALL ? 'square__tag--active' : '' }}"
+          data-id="{{ TAG_ALL }}"
+          bindtap="onSwitchTag"
+        >全部</view>
+        <view
+          wx:for="{{ tags }}"
+          wx:key="id"
+          class="square__tag {{ activeTagId === item.id ? 'square__tag--active' : '' }}"
+          data-id="{{ item.id }}"
+          bindtap="onSwitchTag"
+        >{{ item.name }}</view>
+      </view>
+    </scroll-view>
+    <view class="square__random" bindtap="onRandomTap">随机一议 ›</view>
+  </view>
+
+  <!-- 加载中 -->
+  <view wx:if="{{ loading }}" class="square__loading">加载中...</view>
+
+  <!-- 列表 -->
+  <view wx:elif="{{ list.length }}">
+    <view class="square__item" wx:for="{{ list }}" wx:key="id">
+      <ts-decision-card item="{{ item }}" bind:click="onCardTap" />
+    </view>
+    <view wx:if="{{ list.length < page.total }}" class="square__more" bindtap="loadPageData">加载更多</view>
+  </view>
+
+  <!-- 空态 -->
+  <view wx:else class="square__empty">
+    <empty desc="广场暂无公开决策" />
+  </view>
+
+  <tabbar slot="footer"></tabbar>
+</container>

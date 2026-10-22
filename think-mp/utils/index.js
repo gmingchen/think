@@ -9,7 +9,5 @@ export * from './toast'
 export * from './time'
 export * from './text'
 export * from './wx-api'
-export * from './ad'
-export * from './expandReward'
 export * from './capacity'
 

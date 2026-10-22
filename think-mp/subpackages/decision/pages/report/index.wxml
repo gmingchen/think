@@ -1,0 +1,61 @@
+<wxs module="l">
+module.exports.letter = function (i) { return String.fromCharCode(65 + i) }
+</wxs>
+<container title="决策终览报告" use-back use-scroll use-footer>
+  <view wx:if="{{ loading }}" class="rp__loading">加载中...</view>
+
+  <view wx:elif="{{ report.id }}" class="rp">
+    <!-- 报告首卡 -->
+    <view class="rp__card">
+      <view class="rp__meta-row">
+        <text class="rp__sub">决策单 #{{ data.id }}</text>
+      </view>
+      <view class="rp__title font-serif">{{ data.title }}</view>
+      <view class="rp__sub">共收到 <text class="rp__sub-num">{{ total }}</text> 位智囊的有效评议</view>
+    </view>
+
+    <!-- 各选项倾向汇总 -->
+    <view class="rp__card">
+      <view class="rp__card-title">各选项倾向汇总</view>
+      <view
+        class="rp__vote {{ item.isTop ? 'rp__vote--top' : '' }}"
+        wx:for="{{ rows }}"
+        wx:key="label"
+      >
+        <view class="rp__vote-header">
+          <view class="rp__vote-name">
+            <text>方案 {{ l.letter(index) }}：{{ item.label }}</text>
+            <text wx:if="{{ item.isTop }}" class="rp__vote-badge">最高建议</text>
+          </view>
+          <text class="rp__vote-stat">{{ item.count }} 人 · {{ item.percent }}%</text>
+        </view>
+        <view class="rp__vote-track">
+          <view class="rp__vote-fill" style="width: {{ item.percent }}%;"></view>
+        </view>
+      </view>
+    </view>
+
+    <!-- AI 三思参考 -->
+    <view wx:if="{{ report.aiContent }}" class="rp__card">
+      <view class="rp__ai-head">
+        <text class="rp__card-title">AI 三思参考</text>
+        <text class="rp__ai-badge">AI 内容仅供参考</text>
+      </view>
+      <view wx:if="{{ report.isAiFallback === 1 }}" class="rp__fallback">本次暂无有效评议，以下为 AI 兜底参考</view>
+      <view class="rp__ai">{{ report.aiContent }}</view>
+    </view>
+
+    <view class="rp__disclaimer">ⓘ 仅供参考，不代表最终建议，决定权在你</view>
+  </view>
+
+  <view wx:else class="rp__empty">
+    <empty text="报告尚未生成" />
+  </view>
+
+  <view wx:if="{{ report.id }}" class="rp__bar" slot="footer">
+    <view class="rp__btn" bindtap="onBackToDetail">
+      <text>返回决策单</text>
+      <text class="rp__btn-seal"></text>
+    </view>
+  </view>
+</container>

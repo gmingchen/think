@@ -1,0 +1,76 @@
+page {
+  background: var(--ts-bg);
+}
+
+/* 导航栏自定义标题（container navbar-middle 插槽）：群名省略、人数不缩 */
+.gd__nav-title {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  min-width: 0;
+  max-width: 60%;
+  font-weight: 700;
+  color: var(--ts-text);
+  font-size: var(--font-size-large-3);
+  letter-spacing: 1rpx;
+}
+
+.gd__nav-name {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.gd__nav-count {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.gd {
+  padding: 24rpx 28rpx;
+}
+
+/* 决策单区 */
+.gd__section {
+  margin-top: 8rpx;
+}
+
+.gd__feed-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 8rpx;
+}
+
+.gd__feed-title {
+  font-size: 30rpx;
+  font-weight: var(--font-weight-6);
+  color: var(--ts-text);
+}
+
+.gd__loading,
+.gd__empty {
+  padding: 60rpx 0;
+  text-align: center;
+  font-size: 26rpx;
+  color: var(--ts-text-sub);
+}
+
+.gd__item {
+  margin-top: 24rpx;
+}
+
+.gd__more {
+  margin: 32rpx auto 8rpx;
+  width: 240rpx;
+  text-align: center;
+  padding: 16rpx 0;
+  font-size: 26rpx;
+  color: var(--ts-brand);
+  border-radius: var(--ts-radius-pill);
+  background: var(--ts-tag-bg);
+}
+
+

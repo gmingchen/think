@@ -1,0 +1,30 @@
+<container title="加入群组" use-back>
+  <view class="il">
+    <!-- 品牌冠部 -->
+    <view class="il__brand">
+      <text class="il__brand-name font-serif">众 三 思</text>
+      <text class="il__brand-slogan">集众人所见，众三思而后抉择</text>
+    </view>
+
+    <!-- 邀请信息卡 -->
+    <view class="il__card">
+      <view class="il__lead font-serif">邀你一起「三思而后行」</view>
+      <view class="il__desc">遇到两难抉择时，别再一个人纠结。加入群组，和伙伴们一起众议、三思，做出更从容的决定。</view>
+
+      <view class="il__code">
+        <text class="il__code-label">邀请码</text>
+        <text class="il__code-value">{{ code || '—' }}</text>
+      </view>
+
+      <view class="il__privacy">🛡️ 群内决策遵循知情圈闭环，加入后即可从「思危 / 思退 / 思变」提交你的洞见。</view>
+
+      <view class="il__join {{ joining ? 'il__join--disabled' : '' }}" bindtap="onJoinTap">
+        <text>{{ joining ? '加入中…' : '加入群聊' }}</text>
+        <text class="il__join-seal"></text>
+      </view>
+      <view class="il__home" bindtap="onBackHome">随便看看</view>
+    </view>
+
+    <view class="il__footer">建议仅供参考，最终决定权归你</view>
+  </view>
+</container>

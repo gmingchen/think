@@ -1,6 +1,6 @@
 {
   "description": "项目私有配置文件。此文件中的内容将覆盖 project.config.json 中的相同字段。项目的改动优先同步到此文件中。详见文档：https://developers.weixin.qq.com/miniprogram/dev/devtools/projectconfig.html",
-  "projectname": "dishes-mp",
+  "projectname": "think-mp",
   "setting": {
     "compileHotReLoad": true,
     "urlCheck": false,
@@ -23,64 +23,22 @@
     "miniprogram": {
       "list": [
         {
-          "name": "会员中心",
-          "pathName": "subpackages/member/pages/vip/index",
-          "query": "",
+          "name": "群成员",
+          "pathName": "subpackages/group/pages/members/index",
+          "query": "grpId=2",
           "scene": null,
           "launchMode": "default"
         },
         {
-          "name": "新增编辑菜品",
-          "pathName": "subpackages/dish/pages/add-edit/index",
-          "query": "id=",
+          "name": "群组详情",
+          "pathName": "subpackages/group/pages/detail/index",
+          "query": "id=2",
           "launchMode": "default",
           "scene": null
         },
         {
-          "name": "subpackages/dish/pages/ai-recommend/index",
-          "pathName": "subpackages/dish/pages/ai-recommend/index",
-          "query": "",
-          "launchMode": "default",
-          "scene": null
-        },
-        {
-          "name": "买菜清单",
-          "pathName": "subpackages/dish/pages/shopping/index",
-          "query": "cookOrderIds=17&source=orderList",
-          "launchMode": "default",
-          "scene": null
-        },
-        {
-          "name": "厨房订单详情",
-          "pathName": "subpackages/cookorder/pages/detail/index",
-          "query": "id=17",
-          "launchMode": "default",
-          "scene": null
-        },
-        {
-          "name": "今天吃什么",
-          "pathName": "subpackages/dish/pages/draw/index",
-          "query": "",
-          "launchMode": "default",
-          "scene": null
-        },
-        {
-          "name": "菜谱详情",
-          "pathName": "subpackages/dish/pages/detail/index",
-          "query": "id=6",
-          "launchMode": "default",
-          "scene": null
-        },
-        {
-          "name": "",
-          "pathName": "subpackages/dish/pages/share/index",
-          "query": "id=5",
-          "launchMode": "default",
-          "scene": null
-        },
-        {
-          "name": "厨房订单",
-          "pathName": "subpackages/cookorder/pages/list/index",
+          "name": "群组",
+          "pathName": "pages/group/index",
           "query": "",
           "launchMode": "default",
           "scene": null
@@ -89,48 +47,6 @@
           "name": "评价列表",
           "pathName": "subpackages/dish/pages/review/index",
           "query": "id=6",
-          "launchMode": "default",
-          "scene": null
-        },
-        {
-          "name": "下厨/上桌",
-          "pathName": "pages/cook/index",
-          "query": "",
-          "launchMode": "default",
-          "scene": null
-        },
-        {
-          "name": "菜谱",
-          "pathName": "pages/recipe/index",
-          "query": "",
-          "launchMode": "default",
-          "scene": null
-        },
-        {
-          "name": "邀请加入厨房",
-          "pathName": "pages/index/index",
-          "query": "kitchenId=2&code=BEC5C3",
-          "launchMode": "default",
-          "scene": null
-        },
-        {
-          "name": "成员",
-          "pathName": "subpackages/kitchen/pages/member/index",
-          "query": "id=1",
-          "launchMode": "default",
-          "scene": null
-        },
-        {
-          "name": "厨房设置",
-          "pathName": "subpackages/kitchen/pages/settings/index",
-          "query": "id=1",
-          "launchMode": "default",
-          "scene": null
-        },
-        {
-          "name": "厨房",
-          "pathName": "subpackages/kitchen/pages/list/index",
-          "query": "",
           "launchMode": "default",
           "scene": null
         },
@@ -151,27 +67,6 @@
         {
           "name": "我的",
           "pathName": "pages/mine/index",
-          "query": "",
-          "launchMode": "default",
-          "scene": null
-        },
-        {
-          "name": "食材库",
-          "pathName": "subpackages/food/pages/list/index",
-          "query": "",
-          "launchMode": "default",
-          "scene": null
-        },
-        {
-          "name": "调料库",
-          "pathName": "subpackages/seasoning/pages/list/index",
-          "query": "",
-          "launchMode": "default",
-          "scene": null
-        },
-        {
-          "name": "分类管理",
-          "pathName": "subpackages/category/pages/list/index",
           "query": "",
           "launchMode": "default",
           "scene": null

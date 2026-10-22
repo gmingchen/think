@@ -274,22 +274,65 @@ public class DecisionServiceImpl extends ServiceImplX<DecisionMapper, DecisionEn
     @Override
     public UserStatsVO statsMine() {
         Long me = SecurityUtils.getLoginUserId();
-        long created = baseMapper.selectCount(new LambdaQueryWrapper<DecisionEntity>()
+        // 一次取回我的全部决策单，发起数/复盘数/完成率均在内存上数，避免同表反复 count 往返
+        List<DecisionEntity> myList = baseMapper.selectList(new LambdaQueryWrapper<DecisionEntity>()
                 .eq(DecisionEntity::getUserId, me));
         long reviewed = reviewMapper.selectCount(new LambdaQueryWrapper<ReviewEntity>()
                 .eq(ReviewEntity::getUserId, me));
-        List<Long> myDecisionIds = CollectionUtils.mapList(
-                baseMapper.selectList(new LambdaQueryWrapper<DecisionEntity>().eq(DecisionEntity::getUserId, me)),
-                DecisionEntity::getId);
+        List<Long> myDecisionIds = CollectionUtils.mapList(myList, DecisionEntity::getId);
         long received = 0L;
         if (!CollectionUtils.isEmpty(myDecisionIds)) {
             received = reviewMapper.selectCount(new LambdaQueryWrapper<ReviewEntity>()
                     .in(ReviewEntity::getDecisionId, myDecisionIds));
         }
+        // 复盘落库时已将 decision.status 置为已复盘（RecapServiceImpl#save），此处按状态直接数，无需 join recap 表
+        int recap = CollectionUtils.filterList(myList,
+                decision -> DecisionStatusEnum.RECAPTURED.getCode().equals(decision.getStatus())).size();
         return new UserStatsVO()
-                .setCreatedCount((int) created)
+                .setCreatedCount(myList.size())
                 .setReviewedCount((int) reviewed)
-                .setReceivedCount((int) received);
+                .setReceivedCount((int) received)
+                .setRecapCount(recap)
+                .setReviewAvgRate(calcReviewAvgRate(myList));
+    }
+
+    /**
+     * 结束评议单据的平均评议完成率（百分比整数，四舍五入），无符合条件单据返回 null。
+     * <p>
+     * 逐单算「实际评议数 / 该单 reviewLimit」再取算术平均：
+     * 1）统计范围 = 已截止（未完成复盘）+ 已复盘（已完成复盘），即正常跑完评议流程的单据；
+     * 已关闭不纳入（只能从评议中手动作废，或群解散级联关闭，不属于正常结束），评议中的单据分母未满属正常，纳入会虚低；
+     * 2）分子封顶到分母，避免公开档超员提交把完成率顶到 100% 以上；
+     * 3）reviewLimit 缺失或 <=0 的脏数据跳过该单，不计入均值也不除以 0。
+     */
+    private Integer calcReviewAvgRate(List<DecisionEntity> myList) {
+        List<Integer> finishedStatuses = Arrays.asList(
+                DecisionStatusEnum.ENDED.getCode(),
+                DecisionStatusEnum.RECAPTURED.getCode());
+        List<DecisionEntity> finishedList = CollectionUtils.filterList(myList,
+                decision -> finishedStatuses.contains(decision.getStatus()));
+        if (CollectionUtils.isEmpty(finishedList)) {
+            return null;
+        }
+        List<Long> finishedIds = CollectionUtils.mapList(finishedList, DecisionEntity::getId);
+        // 一次取回这些单据的评议再按 decisionId 在内存计数，避免逐单 count 的 N+1
+        Map<Long, Long> reviewCountMap = reviewMapper.selectList(new LambdaQueryWrapper<ReviewEntity>()
+                        .in(ReviewEntity::getDecisionId, finishedIds)
+                        .select(ReviewEntity::getDecisionId))
+                .stream()
+                .collect(Collectors.groupingBy(ReviewEntity::getDecisionId, Collectors.counting()));
+        double sum = 0d;
+        int counted = 0;
+        for (DecisionEntity decision : finishedList) {
+            Integer limit = decision.getReviewLimit();
+            if (limit == null || limit <= 0) {
+                continue;
+            }
+            int actual = reviewCountMap.getOrDefault(decision.getId(), 0L).intValue();
+            sum += Math.min(actual, limit) / (double) limit;
+            counted++;
+        }
+        return counted == 0 ? null : (int) Math.round(sum / counted * 100);
     }
 
     // ================= 写 =================

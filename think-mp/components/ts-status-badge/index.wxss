@@ -1,0 +1,28 @@
+.ts-status-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 20rpx;
+  font-weight: 600;
+  line-height: 1.2;
+  padding: 4rpx 12rpx;
+  border-radius: 6rpx;
+  white-space: nowrap;
+}
+
+/* 印章红实心：评议中 */
+.ts-status-badge--seal {
+  background: var(--ts-seal);
+  color: #FFFFFF;
+}
+
+/* 品牌深蓝实心：已关闭 */
+.ts-status-badge--brand {
+  background: var(--ts-brand);
+  color: #FFFFFF;
+}
+
+/* 浅蓝常规标签：草稿/待审/已截止/已复盘 */
+.ts-status-badge--tag {
+  background: var(--ts-tag-bg);
+  color: var(--ts-brand);
+}

@@ -1,0 +1,10 @@
+{
+  "usingComponents": {
+    "ts-fab": "/components/ts-fab/index",
+    "header": "./components/header/index",
+    "empty": "./components/empty/index",
+    "create-popup": "./components/create-popup/index",
+    "join-popup": "./components/join-popup/index",
+    "item": "./components/item/index"
+  }
+}

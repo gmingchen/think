@@ -1,0 +1,13 @@
+<popup show="{{ show }}" title="邀请入群" position="center" panel-width="680rpx" bind:close="onClose">
+  <view class="invite-popup__body">
+    <view class="invite-popup__tip">分享邀请码或转发给好友，对方输入后即可入群</view>
+    <view class="invite-popup__code-card">
+      <view class="invite-popup__code-label">邀请码</view>
+      <view class="invite-popup__code">{{ code || '获取中…' }}</view>
+    </view>
+  </view>
+  <view slot="footer" class="invite-popup__actions">
+    <view class="invite-popup__btn invite-popup__btn--ghost" bindtap="onCopy">复制邀请码</view>
+    <button class="invite-popup__btn invite-popup__btn--primary" open-type="share">转发邀请</button>
+  </view>
+</popup>

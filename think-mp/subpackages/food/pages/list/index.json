@@ -1,7 +1,0 @@
-{
-  "usingComponents": {
-    "empty": "/components/empty/index",
-    "food-popup": "/components/food-popup/index",
-    "skeleton": "./components/skeleton/index"
-  }
-}

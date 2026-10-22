@@ -1,0 +1,93 @@
+/* 群组列表项（白卡片，页面私有组件） */
+:host {
+  display: block;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  background: var(--ts-card);
+  border-radius: var(--ts-radius);
+  box-shadow: var(--ts-shadow);
+  padding: 28rpx 32rpx;
+  margin: 0 32rpx 24rpx;
+}
+
+.item:active {
+  opacity: 0.9;
+}
+
+.item__avatar {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 24rpx;
+  background: var(--ts-tag-bg);
+  color: var(--ts-brand);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 32rpx;
+  flex-shrink: 0;
+  /* 隔离组件取不到全局 .font-serif，衬线就近声明 */
+  font-family: 'Songti SC', 'STSong', 'SimSun', serif;
+}
+
+.item__info {
+  flex: 1;
+  min-width: 0;
+}
+
+.item__title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8rpx;
+}
+
+.item__name {
+  font-size: 30rpx;
+  font-weight: var(--font-weight-6);
+  color: var(--ts-text);
+  min-width: 0;
+  /* 隔离组件取不到全局 .font-serif / .e，就近内联衬线 + 单行省略 */
+  font-family: 'Songti SC', 'STSong', 'SimSun', serif;
+  line-clamp: 1;
+  -webkit-line-clamp: 1;
+  word-break: break-all;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+}
+
+.item__role {
+  flex-shrink: 0;
+  font-size: 20rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
+  margin-left: 16rpx;
+}
+
+.item__role--owner {
+  background: var(--ts-seal-bg);
+  color: var(--ts-seal);
+  font-weight: 600;
+  border: 1rpx solid rgba(178, 60, 46, 0.2);
+}
+
+.item__role--member {
+  background: var(--ts-tag-bg);
+  color: var(--ts-brand);
+}
+
+.item__meta {
+  font-size: 24rpx;
+  color: var(--ts-text-sub);
+}
+
+/* right 图标：颜色经 iconfont 的 color 属性传入（#CAD4E8），此处仅约束宿主不被压缩 */
+.item__go {
+  flex-shrink: 0;
+}

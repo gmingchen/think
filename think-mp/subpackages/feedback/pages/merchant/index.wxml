@@ -120,9 +120,4 @@
       {{ submitting ? '提交中…' : '提交反馈' }}
     </view>
   </view>
-
-  <!-- Banner 广告（页面末尾、提交按钮下方，不干扰主操作；受 store.ad.enabled 总开关控制，无填充自动隐藏） -->
-  <view class="p_h-32">
-    <ad-unit ad-unit-id="{{ AD_UNIT_MERCHANT_BANNER }}" cls="page__ad" />
-  </view>
 </container>

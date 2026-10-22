@@ -1,7 +1,0 @@
-{
-  "component": true,
-  "usingComponents": {
-    "popup": "../popup/index",
-    "food-popup": "../food-popup/index"
-  }
-}

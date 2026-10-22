@@ -1,25 +1,75 @@
-<container use-scroll use-footer title="我的">
-  <!-- 骨架屏 -->
-  <skeleton wx:if="{{ loading }}" />
+<container title="个人中心" use-scroll use-footer>
+  <view class="mine">
+    <!-- 个人信息卡（点击跳转个人信息编辑） -->
+    <view class="mine__profile" bindtap="onProfileTap">
+      <image class="mine__avatar" src="{{ user.avatar }}" mode="aspectFill" />
+      <view class="mine__profile-info">
+        <view class="mine__nickname font-serif e">{{ user.nickname }}</view>
+        <view class="mine__profile-sub">完善昵称与头像</view>
+      </view>
+      <text class="mine__go">➔</text>
+    </view>
 
-  <!-- 右上角编辑资料 -->
-  <view slot="navbar-right" class="mine__nav-right" bind:tap="onEditProfile">编辑</view>
+    <!-- 统计看板（三栏分隔） -->
+    <view class="mine__stats">
+      <view class="mine__stat mine__stat--line">
+        <view class="mine__stat-num">{{ stats.createdCount }}</view>
+        <view class="mine__stat-label">发起决策</view>
+      </view>
+      <view class="mine__stat mine__stat--line">
+        <view class="mine__stat-num">{{ stats.reviewedCount }}</view>
+        <view class="mine__stat-label">参与评议</view>
+      </view>
+      <view class="mine__stat">
+        <view class="mine__stat-num">{{ stats.receivedCount }}</view>
+        <view class="mine__stat-label">收获评议</view>
+      </view>
+    </view>
 
-  <!-- 头像区（不做卡片；原统计卡已迁往厨房设置页） -->
-  <user />
+    <!-- 核心业务入口组 -->
+    <view class="mine__group">
+      <view class="mine__cell" bindtap="onCreateTap">
+        <view class="mine__cell-left">
+          <view class="mine__cell-icon mine__cell-icon--brand">＋</view>
+          <text class="mine__cell-label font-serif">发起两难决策</text>
+        </view>
+        <view class="mine__cell-right"><text class="mine__cell-tip">快捷入口</text><text>➔</text></view>
+      </view>
+      <view class="mine__cell" bindtap="onDecisionTap">
+        <view class="mine__cell-left">
+          <view class="mine__cell-icon">▤</view>
+          <text class="mine__cell-label">我的决策单</text>
+        </view>
+        <view class="mine__cell-right"><text>{{ stats.createdCount }} 卷</text><text>➔</text></view>
+      </view>
+      <view class="mine__cell" bindtap="onGroupTap">
+        <view class="mine__cell-left">
+          <view class="mine__cell-icon">👥</view>
+          <text class="mine__cell-label">我的智囊群</text>
+        </view>
+        <view class="mine__cell-right"><text>➔</text></view>
+      </view>
+    </view>
 
-  <!-- 会员中心卡：占原 stats 的槽位（§4.3），数据由 store.member.mineCard 驱动（§4.1） -->
-  <member />
+    <!-- 系统与支持入口组 -->
+    <view class="mine__group">
+      <view class="mine__cell" bindtap="onFeedbackTap">
+        <view class="mine__cell-left">
+          <view class="mine__cell-icon">💬</view>
+          <text class="mine__cell-label">意见反馈</text>
+        </view>
+        <view class="mine__cell-right"><text>➔</text></view>
+      </view>
+      <view class="mine__cell" bindtap="onAboutTap">
+        <view class="mine__cell-left">
+          <view class="mine__cell-icon">ⓘ</view>
+          <text class="mine__cell-label">关于众三思</text>
+        </view>
+        <view class="mine__cell-right"><text>➔</text></view>
+      </view>
+    </view>
 
-  <!-- 功能菜单 -->
-  <menu />
-
-  <!-- 链接列表（含激励视频入口，事件抛回页面处理） -->
-  <link bind:reward="onWatchAdTap" />
-
-  <!-- Banner 广告（页面末尾，受 store.ad.enabled 总开关控制，无填充自动隐藏） -->
-  <view class="p_h-32">
-    <ad-unit wx:if="{{ !loading }}" ad-unit-id="{{ AD_UNIT_MINE_BANNER }}" cls="page__ad" />
+    <view class="mine__notice">建议仅供参考，最终决定权归你</view>
   </view>
 
   <tabbar slot="footer"></tabbar>

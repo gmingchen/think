@@ -1,0 +1,14 @@
+<view class="metrics">
+  <view class="metrics__item" data-scene="{{ SCENE_MINE }}" data-tab="{{ TAB_CREATED }}" bindtap="onItemTap">
+    <view class="metrics__num">{{ stats.createdCount }}</view>
+    <view class="metrics__label">累计发起</view>
+  </view>
+  <view class="metrics__item" data-scene="{{ SCENE_MINE }}" data-tab="{{ TAB_CREATED }}" data-status="{{ STATUS_RECAPTURED }}" bindtap="onItemTap">
+    <view class="metrics__num">{{ stats.recapCount }}</view>
+    <view class="metrics__label">完成复盘</view>
+  </view>
+  <view class="metrics__item" data-scene="{{ SCENE_MINE }}" data-tab="{{ TAB_REVIEWED }}" bindtap="onItemTap">
+    <view class="metrics__num">{{ stats.reviewedCount }}</view>
+    <view class="metrics__label">参与评议</view>
+  </view>
+</view>

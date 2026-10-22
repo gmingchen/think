@@ -1,0 +1,7 @@
+{
+  "usingComponents": {
+    "ts-status-badge": "/components/ts-status-badge/index",
+    "ts-review-popup": "/components/ts-review-popup/index",
+    "confirm-popup": "/components/confirm-popup/index"
+  }
+}

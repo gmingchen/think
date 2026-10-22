@@ -1,0 +1,6 @@
+<view class="empty">
+  <view class="empty__icon"><iconfont name="group" size="{{ 120 }}" color="#C4C8D0" /></view>
+  <view class="empty__title">还没有智囊群</view>
+  <view class="empty__desc">创建一个，拉伙伴进来帮你三思每一个抉择</view>
+  <view class="empty__tip">群内只做决策、不闲聊。TA 加入后就能帮你评议每一个两难抉择。</view>
+</view>

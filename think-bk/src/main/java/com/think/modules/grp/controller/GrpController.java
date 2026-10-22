@@ -4,6 +4,7 @@ import com.think.common.pojo.Result;
 import com.think.modules.grp.model.dto.GrpCreateDTO;
 import com.think.modules.grp.model.dto.GrpIdDTO;
 import com.think.modules.grp.model.dto.GrpJoinDTO;
+import com.think.modules.grp.model.dto.GrpMemberPageDTO;
 import com.think.modules.grp.model.dto.GrpPageDTO;
 import com.think.modules.grp.model.dto.GrpRemoveMemberDTO;
 import com.think.modules.grp.model.dto.GrpUpdateDTO;
@@ -102,10 +103,10 @@ public class GrpController {
     }
 
     /**
-     * 群成员列表
+     * 群成员列表（分页）
      */
-    @GetMapping("/members")
-    public Result<?> members(@RequestParam Long grpId) {
-        return Result.success(grpService.members(grpId));
+    @PostMapping("/members/page")
+    public Result<?> pageMembers(@RequestBody @Validated GrpMemberPageDTO dto) {
+        return Result.success(grpService.pageMembers(dto));
     }
 }

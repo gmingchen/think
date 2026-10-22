@@ -1,0 +1,41 @@
+/* 编辑群名弹窗（页面私有组件，内嵌全局 popup） */
+
+/* 内容区：popup 面板不带左右内边距，这里补齐留白 + 顶部呼吸感 */
+.edit-popup__body {
+  padding: 8rpx 40rpx 0;
+}
+
+.edit-popup__tip {
+  font-size: 22rpx;
+  line-height: 1.5;
+  color: var(--ts-text-sub);
+  margin-bottom: 24rpx;
+}
+
+.edit-popup__input {
+  height: 88rpx;
+  padding: 0 28rpx;
+  font-size: 30rpx;
+  color: var(--ts-text);
+  background: var(--ts-fill);
+  border: 1rpx solid var(--ts-line);
+  border-radius: var(--ts-radius-input);
+}
+
+/* 底部按钮：footer 插槽独立于内容区，用左右外边距与内容留白对齐 */
+.edit-popup__btn {
+  margin: 32rpx 40rpx 0;
+  height: 72rpx;
+  line-height: 72rpx;
+  text-align: center;
+  background: var(--ts-primary);
+  color: #FFFFFF;
+  font-size: 30rpx;
+  font-weight: var(--font-weight-5);
+  border-radius: var(--ts-radius-pill);
+  box-shadow: var(--ts-shadow-btn);
+}
+
+.edit-popup__btn:active {
+  background: var(--ts-brand);
+}

@@ -1,0 +1,7 @@
+<view class="overview">
+  <view class="overview__header">
+    <text class="overview__label">共收获评议</text>
+    <text class="overview__num">{{ stats.receivedCount }}</text>
+  </view>
+  <view class="overview__sub">累计发起 {{ stats.createdCount }} 个决策 · 平均评议完成率 {{ stats.reviewAvgRate || 0 }}%</view>
+</view>

@@ -1,0 +1,13 @@
+<popup show="{{ show }}" title="编辑智囊群组名称" use-footer bind:close="onClose">
+  <view class="edit-popup__body">
+    <view class="edit-popup__tip">修改后群内成员将看到最新的群名称</view>
+    <input
+      class="edit-popup__input"
+      placeholder="请输入群名称"
+      value="{{ name }}"
+      maxlength="64"
+      bindinput="onInput"
+    />
+  </view>
+  <view slot="footer" class="edit-popup__btn" bindtap="onConfirm">保存</view>
+</popup>

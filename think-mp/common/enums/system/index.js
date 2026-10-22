@@ -14,11 +14,10 @@ export const ENV_ENUM = {
 
 // 接口 host
 export const HOST_ENUM = {
-  [ENV_ENUM.DEVELOPMENT]: 'https://dishes.mx-studio.cn',
-  // [ENV_ENUM.DEVELOPMENT]: 'http://47.116.207.3:8810',
-  // [ENV_ENUM.DEVELOPMENT]: 'http://localhost:8810',
-  [ENV_ENUM.TESTING]: 'https://dishes.mx-studio.cn',
-  [ENV_ENUM.PRODUCTION]: 'https://dishes.mx-studio.cn',
+  [ENV_ENUM.DEVELOPMENT]: 'https://think.mx-studio.cn',
+  [ENV_ENUM.DEVELOPMENT]: 'http://localhost:8820',
+  [ENV_ENUM.TESTING]: 'https://think.mx-studio.cn',
+  [ENV_ENUM.PRODUCTION]: 'https://think.mx-studio.cn',
 }
 
 // 客户端平台（wx.getDeviceInfo().platform 的返回值，落库于 store.system.platform）

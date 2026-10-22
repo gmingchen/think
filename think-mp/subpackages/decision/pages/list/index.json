@@ -1,0 +1,6 @@
+{
+  "usingComponents": {
+    "ts-decision-card": "/components/ts-decision-card/index",
+    "empty": "/components/empty/index"
+  }
+}

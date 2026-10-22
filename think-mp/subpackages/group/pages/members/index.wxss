@@ -1,0 +1,177 @@
+page {
+  background: var(--ts-bg);
+}
+
+.gm {
+  padding: 24rpx 28rpx;
+}
+
+/* 群组头部：群名称 / 成员数 + 邀请 · 退出 · 解散 图标按钮 */
+.gm__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24rpx;
+  padding: 28rpx 32rpx;
+  background: var(--ts-card);
+  border-radius: var(--ts-radius);
+  box-shadow: var(--ts-shadow);
+}
+
+.gm__header-info {
+  flex: 1;
+  min-width: 0;
+  margin-right: 16rpx;
+}
+
+.gm__group-name {
+  font-size: 34rpx;
+  font-weight: var(--font-weight-6);
+  color: var(--ts-text);
+}
+
+.gm__group-count {
+  margin-top: 8rpx;
+  font-size: 22rpx;
+  color: var(--ts-text-sub);
+}
+
+.gm__header-actions {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  grid-gap: 16rpx;
+}
+
+.gm__icon-btn {
+  width: 72rpx;
+  height: 72rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* 参考群详情页 edit 图标：圆角方块而非圆形 */
+  border-radius: 12rpx;
+}
+
+.gm__icon-btn:active {
+  opacity: 0.92;
+}
+
+.gm__icon-btn--primary {
+  background: var(--ts-tag-bg);
+}
+
+.gm__icon-btn--danger {
+  background: var(--ts-seal-bg);
+}
+
+.gm__loading,
+.gm__empty {
+  padding: 60rpx 0;
+  text-align: center;
+  font-size: 26rpx;
+  color: var(--ts-text-sub);
+}
+
+/* 成员须知 */
+.gm__notice {
+  margin-bottom: 24rpx;
+  padding: 20rpx 24rpx;
+  font-size: 22rpx;
+  line-height: 1.5;
+  color: var(--ts-brand);
+  background: var(--ts-tag-bg);
+  border-radius: 20rpx;
+}
+
+/* 成员卡片 */
+.gm__card {
+  padding: 8rpx 32rpx;
+  background: var(--ts-card);
+  border-radius: var(--ts-radius);
+  box-shadow: var(--ts-shadow);
+}
+
+.gm__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid var(--ts-line-weak);
+}
+
+.gm__row:last-child {
+  border-bottom: none;
+}
+
+.gm__left {
+  display: flex;
+  align-items: center;
+  grid-gap: 20rpx;
+  min-width: 0;
+}
+
+.gm__avatar {
+  flex-shrink: 0;
+  width: 76rpx;
+  height: 76rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26rpx;
+  font-weight: var(--font-weight-6);
+  color: var(--ts-brand);
+  background: var(--ts-tag-bg);
+  border-radius: 50%;
+}
+
+.gm__info {
+  min-width: 0;
+}
+
+.gm__name {
+  max-width: 320rpx;
+  font-size: 26rpx;
+  font-weight: var(--font-weight-6);
+  color: var(--ts-text);
+}
+
+.gm__sub {
+  margin-top: 4rpx;
+  font-size: 20rpx;
+  color: var(--ts-text-sub);
+}
+
+.gm__right {
+  display: flex;
+  align-items: center;
+  grid-gap: 16rpx;
+  flex-shrink: 0;
+}
+
+.gm__badge {
+  font-size: 20rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
+}
+
+.gm__badge--owner {
+  font-weight: var(--font-weight-6);
+  color: var(--ts-seal);
+  background: var(--ts-seal-bg);
+  border: 1rpx solid rgba(178, 60, 46, 0.2);
+}
+
+.gm__badge--member {
+  color: var(--ts-brand);
+  background: var(--ts-tag-bg);
+}
+
+.gm__remove {
+  padding: 8rpx 20rpx;
+  font-size: 22rpx;
+  color: var(--ts-seal);
+  background: var(--ts-seal-bg);
+  border: 1rpx solid rgba(178, 60, 46, 0.2);
+  border-radius: var(--ts-radius-pill);
+}

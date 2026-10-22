@@ -1,8 +1,0 @@
-{
-  "component": true,
-  "styleIsolation": "apply-shared",
-  "usingComponents": {
-    "section": "../section/index",
-    "van-rate": "@vant/weapp/rate/index"
-  }
-}

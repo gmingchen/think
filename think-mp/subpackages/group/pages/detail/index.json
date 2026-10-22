@@ -1,0 +1,12 @@
+{
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "ts-decision-card": "/components/ts-decision-card/index",
+    "empty": "/components/empty/index",
+    "confirm-popup": "/components/confirm-popup/index",
+    "edit-popup": "./components/edit-popup/index",
+    "invite-popup": "./components/invite-popup/index",
+    "info": "./components/info/index",
+    "decision-entry": "./components/decision-entry/index"
+  }
+}

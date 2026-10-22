@@ -1,7 +1,6 @@
 import { store } from './store/index'
 import { navigateTo, navigateBack, navigateBackTo, toast, parseQuery } from './utils/index';
 import { confirm } from './utils/wx-api';
-import { showRewardedAd } from './utils/ad';
 import * as print from './utils/print';
 
 // 导航跳转
@@ -15,9 +14,6 @@ wx.$toast = toast
 // 确认弹窗
 wx.$confirm = confirm
 
-// 激励广告
-wx.$showRewardedAd = showRewardedAd
-
 // 日志打印 (全局注册)
 for (const key in print) {
   if (Object.hasOwnProperty.call(print, key)) {
@@ -29,11 +25,6 @@ for (const key in print) {
 // 登录-监听阻塞
 wx.$onLogined = new Promise(resolve => {
   wx.$logined = resolve;
-});
-
-// 厨房-监听阻塞
-wx.$onKitchenLoaded = new Promise(resolve => {
-  wx.$kitchenLoaded = resolve;
 });
 
 App({
@@ -50,12 +41,7 @@ App({
     const { inviterId = '' } = parseQuery(options?.query || {})
     // 登录
     await store.login(inviterId)
-    // 获取用户信息（需要 lastKitchenId 来恢复厨房选择）
+    // 获取用户信息
     await store.getUser()
-    store.getKitchen()
-    // 会员状态：与厨房并行、不 await。它只决定「少不少一层权益」，不决定页面能不能渲染，
-    // 拿它去堵首屏不值；失败时 store 自己按非会员降级（§10.2 / §17 第 10 条），
-    // 而「我的」页会员卡靠 mineCard 为空停在骨架，不会闪一张「未开通」卡
-    store.getMember()
   },
 })
