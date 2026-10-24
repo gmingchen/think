@@ -30,12 +30,6 @@ Page({
     this.reloadPageData()
   },
 
-  async onPullDownRefresh() {
-    await this.getGroupInfo()
-    this.reloadPageData()
-    wx.stopPullDownRefresh()
-  },
-
   // 群头部信息：名称 / 成员数 / 我的角色（非分页，仅一次拉取）
   async getGroupInfo() {
     const { data } = await grpDetailApi({ grpId: this.data.grpId })

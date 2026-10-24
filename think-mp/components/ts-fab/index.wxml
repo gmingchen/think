@@ -1,5 +1,0 @@
-<view class="ts-fab" bindtap="onTap">
-  <text class="ts-fab__plus">＋</text>
-  <text wx:if="{{ text }}" class="ts-fab__text">{{ text }}</text>
-  <view class="ts-fab__seal"></view>
-</view>

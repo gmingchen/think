@@ -1,0 +1,43 @@
+<van-popup
+  show="{{ show }}"
+  position="bottom"
+  round
+  closeable
+  safe-area-inset-bottom
+  custom-style="max-height: 88vh; border-radius: 32rpx 32rpx 0 0;"
+  bind:close="onClose"
+>
+  <view class="review-popup">
+    <view class="review-popup__title font-serif">填写你的评议</view>
+
+    <!-- 未评议锁定提示 -->
+    <view class="review-popup__locked">🔒 提交评议后即可解锁其他人的观点</view>
+
+    <!-- 倾向备选项 -->
+    <view class="review-popup__label">选择你的建议倾向</view>
+    <view class="review-popup__options">
+      <view
+        wx:for="{{ options }}"
+        wx:key="index"
+        class="review-popup__option {{ selected === index ? 'review-popup__option--active' : '' }}"
+        data-index="{{ index }}"
+        bindtap="onSelectOption"
+      >{{ item }}</view>
+    </view>
+
+    <!-- 观点输入 -->
+    <textarea
+      class="review-popup__textarea"
+      value="{{ content }}"
+      placeholder="写下你的严谨推演…"
+      maxlength="500"
+      bindinput="onInputContent"
+    />
+
+    <!-- 提交 -->
+    <view class="review-popup__submit" bindtap="onSubmit">
+      <text>提交深思评议</text>
+      <view class="review-popup__seal"></view>
+    </view>
+  </view>
+</van-popup>

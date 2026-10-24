@@ -1,0 +1,53 @@
+/* 空态：引导发布决策单（页面私有组件） */
+:host {
+  display: block;
+}
+
+/* 垂直居中靠对 .container__body 做绝对定位撑满：body 自身 position:relative 且有确定高度
+   （min-height:100% 相对 scroll-view 确定高可解析），而绝对定位的 inset 基于包含块的“已用高度”，
+   不依赖百分比高度链 */
+.empty {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48rpx;
+  text-align: center;
+}
+
+.empty__icon {
+  margin-bottom: 24rpx;
+}
+
+.empty__title {
+  font-size: 34rpx;
+  font-weight: var(--font-weight-6);
+  color: var(--ts-text);
+  margin-bottom: 12rpx;
+  /* 隔离组件取不到全局 .font-serif 类，衬线字体就近声明 */
+  font-family: 'Songti SC', 'STSong', 'SimSun', serif;
+}
+
+.empty__desc {
+  font-size: 26rpx;
+  color: var(--ts-text-sub);
+  margin-bottom: 56rpx;
+}
+
+.empty__tip {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 24rpx 28rpx;
+  background: var(--ts-card);
+  border-radius: var(--ts-radius);
+  font-size: 24rpx;
+  line-height: 1.6;
+  color: var(--ts-text-sub);
+  text-align: left;
+}

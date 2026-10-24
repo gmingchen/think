@@ -1,7 +1,9 @@
 {
   "usingComponents": {
-    "ts-decision-card": "/components/ts-decision-card/index",
-    "ts-fab": "/components/ts-fab/index",
-    "empty": "/components/empty/index"
+    "review-card": "/components/review-card/index",
+    "review-popup": "/components/review-popup/index",
+    "decision-view-popup": "/components/decision-view-popup/index",
+    "fab": "/components/fab/index",
+    "empty": "./components/empty/index"
   }
 }

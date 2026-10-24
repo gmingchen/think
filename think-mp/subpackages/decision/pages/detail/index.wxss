@@ -129,7 +129,7 @@ page {
   border-radius: 8rpx;
 }
 
-/* 冷静期倒计时 + 进度 */
+/* 评议时限倒计时 + 进度 */
 .detail__cooloff {
   background: var(--ts-tag-bg);
   border-radius: 24rpx;
@@ -180,7 +180,7 @@ page {
   margin-bottom: 24rpx;
 }
 
-/* 备选方案 */
+/* 你会怎么选 */
 .detail__option {
   display: flex;
   align-items: center;

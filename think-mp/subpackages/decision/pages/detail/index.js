@@ -28,6 +28,10 @@ Page({
     data: {},
     percent: 0,
     countdown: '',
+    // 不限时（无 coolDownEndAt）：倒计时位改文案「不限时 · 满员即截止」
+    timeUnlimited: false,
+    // 人数不限（reviewLimit=0）：计数位改「已评 N 人 · 不限」，进度条失去分母不展
+    countUnlimited: false,
     STATUS,
     CHECK,
     showReview: false,
@@ -61,24 +65,25 @@ Page({
     this.setData({
       loading: false,
       data,
+      countUnlimited: !limit,
       percent: limit ? Math.min(100, Math.round((count / limit) * 100)) : 0,
     })
     this._startCountdown()
   },
 
-  // ── 冷静期倒计时（评议中且未到截止才计时） ──
+  // ── 评议时限倒计时（评议中且未到截止才计时；不限时无 coolDownEndAt，走「不限时」文案） ──
   _startCountdown() {
     this._clearTimer()
     const { status, coolDownEndAt } = this.data.data
     if (status !== STATUS.REVIEWING || !coolDownEndAt) {
-      this.setData({ countdown: '' })
+      this.setData({ countdown: '', timeUnlimited: status === STATUS.REVIEWING && !coolDownEndAt })
       return
     }
     const tick = () => {
       const end = dayjs(coolDownEndAt)
       const diff = end.diff(dayjs(), 'second')
       if (diff <= 0) {
-        this.setData({ countdown: '冷静期已结束' })
+        this.setData({ countdown: '评议时限已结束' })
         this._clearTimer()
         return
       }

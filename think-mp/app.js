@@ -1,5 +1,5 @@
 import { store } from './store/index'
-import { navigateTo, navigateBack, navigateBackTo, toast, parseQuery } from './utils/index';
+import { navigateTo, navigateBack, navigateBackTo, redirectTo, toast, parseQuery } from './utils/index';
 import { confirm } from './utils/wx-api';
 import * as print from './utils/print';
 
@@ -7,6 +7,7 @@ import * as print from './utils/print';
 wx.$navigateTo = navigateTo
 wx.$navigateBack = navigateBack
 wx.$navigateBackTo = navigateBackTo
+wx.$redirectTo = redirectTo
 
 // 轻提示
 wx.$toast = toast

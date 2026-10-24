@@ -1,20 +1,21 @@
-import { storePageBehavior } from '../../../../behaviors/index'
+import { storePageBehavior, fileBehavior } from '../../../../behaviors/index'
 import {
   decisionCreateApi,
   decisionUpdateApi,
   decisionPublishApi,
   decisionDetailApi,
-  grpPageApi,
   tagListApi,
 } from '../../../../apis/index'
-import { uploadMedia } from '../../../../apis/index'
 import { subscribeSyncApi } from '../../../../apis/index'
 import { requestSubscribeMessage } from '../../../../utils/wx-api'
 import { DECISION_REMIND_TMPL_ID } from '../../../../common/constants/index'
 import {
   VISIBILITY_ENUM,
   COOL_DOWN_ENUM,
-  coolDownList,
+  REVIEW_LIMIT_ENUM,
+  COOL_DOWN_MAX_MINUTES,
+  COOL_DOWN_MIN_MINUTES,
+  COOL_DOWN_MINUTE_OPTIONS,
   visibilityList,
   GRP_ROLE_ENUM,
 } from '../../../../common/enums/index'
@@ -26,15 +27,21 @@ const CONTENT_MAX = 1000
 const OPTION_MIN = 2
 const OPTION_MAX = 6
 const IMAGE_MAX = 3
-const TAG_MAX = 5
+const TAG_MAX = 3
+// 评议人数上限：stepper 逐数（1~50，支持点击输入），0=不限（另由「不限」开关切换）
 const REVIEW_LIMIT_MIN = 1
 const REVIEW_LIMIT_MAX = 50
 const DEFAULT_REVIEW_LIMIT = 5
-const DEFAULT_COOL_DOWN = COOL_DOWN_ENUM.H24
-const DEFAULT_VISIBILITY = VISIBILITY_ENUM.SELF
+// 评议时限：两段式（小时 0~24 + 分钟 0/15/30/45），单位分钟；0=不限。默认 24 小时
+const DEFAULT_COOL_DOWN_MINUTES = COOL_DOWN_MAX_MINUTES
+// 默认可见范围：群内评议（草稿由 status 区分，不再提供「仅自己」选项）
+const DEFAULT_VISIBILITY = VISIBILITY_ENUM.GRP
+
+// uploader 组件透传 uploadMedia 的选项（凭证与背景图：仅图片，存储目录 decision）
+const UPLOAD_OPTIONS = { mediaTypes: ['image'], prefix: 'decision' }
 
 Page({
-  behaviors: [storePageBehavior],
+  behaviors: [storePageBehavior, fileBehavior],
   data: {
     id: null,
     loading: true,
@@ -47,22 +54,26 @@ Page({
     form: {
       title: '',
       content: '',
-      options: [{ label: '' }, { label: '' }],
+      options: ['同意', '反对'],
       images: [],
       visibility: DEFAULT_VISIBILITY,
       grpId: null,
       grpName: '',
-      coolDownHours: DEFAULT_COOL_DOWN,
+      coolDownMinutes: DEFAULT_COOL_DOWN_MINUTES,
       reviewLimit: DEFAULT_REVIEW_LIMIT,
       tagIds: [],
     },
+    // 时长两段式展示位（由 form.coolDownMinutes 派生；form.coolDownMinutes 为唯一真值）
+    cdHours: Math.floor(DEFAULT_COOL_DOWN_MINUTES / 60),
+    cdMins: DEFAULT_COOL_DOWN_MINUTES % 60,
+    COOL_DOWN_MINUTE_OPTIONS,
     visibilityList,
-    coolDownList,
     tags: [],
-    showGrpPicker: false,
-    grps: [],
     VISIBILITY_ENUM,
+    COOL_DOWN_ENUM,
+    REVIEW_LIMIT_ENUM: REVIEW_LIMIT_ENUM,
     GRP_ROLE_ENUM,
+    uploadOptions: UPLOAD_OPTIONS,
   },
 
   async onLoad(options) {
@@ -86,18 +97,22 @@ Page({
         const t = tags.find(x => x.name === name)
         return t ? t.id : null
       }).filter(Boolean)
+      // ?? 而非 ||：不限档存 0，回显时不能被默认值吞掉
+      const cdMin = d.coolDownMinutes ?? DEFAULT_COOL_DOWN_MINUTES
       this.setData({
         loading: false,
+        cdHours: Math.floor(cdMin / 60),
+        cdMins: cdMin % 60,
         form: {
           title: d.title || '',
           content: d.content || '',
-          options: d.options && d.options.length ? d.options : [{ label: '' }, { label: '' }],
+          options: d.options && d.options.length ? d.options : ['同意', '反对'],
           images: d.images || [],
           visibility: d.visibility || DEFAULT_VISIBILITY,
           grpId: d.grpId || null,
           grpName: '',
-          coolDownHours: d.coolDownHours || DEFAULT_COOL_DOWN,
-          reviewLimit: d.reviewLimit || DEFAULT_REVIEW_LIMIT,
+          coolDownMinutes: cdMin,
+          reviewLimit: d.reviewLimit ?? DEFAULT_REVIEW_LIMIT,
           tagIds,
         },
       })
@@ -122,36 +137,83 @@ Page({
   },
   onOptionInput(e) {
     const { index } = e.currentTarget.dataset
-    this.setData({ [`form.options[${ index }].label`]: e.detail.value })
+    this.setData({ [`form.options[${ index }]`]: e.detail.value })
   },
   onOptionAdd() {
     const { options } = this.data.form
     if (options.length >= OPTION_MAX) {
       return wx.$toast(`最多 ${ OPTION_MAX } 个方案`)
     }
-    this.setData({ 'form.options': [...options, { label: '' }] })
+    this.setData({ 'form.options': [...options, ''] })
   },
   onOptionDelete(e) {
     const { index } = e.currentTarget.dataset
     const options = this.data.form.options.filter((_, i) => i !== index)
     this.setData({ 'form.options': options })
   },
-  onReviewLimitInput(e) {
-    let v = Number(e.detail.value) || REVIEW_LIMIT_MIN
-    if (v < REVIEW_LIMIT_MIN) v = REVIEW_LIMIT_MIN
-    if (v > REVIEW_LIMIT_MAX) v = REVIEW_LIMIT_MAX
-    this.setData({ 'form.reviewLimit': v })
-  },
   onReviewLimitMinus() {
-    const v = this.data.form.reviewLimit - 1
-    this.setData({ 'form.reviewLimit': v < REVIEW_LIMIT_MIN ? REVIEW_LIMIT_MIN : v })
+    const cur = this.data.form.reviewLimit
+    // 不限(0) 时回到最小值 1；否则递减，最低到 1（再低交由「不限」开关）
+    if (cur <= REVIEW_LIMIT_ENUM.UNLIMITED) {
+      this.setData({ 'form.reviewLimit': REVIEW_LIMIT_MIN })
+      return
+    }
+    this.setData({ 'form.reviewLimit': cur - 1 < REVIEW_LIMIT_MIN ? REVIEW_LIMIT_MIN : cur - 1 })
   },
   onReviewLimitPlus() {
-    const v = this.data.form.reviewLimit + 1
-    this.setData({ 'form.reviewLimit': v > REVIEW_LIMIT_MAX ? REVIEW_LIMIT_MAX : v })
+    const cur = this.data.form.reviewLimit
+    const base = cur <= REVIEW_LIMIT_ENUM.UNLIMITED ? REVIEW_LIMIT_MIN - 1 : cur
+    this.setData({ 'form.reviewLimit': base + 1 > REVIEW_LIMIT_MAX ? REVIEW_LIMIT_MAX : base + 1 })
   },
-  onCoolDownSelect(e) {
-    this.setData({ 'form.coolDownHours': Number(e.currentTarget.dataset.value) })
+  onReviewLimitUnlimited() {
+    const cur = this.data.form.reviewLimit
+    if (cur === REVIEW_LIMIT_ENUM.UNLIMITED) {
+      this.setData({ 'form.reviewLimit': DEFAULT_REVIEW_LIMIT }) // 关不限：回落默认
+      return
+    }
+    // 开不限：若时限已不限，先把时限回落默认 24 小时，保证不同时不限
+    if (this.data.form.coolDownMinutes === COOL_DOWN_ENUM.UNLIMITED) {
+      this._applyCoolDown(DEFAULT_COOL_DOWN_MINUTES)
+      wx.$toast('评议时限与人数不能同时不限，已为时限设上限')
+    }
+    this.setData({ 'form.reviewLimit': REVIEW_LIMIT_ENUM.UNLIMITED })
+  },
+  // 点击数字直接输入：失焦夹取到 1~50（非法/空回落最小值）
+  onReviewLimitBlur(e) {
+    const n = parseInt(e.detail.value, 10)
+    const clamped = isNaN(n) ? REVIEW_LIMIT_MIN : Math.min(REVIEW_LIMIT_MAX, Math.max(REVIEW_LIMIT_MIN, n))
+    this.setData({ 'form.reviewLimit': clamped })
+  },
+
+  // ── 评议时限：两段式（小时 ± + 分钟档），form.coolDownMinutes 为唯一真值 ──
+  _applyCoolDown(total) {
+    let t = total
+    if (t < COOL_DOWN_MIN_MINUTES) t = COOL_DOWN_MIN_MINUTES // 非不限时的下限（0 交由「不限」开关）
+    if (t > COOL_DOWN_MAX_MINUTES) t = COOL_DOWN_MAX_MINUTES
+    this.setData({ 'form.coolDownMinutes': t, cdHours: Math.floor(t / 60), cdMins: t % 60 })
+  },
+  onHoursMinus() {
+    this._applyCoolDown(this.data.form.coolDownMinutes - 60)
+  },
+  onHoursPlus() {
+    this._applyCoolDown(this.data.form.coolDownMinutes + 60)
+  },
+  onMinuteSelect(e) {
+    const m = Number(e.currentTarget.dataset.value)
+    this._applyCoolDown(this.data.cdHours * 60 + m)
+  },
+  onCoolDownUnlimited() {
+    const cur = this.data.form.coolDownMinutes
+    if (cur === COOL_DOWN_ENUM.UNLIMITED) {
+      this._applyCoolDown(DEFAULT_COOL_DOWN_MINUTES) // 关不限：回落默认 24 小时
+      return
+    }
+    // 开不限：若人数已不限，先把人数回落默认，保证不同时不限
+    if (this.data.form.reviewLimit === REVIEW_LIMIT_ENUM.UNLIMITED) {
+      this.setData({ 'form.reviewLimit': DEFAULT_REVIEW_LIMIT })
+      wx.$toast('评议时限与人数不能同时不限，已为人数设上限')
+    }
+    this.setData({ 'form.coolDownMinutes': COOL_DOWN_ENUM.UNLIMITED, cdHours: 0, cdMins: 0 })
   },
 
   // ── 可见范围 ──
@@ -168,21 +230,7 @@ Page({
     this.setData(patch)
   },
 
-  // ── 图片上传（可选 ≤3） ──
-  async onImageUpload() {
-    const { images } = this.data.form
-    const remain = IMAGE_MAX - images.length
-    if (remain <= 0) {
-      return wx.$toast(`最多 ${ IMAGE_MAX } 张图片`)
-    }
-    const r = await uploadMedia(remain, 0, { mediaTypes: ['image'], prefix: 'decision' })
-    this.setData({ 'form.images': [...images, ...r.map(x => x.url)] })
-  },
-  onImageDelete(e) {
-    const { index } = e.currentTarget.dataset
-    const images = this.data.form.images.filter((_, i) => i !== index)
-    this.setData({ 'form.images': images })
-  },
+  // ── 图片上传（可选 ≤3）：选择/删除经 uploader 回抛，fileBehavior 按 data-field 自动同步 form.images ──
 
   // ── 标签多选（仅公开） ──
   onTagToggle(e) {
@@ -200,17 +248,13 @@ Page({
     this.setData({ 'form.tagIds': tagIds })
   },
 
-  // ── 群选择 ──
-  async onOpenGrpPicker() {
-    const r = await grpPageApi({ current: 1, size: 50 })
-    this.setData({ grps: r.data?.list || [], showGrpPicker: true })
-  },
-  onCloseGrpPicker() {
-    this.setData({ showGrpPicker: false })
+  // ── 选群（弹窗显隐、群组列表拉取内聚于 grp-picker 组件） ──
+  onOpenGrpPicker() {
+    this.selectComponent('#grpPicker').open()
   },
   onGrpSelect(e) {
-    const { id, name } = e.currentTarget.dataset
-    this.setData({ 'form.grpId': id, 'form.grpName': name, showGrpPicker: false })
+    const { id, name } = e.detail
+    this.setData({ 'form.grpId': id, 'form.grpName': name })
   },
 
   // ── 校验 ──
@@ -218,11 +262,19 @@ Page({
     const { form } = this.data
     if (!form.title.trim()) return '请填写标题'
     if (!form.content.trim()) return '请填写决策内容'
-    const options = form.options.filter(o => o.label && o.label.trim())
-    if (options.length < OPTION_MIN) return `至少填写 ${ OPTION_MIN } 个备选方案`
+    const options = form.options.filter(o => o && o.trim())
+    if (options.length < OPTION_MIN) return `至少填写 ${ OPTION_MIN } 个选择`
+    // 任何场景（含存草稿）都禁止双不限：时间不限与人数不限不可同时选
+    if (form.coolDownMinutes === COOL_DOWN_ENUM.UNLIMITED && form.reviewLimit === REVIEW_LIMIT_ENUM.UNLIMITED) {
+      return '评议时限与评议人数不能同时不限，请至少给一个设上限'
+    }
     if (publish) {
       if (form.visibility === VISIBILITY_ENUM.SELF) return '仅自己可见无法发布，请选择群内或公开'
       if (form.visibility === VISIBILITY_ENUM.GRP && !form.grpId) return '请选择目标群组'
+      // 公开档另需人数上限（后端 ≤100 封顶）
+      if (form.visibility === VISIBILITY_ENUM.PUBLIC && form.reviewLimit === REVIEW_LIMIT_ENUM.UNLIMITED) {
+        return '公开档请设置评议人数上限'
+      }
     }
     return null
   },
@@ -232,11 +284,11 @@ Page({
     return {
       title: form.title.trim(),
       content: form.content.trim(),
-      options: form.options.filter(o => o.label && o.label.trim()).map(o => ({ label: o.label.trim() })),
+      options: form.options.filter(o => o && o.trim()).map(o => o.trim()),
       images: form.images,
       visibility: form.visibility,
       grpId: form.visibility === VISIBILITY_ENUM.GRP ? form.grpId : null,
-      coolDownHours: form.coolDownHours,
+      coolDownMinutes: form.coolDownMinutes,
       reviewLimit: form.reviewLimit,
       tagIds: form.visibility === VISIBILITY_ENUM.PUBLIC ? form.tagIds : [],
     }
@@ -282,14 +334,14 @@ Page({
         await decisionPublishApi({ id })
       }
       wx.$toast('已发起评议')
-      // 发布后跳详情（群内直生效、公开进审核）
-      wx.$navigateTo(decisionDetailUrl(id))
+      // 发布后跳详情（群内直生效、公开进审核）；用 redirectTo 关闭创建页，不留历史栈
+      wx.$redirectTo(decisionDetailUrl(id))
     } finally {
       this.setData({ saving: false })
     }
   },
 
-  // 冷静期到期/报告生成提醒订阅：授权一次=可发一次，accept 后 sync 累加配额；任何异常均不阻断发布
+  // 评议时限到期/报告生成提醒订阅：授权一次=可发一次，accept 后 sync 累加配额；任何异常均不阻断发布
   async _requestRemind() {
     if (!DECISION_REMIND_TMPL_ID) return
     try {

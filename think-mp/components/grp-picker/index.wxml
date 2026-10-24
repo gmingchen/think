@@ -1,0 +1,23 @@
+<popup show="{{ show }}" title="选择群组" bind:close="onClose">
+  <view class="grp-picker__body">
+    <view class="grp-picker__tip">群内评议仅定向群成员可见</view>
+    <view wx:if="{{ loading }}" class="grp-picker__loading">加载中...</view>
+    <block wx:elif="{{ grps.length }}">
+      <view
+        class="grp-picker__item {{ selected === item.id ? 'grp-picker__item--active' : '' }}"
+        wx:for="{{ grps }}"
+        wx:key="id"
+        data-id="{{ item.id }}"
+        data-name="{{ item.name }}"
+        bindtap="onSelect"
+      >
+        <text class="grp-picker__name">{{ item.name }}</text>
+        <view class="grp-picker__right">
+          <text class="grp-picker__meta">{{ item.memberCount }} 人</text>
+          <iconfont wx:if="{{ selected === item.id }}" name="tick" size="26" color="#4E75C9" />
+        </view>
+      </view>
+    </block>
+    <view wx:else class="grp-picker__empty">你还没有群组，请先到「群组」创建</view>
+  </view>
+</popup>

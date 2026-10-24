@@ -1,6 +1,6 @@
 {
   "usingComponents": {
-    "ts-fab": "/components/ts-fab/index",
+    "fab": "/components/fab/index",
     "header": "./components/header/index",
     "empty": "./components/empty/index",
     "create-popup": "./components/create-popup/index",

@@ -1,0 +1,71 @@
+<view
+  wx:if="{{ visible }}"
+  class="decision-view__mask {{ closing ? 'decision-view__mask--closing' : '' }}"
+  catch:touchmove="onNoop"
+  bindtap="onClose"
+>
+  <view class="decision-view {{ closing ? 'decision-view--closing' : '' }}" catchtap="onNoop">
+    <!-- 关闭 -->
+    <view class="decision-view__close" catchtap="onClose">
+      <iconfont name="fork" size="{{ 30 }}" color="#9AA0AA" />
+    </view>
+
+    <!-- 固定头部：标题（内容浏览，无解锁提示） -->
+    <view class="decision-view__header">
+      <view class="decision-view__title font-serif">{{ title }}</view>
+    </view>
+
+    <!-- 可滚动主体：决策内容（作者/标题/详情/图片/进度） -->
+    <scroll-view class="decision-view__body" scroll-y>
+      <view class="decision-view__author">
+        <image wx:if="{{ item.initiator.avatar }}" class="decision-view__avatar" src="{{ item.initiator.avatar }}" mode="aspectFill" />
+        <view wx:else class="decision-view__avatar decision-view__avatar--text">{{ avatarChar }}</view>
+        <view class="decision-view__author-info">
+          <text class="decision-view__name">{{ item.initiator.nickname || '匿名' }}</text>
+          <text wx:if="{{ timeText }}" class="decision-view__time">{{ timeText }}</text>
+        </view>
+      </view>
+
+      <view class="decision-view__c-title font-serif">{{ item.title }}</view>
+
+      <view wx:if="{{ item.content || item.digest }}" class="decision-view__c-content">{{ item.content || item.digest }}</view>
+
+      <view wx:if="{{ item.images && item.images.length }}" class="decision-view__images">
+        <image
+          wx:for="{{ item.images }}"
+          wx:for-item="img"
+          wx:key="index"
+          class="decision-view__img"
+          src="{{ img }}"
+          mode="aspectFill"
+          data-url="{{ img }}"
+          catchtap="onPreviewImage"
+        />
+      </view>
+
+      <view class="decision-view__foot">
+        <view class="decision-view__progress-label">
+          <text>评议进度</text>
+          <text wx:if="{{ countUnlimited }}">已评 {{ item.reviewCount || 0 }} 人 · 不限</text>
+          <text wx:else>{{ item.reviewCount || 0 }} / {{ item.reviewLimit || 0 }} 人已评</text>
+        </view>
+        <view wx:if="{{ !countUnlimited }}" class="decision-view__track">
+          <view class="decision-view__fill" style="width: {{ percent }}%;"></view>
+        </view>
+      </view>
+    </scroll-view>
+
+    <!-- 固定底部：仅选项按钮（点选项回抛 review，由上层弹评议表单） -->
+    <view class="decision-view__footer">
+      <view class="decision-view__options">
+        <view
+          wx:for="{{ options }}"
+          wx:key="index"
+          class="decision-view__option"
+          data-index="{{ index }}"
+          bindtap="onOptionTap"
+        >{{ item }}</view>
+      </view>
+    </view>
+  </view>
+</view>

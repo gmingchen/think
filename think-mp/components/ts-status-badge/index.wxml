@@ -1,1 +1,0 @@
-<view wx:if="{{ label }}" class="ts-status-badge ts-status-badge--{{ variant }}">{{ label }}</view>

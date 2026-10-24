@@ -16,9 +16,9 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum SubscribeTypeEnum {
     /**
-     * 冷静期到期提醒（§3.3）：决策单冷静期截止时提醒发起人查看报告
+     * 评议时限到期提醒（§3.3）：决策单评议时限截止时提醒发起人查看报告
      */
-    COOL_DOWN_END("COOL_DOWN_END", "冷静期到期提醒"),
+    COOL_DOWN_END("COOL_DOWN_END", "评议时限到期提醒"),
     // 预留其类通知待后续需求接入时再定义，避免留下没有实现方的枚举值
     ;
 

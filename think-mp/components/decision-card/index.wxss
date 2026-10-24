@@ -1,0 +1,56 @@
+/* ===== decision-card：紧凑卡（我的列表，多状态） ===== */
+.decision-card {
+  background: var(--ts-card);
+  border-radius: var(--ts-radius);
+  box-shadow: var(--ts-shadow);
+  padding: 32rpx;
+  box-sizing: border-box;
+}
+
+.decision-card__head {
+  margin-bottom: 20rpx;
+}
+
+.decision-card__vis {
+  font-size: 22rpx;
+  color: var(--ts-brand);
+  font-weight: 600;
+}
+
+.decision-card__author {
+  font-size: 22rpx;
+  color: var(--ts-text-sub);
+  max-width: 260rpx;
+}
+
+.decision-card__title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: var(--ts-text);
+  line-height: 1.4;
+  letter-spacing: 1rpx;
+  margin-bottom: 12rpx;
+}
+
+.decision-card__foot {
+  margin-top: 16rpx;
+}
+
+.decision-card__progress-label {
+  font-size: 22rpx;
+  color: var(--ts-text-sub);
+  margin-bottom: 8rpx;
+}
+
+.decision-card__track {
+  height: 8rpx;
+  background: var(--ts-tag-bg);
+  border-radius: 999rpx;
+  overflow: hidden;
+}
+
+.decision-card__fill {
+  height: 100%;
+  background: var(--ts-primary);
+  border-radius: 999rpx;
+}

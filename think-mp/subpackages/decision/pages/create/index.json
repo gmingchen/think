@@ -1,5 +1,6 @@
 {
   "usingComponents": {
-    "popup": "/components/popup/index"
+    "uploader": "/components/uploader/index",
+    "grp-picker": "/components/grp-picker/index"
   }
 }

@@ -25,7 +25,7 @@
 
   <view wx:elif="{{ list.length }}">
     <view class="dl__item" wx:for="{{ list }}" wx:key="id">
-      <ts-decision-card item="{{ item }}" bind:click="onCardTap" />
+      <decision-card item="{{ item }}" bind:click="onCardTap" />
     </view>
     <view wx:if="{{ list.length < page.total }}" class="dl__more" bindtap="loadPageData">加载更多</view>
     <view wx:else class="dl__nomore">—— 三思笃行 ——</view>
@@ -39,9 +39,9 @@
         <view class="dl__empty-sub">群内该状态下还没有决策单</view>
       </block>
       <block wx:else>
-        <view class="dl__empty-sub">三思而后行，旁观者清。前往众议广场，为他人的两难留下你的三思洞见。</view>
+        <view class="dl__empty-sub">三思而后行，旁观者清。前往众思广场，为他人的两难留下你的三思洞见。</view>
         <view class="dl__empty-btn" bindtap="onGoSquare">
-          <text>前往众议广场</text>
+          <text>前往众思广场</text>
           <text class="dl__empty-seal"></text>
         </view>
       </block>

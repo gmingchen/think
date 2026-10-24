@@ -4,6 +4,7 @@ import {
   grpDissolveApi,
   grpLeaveApi,
   decisionPageGrpApi,
+  reviewSubmitApi,
 } from '../../../../apis/index'
 import {
   GRP_ROLE_ENUM,
@@ -27,6 +28,12 @@ Page({
     GRP_ROLE_ENUM,
     GRP_STATUS_ENUM,
     pendingAction: null,
+    // 就地评议弹窗：当前待评议决策单ID、完整 item、选项数组、预选倾向下标
+    showReview: false,
+    reviewId: null,
+    reviewItem: {},
+    reviewOptions: [],
+    reviewPreselect: -1,
   },
 
   async onLoad(options) {
@@ -35,12 +42,6 @@ Page({
     this.setData({ grpId: options.id })
     await this.getDetail()
     this.reloadPageData()
-  },
-
-  async onPullDownRefresh() {
-    await this.getDetail()
-    this.reloadPageData()
-    wx.stopPullDownRefresh()
   },
 
   async getDetail() {
@@ -61,6 +62,28 @@ Page({
 
   onCardTap(e) {
     wx.$navigateTo(decisionDetailUrl(e.detail.id))
+  },
+
+  // 卡片选项按钮 → 就地弹评议层，预选中的倾向已带下（myOption=点击下标）
+  onReviewFromCard(e) {
+    const { id, option, options, item } = e.detail
+    this.setData({
+      showReview: true,
+      reviewId: id,
+      reviewItem: item || {},
+      reviewOptions: options || [],
+      reviewPreselect: option,
+    })
+  },
+  onReviewClose() {
+    this.setData({ showReview: false })
+  },
+  async onReviewSubmit(e) {
+    const { option, content } = e.detail
+    await reviewSubmitApi({ decisionId: this.data.reviewId, option, content })
+    this.setData({ showReview: false })
+    wx.$toast('评议已提交')
+    this.reloadPageData()
   },
 
   onMembersTap() {

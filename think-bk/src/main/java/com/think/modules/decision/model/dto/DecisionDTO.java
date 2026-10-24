@@ -29,9 +29,9 @@ public class DecisionDTO {
      */
     private String content;
     /**
-     * 备选方案数组
+     * 备选方案文案数组
      */
-    private List<DecisionOption> options;
+    private List<String> options;
     /**
      * 图片URL数组
      */
@@ -45,11 +45,11 @@ public class DecisionDTO {
      */
     private Long grpId;
     /**
-     * 冷静期时长(小时)
+     * 评议时限(分钟)：1~1440；0=不限
      */
-    private Integer coolDownHours;
+    private Integer coolDownMinutes;
     /**
-     * 冷静期截止时间
+     * 评议时限截止时间
      */
     private LocalDateTime coolDownEndAt;
     /**

@@ -2,8 +2,9 @@
 module.exports.n = function (v) {
   return v ? v.length : 0
 }
-module.exports.letter = function (i) {
-  return String.fromCharCode(65 + i)
+module.exports.has = function (arr, id) {
+  // WXML {{}} 不支持调用方法（indexOf 等），数组包含判定必须在 WXS 内执行
+  return arr ? arr.indexOf(id) > -1 : false
 }
 </wxs>
 
@@ -50,31 +51,37 @@ module.exports.letter = function (i) {
         <view class="form__card-title form__card-title--sm">凭证与背景图<text class="form__optional">(可选，最多 {{ IMAGE_MAX }} 张)</text></view>
         <text class="form__counter">{{ l.n(form.images) }} / {{ IMAGE_MAX }}</text>
       </view>
-      <view class="form__img-row">
-        <view class="form__img-slot form__img-slot--filled" wx:for="{{ form.images }}" wx:key="*this">
-          <image class="form__img" src="{{ item }}" mode="aspectFill" />
-          <text class="form__img-del" data-index="{{ index }}" catchtap="onImageDelete">×</text>
-        </view>
-        <view wx:if="{{ form.images.length < IMAGE_MAX }}" class="form__img-slot" bindtap="onImageUpload">
-          <text class="form__img-plus">+</text>
-          <text>相册/拍摄</text>
-        </view>
-      </view>
+      <!-- 图片上传：通用 uploader 组件（内置 previewer），回抛事件由 fileBehavior 按 data-field 自动同步 -->
+      <uploader
+        class="form__img-upload"
+        value="{{ form.images }}"
+        count="{{ IMAGE_MAX }}"
+        options="{{ uploadOptions }}"
+        width="136rpx"
+        height="136rpx"
+        radius="20rpx"
+        gap="20rpx"
+        deletable
+        preview
+        placeholder="相册/拍摄"
+        data-field="form.images"
+        bind:on-complete="onFileComplete"
+        bind:on-delete="onFileDelete"
+      />
     </view>
 
-    <!-- 卡片 2：备选方案 -->
+    <!-- 卡片 2：你会怎么选 -->
     <view class="form__card">
       <view class="form__title-row">
-        <view class="form__card-title font-serif">备选方案<text class="form__req">*</text></view>
-        <text class="form__counter">至少 2 项</text>
+        <view class="form__card-title font-serif">你会怎么选<text class="form__req">*</text></view>
+        <text class="form__counter">至少 2 个选择</text>
       </view>
       <view class="form__option" wx:for="{{ form.options }}" wx:key="index">
-        <view class="form__option-prefix">{{ l.letter(index) }}</view>
         <view class="form__option-box">
           <input
             class="form__option-input"
-            placeholder="方案 {{ index + 1 }}"
-            value="{{ item.label }}"
+            placeholder="选项 {{ index + 1 }}"
+            value="{{ item }}"
             data-index="{{ index }}"
             bindinput="onOptionInput"
           />
@@ -86,7 +93,7 @@ module.exports.letter = function (i) {
           bindtap="onOptionDelete"
         >✕</text>
       </view>
-      <view class="form__option-add" bindtap="onOptionAdd">＋ 添加新备选方案</view>
+      <view class="form__option-add" bindtap="onOptionAdd">＋ 添加一个选择</view>
     </view>
 
     <!-- 卡片 3：可见范围与分发 -->
@@ -95,14 +102,6 @@ module.exports.letter = function (i) {
         <view class="form__card-title font-serif">可见范围<text class="form__req">*</text></view>
       </view>
       <view class="form__scope">
-        <view
-          class="form__scope-card {{ form.visibility === VISIBILITY_ENUM.SELF ? 'form__scope-card--active' : '' }}"
-          data-value="{{ VISIBILITY_ENUM.SELF }}"
-          bindtap="onVisibilitySelect"
-        >
-          <view class="form__scope-name">仅自己</view>
-          <view class="form__scope-sub">存草稿箱</view>
-        </view>
         <view
           class="form__scope-card {{ form.visibility === VISIBILITY_ENUM.GRP ? 'form__scope-card--active' : '' }}"
           data-value="{{ VISIBILITY_ENUM.GRP }}"
@@ -117,7 +116,7 @@ module.exports.letter = function (i) {
           bindtap="onVisibilitySelect"
         >
           <view class="form__scope-name">公开发布</view>
-          <view class="form__scope-sub">众议广场</view>
+          <view class="form__scope-sub">众思广场</view>
         </view>
       </view>
 
@@ -129,7 +128,7 @@ module.exports.letter = function (i) {
             <text wx:if="{{ form.grpName }}" class="form__group-tag">已选</text>
             <text class="{{ form.grpName ? 'form__picker-name' : 'form__picker-ph' }}">{{ form.grpName || '请选择群组' }}</text>
           </view>
-          <text class="form__picker-change">更换群 ▾</text>
+          <iconfont class="form__picker-change" name="right" size="24" color="#9AA0AA" />
         </view>
       </block>
 
@@ -143,41 +142,71 @@ module.exports.letter = function (i) {
           <view
             wx:for="{{ tags }}"
             wx:key="id"
-            class="form__tag-chip {{ form.tagIds.indexOf(item.id) > -1 ? 'form__tag-chip--active' : '' }}"
+            class="form__tag-chip {{ l.has(form.tagIds, item.id) ? 'form__tag-chip--active' : '' }}"
             data-id="{{ item.id }}"
             bindtap="onTagToggle"
-          >{{ form.tagIds.indexOf(item.id) > -1 ? '✓ ' : '' }}{{ item.name }}</view>
+          >{{ item.name }}</view>
         </view>
       </block>
 
-      <!-- 评议人数上限 -->
-      <view class="form__stepper-row">
-        <view>
-          <view class="form__stepper-label">评议人数上限</view>
-          <view class="form__stepper-sub">{{ form.visibility === VISIBILITY_ENUM.PUBLIC ? '广场公开评议上限 50 人' : '不超过受邀评议人数' }}</view>
-        </view>
-        <view class="form__stepper">
-          <view class="form__stepper-btn" bindtap="onReviewLimitMinus">-</view>
-          <view class="form__stepper-val">{{ form.reviewLimit }}</view>
-          <view class="form__stepper-btn" bindtap="onReviewLimitPlus">+</view>
-        </view>
-      </view>
     </view>
 
-    <!-- 卡片 4：冷静期 -->
+    <!-- 卡片 4：结束规则（评议时限 + 评议人数上限，共同决定收口方式） -->
     <view class="form__card">
       <view class="form__title-row">
-        <view class="form__card-title font-serif">冷静期时长<text class="form__req">*</text></view>
-        <text class="form__counter">到期后出具报告</text>
+        <view class="form__card-title font-serif">结束规则<text class="form__req">*</text></view>
+        <text class="form__counter">{{ form.coolDownMinutes === COOL_DOWN_ENUM.UNLIMITED ? '满员即出具报告' : '到期或满员即出具报告' }}</text>
       </view>
-      <view class="form__cooloff">
+
+      <!-- 评议时限（两段式：小时 stepper + 分钟档，另「不限」开关；0=不限） -->
+      <view class="form__limit-head">
+        <view class="form__sub-label form__sub-label--mb0">评议时限</view>
+        <view class="form__limit-ctrl">
+          <view
+            class="form__unlimit {{ form.coolDownMinutes === COOL_DOWN_ENUM.UNLIMITED ? 'form__unlimit--active' : '' }}"
+            bindtap="onCoolDownUnlimited"
+          >不限</view>
+          <view class="form__stepper">
+            <view class="form__stepper-btn" bindtap="onHoursMinus">-</view>
+            <view class="form__stepper-val form__stepper-val--wide">{{ cdHours }} 时</view>
+            <view class="form__stepper-btn" bindtap="onHoursPlus">+</view>
+          </view>
+        </view>
+      </view>
+      <view class="form__minute {{ form.coolDownMinutes === COOL_DOWN_ENUM.UNLIMITED ? 'form__minute--disabled' : '' }}">
         <view
-          wx:for="{{ coolDownList }}"
-          wx:key="value"
-          class="form__cooloff-pill {{ form.coolDownHours === item.value ? 'form__cooloff-pill--active' : '' }}"
-          data-value="{{ item.value }}"
-          bindtap="onCoolDownSelect"
-        >{{ item.label }}</view>
+          wx:for="{{ COOL_DOWN_MINUTE_OPTIONS }}"
+          wx:key="*this"
+          class="form__minute-pill {{ form.coolDownMinutes !== COOL_DOWN_ENUM.UNLIMITED && cdMins === item ? 'form__minute-pill--active' : '' }}"
+          data-value="{{ item }}"
+          bindtap="onMinuteSelect"
+        >{{ item }} 分</view>
+      </view>
+
+      <!-- 评议人数上限（stepper 逐数 + 点击输入 + 不限开关：满员自动截止出报告；不限=只能到期/手动结束） -->
+      <view class="form__limit">
+        <view class="form__limit-head">
+          <view class="form__sub-label form__sub-label--mb0">评议人数上限</view>
+          <view class="form__limit-ctrl">
+            <view
+              class="form__unlimit {{ form.reviewLimit === REVIEW_LIMIT_ENUM.UNLIMITED ? 'form__unlimit--active' : '' }}"
+              bindtap="onReviewLimitUnlimited"
+            >不限</view>
+            <view class="form__stepper">
+              <view class="form__stepper-btn" bindtap="onReviewLimitMinus">-</view>
+              <input
+                wx:if="{{ form.reviewLimit !== REVIEW_LIMIT_ENUM.UNLIMITED }}"
+                class="form__stepper-input"
+                type="number"
+                value="{{ form.reviewLimit }}"
+                bindblur="onReviewLimitBlur"
+              />
+              <view wx:else class="form__stepper-val">不限</view>
+              <view class="form__stepper-btn" bindtap="onReviewLimitPlus">+</view>
+            </view>
+          </view>
+        </view>
+        <view class="form__limit-sub">{{ form.visibility === VISIBILITY_ENUM.PUBLIC ? '公开档上限 50 人' : '不超过受邀评议人数' }}；满员自动截止并出具报告</view>
       </view>
     </view>
 
@@ -194,20 +223,5 @@ module.exports.letter = function (i) {
   </view>
 </container>
 
-<!-- 群选择弹窗 -->
-<popup show="{{ showGrpPicker }}" title="选择群组" bind:close="onCloseGrpPicker">
-  <view wx:if="{{ grps.length }}">
-    <view
-      class="form__grp-item"
-      wx:for="{{ grps }}"
-      wx:key="id"
-      data-id="{{ item.id }}"
-      data-name="{{ item.name }}"
-      bindtap="onGrpSelect"
-    >
-      <text class="form__grp-name">{{ item.name }}</text>
-      <text class="form__grp-meta">{{ item.memberCount }} 人</text>
-    </view>
-  </view>
-  <view wx:else class="form__grp-empty">你还没有群组，请先到「群组」创建</view>
-</popup>
+<!-- 选群弹窗（显隐、群组列表拉取与样式内聚于 grp-picker，选中经 bind:select 回抛） -->
+<grp-picker id="grpPicker" selected="{{ form.grpId }}" bind:select="onGrpSelect" />

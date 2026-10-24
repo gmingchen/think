@@ -34,7 +34,7 @@
           class="rc__choice {{ finalChoice === index ? 'rc__choice--active' : '' }}"
           data-index="{{ index }}"
           bindtap="onSelectChoice"
-        >{{ item.label }}</view>
+        >{{ item }}</view>
         <view
           class="rc__choice {{ finalChoice === OTHER ? 'rc__choice--active' : '' }}"
           data-index="{{ OTHER }}"

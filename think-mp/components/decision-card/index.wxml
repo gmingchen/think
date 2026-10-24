@@ -1,0 +1,25 @@
+<view class="decision-card" bindtap="onTap">
+  <!-- 头部：状态徽章（左，showStatus 可关） + 可见范围/发起人（右） -->
+  <view class="decision-card__head f f_a_i-c f_j_c-sb">
+    <view wx:if="{{ showStatus }}" class="f f_a_i-c">
+      <status-badge status="{{ item.status }}"></status-badge>
+    </view>
+    <text wx:if="{{ item.visibility === 2 }}" class="decision-card__vis">🔒 群内专属</text>
+    <text wx:elif="{{ item.initiator && item.initiator.nickname }}" class="decision-card__author e">{{ item.initiator.nickname }} 发起</text>
+  </view>
+
+  <!-- 标题（宋体品牌层） -->
+  <view class="decision-card__title font-serif">{{ item.title }}</view>
+
+  <!-- 评议进度（标签行 + 通栏进度条） -->
+  <view class="decision-card__foot">
+    <view class="decision-card__progress-label f f_j_c-sb">
+      <text>评议进度</text>
+      <text wx:if="{{ countUnlimited }}">已评 {{ item.reviewCount || 0 }} 人 · 不限</text>
+      <text wx:else>{{ item.reviewCount || 0 }} / {{ item.reviewLimit || 0 }} 人已评</text>
+    </view>
+    <view wx:if="{{ !countUnlimited }}" class="decision-card__track">
+      <view class="decision-card__fill" style="width: {{ percent }}%;"></view>
+    </view>
+  </view>
+</view>

@@ -1,23 +1,12 @@
-<container title="众议广场" use-scroll use-footer>
-  <!-- 顶部筛选：标签横滑 + 随机入口 -->
-  <view class="square__filter f f_a_i-c" slot="header">
-    <scroll-view class="square__tags" scroll-x>
-      <view class="square__tag-row f">
-        <view
-          class="square__tag {{ activeTagId === TAG_ALL ? 'square__tag--active' : '' }}"
-          data-id="{{ TAG_ALL }}"
-          bindtap="onSwitchTag"
-        >全部</view>
-        <view
-          wx:for="{{ tags }}"
-          wx:key="id"
-          class="square__tag {{ activeTagId === item.id ? 'square__tag--active' : '' }}"
-          data-id="{{ item.id }}"
-          bindtap="onSwitchTag"
-        >{{ item.name }}</view>
-      </view>
-    </scroll-view>
-    <view class="square__random" bindtap="onRandomTap">随机一议 ›</view>
+<container use-navbar-left use-scroll use-footer>
+  <view slot="navbar-left" class="square__nav-brand font-serif">众三思</view>
+  <!-- 随机入口横幅（置于 header 插槽：固定不随列表滚动） -->
+  <view class="square__banner" slot="header" bindtap="onRandomTap">
+    <view class="square__banner-text">
+      <view class="square__banner-title">随便看看</view>
+      <view class="square__banner-sub">随机遇见一份纠结，给点你的想法</view>
+    </view>
+    <view class="square__banner-btn">去看看</view>
   </view>
 
   <!-- 加载中 -->
@@ -26,15 +15,35 @@
   <!-- 列表 -->
   <view wx:elif="{{ list.length }}">
     <view class="square__item" wx:for="{{ list }}" wx:key="id">
-      <ts-decision-card item="{{ item }}" bind:click="onCardTap" />
+      <review-card item="{{ item }}" bind:click="onCardTap" bind:review="onReviewFromCard" />
     </view>
     <view wx:if="{{ list.length < page.total }}" class="square__more" bindtap="loadPageData">加载更多</view>
   </view>
 
-  <!-- 空态 -->
-  <view wx:else class="square__empty">
-    <empty desc="广场暂无公开决策" />
-  </view>
+  <!-- 缺省（空态）：引导发布决策单（页面私有组件，绝对定位撑满 body 居中） -->
+  <empty wx:else />
+
+  <!-- 底部留白：让最后一条内容与 tabbar 之间透气（container 的 is-use-footer 会把 body 底部内边距归零） -->
+  <view class="square__spacer"></view>
 
   <tabbar slot="footer"></tabbar>
 </container>
+
+<!-- 「去看看」内容浏览弹窗（独立组件）：展示随机决策内容+选项，点选项回抛 review → 打开下方评议表单 -->
+<decision-view-popup
+  show="{{ showView }}"
+  item="{{ viewItem }}"
+  options="{{ viewOptions }}"
+  bind:review="onReviewFromCard"
+  bind:close="onViewClose"
+/>
+
+<!-- 填写评议表单弹窗（卡片选项、或上方内容弹窗选选项回抛 review 触发；van-popup 底部滑出） -->
+<review-popup
+  show="{{ showReview }}"
+  options="{{ reviewOptions }}"
+  myOption="{{ reviewPreselect }}"
+  myContent=""
+  bind:close="onReviewClose"
+  bind:submit="onReviewSubmit"
+/>

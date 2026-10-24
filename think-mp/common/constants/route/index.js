@@ -4,7 +4,7 @@ export const ROUTE = {
   // 主包 Tab
   TAB_INDEX: '/pages/index/index', // 三思
   TAB_GROUP: '/pages/group/index', // 群组
-  TAB_SQUARE: '/pages/square/index', // 众议
+  TAB_SQUARE: '/pages/square/index', // 众思
   TAB_MINE: '/pages/mine/index', // 我的
 
   // 决策分包

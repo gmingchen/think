@@ -6,8 +6,6 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.think.common.po.BasePO;
 import com.think.core.mybatisplus.type.StringListTypeHandler;
-import com.think.modules.decision.model.dto.DecisionOption;
-import com.think.modules.decision.type.DecisionOptionListTypeHandler;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -41,12 +39,12 @@ public class DecisionEntity extends BasePO {
      */
     private String content;
     /**
-     * 备选方案数组，>=2项；发布后锁定
+     * 备选方案数组，>=2项；发布后锁定。列为逗号分隔的 VARCHAR，由 StringListTypeHandler 编解码（与 images 同款）
      */
-    @TableField(typeHandler = DecisionOptionListTypeHandler.class)
-    private List<DecisionOption> options;
+    @TableField(typeHandler = StringListTypeHandler.class)
+    private List<String> options;
     /**
-     * 决策单图片URL数组，最多3张（可选）
+     * 决策单图片URL数组，最多3张（可选）；列为逗号分隔的 VARCHAR，由 StringListTypeHandler 编解码
      */
     @TableField(typeHandler = StringListTypeHandler.class)
     private List<String> images;
@@ -59,11 +57,11 @@ public class DecisionEntity extends BasePO {
      */
     private Long grpId;
     /**
-     * 冷静期时长(小时)：12/24/72/168
+     * 评议时限(分钟)：1~1440（≤24 小时）；0=不限（靠人数达标或手动结束收口）
      */
-    private Integer coolDownHours;
+    private Integer coolDownMinutes;
     /**
-     * 冷静期截止时间 = 发布时间 + 时长
+     * 评议时限截止时间 = 发布时间 + 时长
      */
     private LocalDateTime coolDownEndAt;
     /**
@@ -79,7 +77,7 @@ public class DecisionEntity extends BasePO {
      */
     private Integer checkStatus;
     /**
-     * 未满冷静期标记：0-否 1-提前结束
+     * 未满评议时限标记：0-否 1-提前结束
      */
     private Integer endedEarly;
     /**

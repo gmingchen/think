@@ -1,11 +1,11 @@
 package com.think.modules.decision.model.dto;
 
-import com.think.common.enums.CoolDownHoursEnum;
 import com.think.common.enums.VisibilityEnum;
 import com.think.core.validator.constraints.Enum;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -33,11 +33,11 @@ public class DecisionCreateDTO {
     @NotBlank(message = "决策内容不能为空")
     private String content;
     /**
-     * 备选方案，≥2 项
+     * 备选方案文案数组，≥2 项
      */
     @NotEmpty(message = "备选方案不能为空")
     @Size(min = 2, message = "备选方案至少2个")
-    private List<DecisionOption> options;
+    private List<String> options;
     /**
      * 图片URL数组，≤3 张（可选）
      */
@@ -54,20 +54,21 @@ public class DecisionCreateDTO {
      */
     private Long grpId;
     /**
-     * 冷静期时长(小时)：12/24/72/168
+     * 评议时限(分钟)：1~1440（≤24 小时）；0-不限（与人数不限不可同时选，发布时校验）
      */
-    @NotNull(message = "冷静期时长不能为空")
-    @Enum(value = CoolDownHoursEnum.class, message = "冷静期时长不合法")
-    private Integer coolDownHours;
+    @NotNull(message = "评议时限不能为空")
+    @Min(value = 0, message = "评议时限不合法（0-不限，其余 1~1440 分钟）")
+    @Max(value = 1440, message = "评议时限最长 24 小时")
+    private Integer coolDownMinutes;
     /**
-     * 评议人数上限：≥1
+     * 评议人数上限：≥1；0-不限（哨兵值，靠人数达标收口的单据不可与不限时同时选，发布时校验）
      */
     @NotNull(message = "评议人数上限不能为空")
-    @Min(value = 1, message = "评议人数上限至少1人")
+    @Min(value = 0, message = "评议人数上限不合法（0-不限，其余至少1人）")
     private Integer reviewLimit;
     /**
-     * 标签ID数组，≤5 个（仅公开档）
+     * 标签ID数组，≤3 个（仅公开档）
      */
-    @Size(max = 5, message = "标签最多5个")
+    @Size(max = 3, message = "标签最多3个")
     private List<Long> tagIds;
 }

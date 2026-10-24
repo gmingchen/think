@@ -1,0 +1,7 @@
+.previewer__video {
+  overflow: hidden;
+}
+.previewer__video video {
+  width: 100%;
+  height: 100%;
+}

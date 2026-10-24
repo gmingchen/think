@@ -254,7 +254,7 @@
  * 众三思 UI 原子样式（严格取自 UI 高保真稿，px×2=rpx），供各页复用
  * =================================================================== */
 /* 白底卡片：圆角 32 / 内边距 32 / 轻投影 */
-.ts-card {
+.card {
   background: var(--ts-card);
   border-radius: var(--ts-radius);
   padding: 32rpx;
@@ -263,7 +263,7 @@
   box-sizing: border-box;
 }
 /* 状态印章徽章（红底白字） */
-.ts-badge-seal {
+.badge-seal {
   display: inline-flex;
   align-items: center;
   background: var(--ts-seal);
@@ -275,7 +275,7 @@
   border-radius: 6rpx;
 }
 /* 常规标签徽章（浅蓝底深蓝字，胶囊） */
-.ts-badge-subtle {
+.badge-subtle {
   display: inline-flex;
   align-items: center;
   background: var(--ts-tag-bg);
@@ -287,7 +287,7 @@
   white-space: nowrap;
 }
 /* 朱砂落款点（胶囊主按钮尾部） */
-.ts-seal-dot {
+.seal-dot {
   width: 10rpx;
   height: 10rpx;
   background: var(--ts-seal);
@@ -295,19 +295,19 @@
   display: inline-block;
 }
 /* 进度条轨道 + 填充 */
-.ts-progress {
+.progress {
   height: 8rpx;
   background: var(--ts-tag-bg);
   border-radius: var(--ts-radius-pill);
   overflow: hidden;
 }
-.ts-progress__fill {
+.progress__fill {
   height: 100%;
   background: var(--ts-primary);
   border-radius: var(--ts-radius-pill);
 }
 /* 主胶囊按钮（操作主蓝底白字，尾部落款点） */
-.ts-capsule-btn {
+.capsule-btn {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -321,9 +321,9 @@
   font-weight: 500;
   box-shadow: var(--ts-shadow-btn);
 }
-.ts-capsule-btn::after { border: none; }
+.capsule-btn::after { border: none; }
 /* 幽灵线框胶囊按钮 */
-.ts-ghost-btn {
+.ghost-btn {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -336,15 +336,15 @@
   font-size: 26rpx;
   font-weight: 500;
 }
-.ts-ghost-btn::after { border: none; }
+.ghost-btn::after { border: none; }
 /* 通用分隔线 */
-.ts-divider {
+.divider {
   height: 1rpx;
   background: var(--ts-line);
   margin: 20rpx 0;
 }
 /* 去责任化声明 */
-.ts-disclaimer {
+.disclaimer {
   text-align: center;
   font-size: 22rpx;
   color: var(--ts-text-sub);

@@ -1,7 +1,7 @@
 {
-  "enablePullDownRefresh": true,
   "usingComponents": {
-    "ts-decision-card": "/components/ts-decision-card/index",
+    "review-card": "/components/review-card/index",
+    "review-popup": "/components/review-popup/index",
     "empty": "/components/empty/index",
     "confirm-popup": "/components/confirm-popup/index",
     "edit-popup": "./components/edit-popup/index",

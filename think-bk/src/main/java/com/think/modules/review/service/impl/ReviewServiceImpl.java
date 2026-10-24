@@ -24,6 +24,7 @@ import com.think.modules.review.model.dto.ReviewDTO;
 import com.think.modules.review.model.dto.ReviewPageDTO;
 import com.think.modules.review.model.dto.ReviewSubmitDTO;
 import com.think.modules.review.service.ReviewService;
+import com.think.modules.report.service.ReportService;
 import com.think.modules.wechat.service.AppletSecCheckService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +52,8 @@ public class ReviewServiceImpl extends ServiceImplX<ReviewMapper, ReviewEntity> 
     private AppletSecCheckService appletSecCheckService;
     @Autowired
     private ReviewCheckMapper reviewCheckMapper;
+    @Autowired
+    private ReportService reportService;
 
     @Override
     public PageResult<ReviewDTO> pageByDecision(ReviewPageDTO dto) {
@@ -110,10 +113,12 @@ public class ReviewServiceImpl extends ServiceImplX<ReviewMapper, ReviewEntity> 
             }
             return ReviewConvert.INSTANCE.convert(existing);
         }
-        // 新评议：满员校验
+        // 新评议：满员校验（reviewLimit=0 为人数不限，不拦）
         Long count = baseMapper.selectCount(new LambdaQueryWrapper<ReviewEntity>()
                 .eq(ReviewEntity::getDecisionId, dto.getDecisionId()));
-        if (count != null && count >= decision.getReviewLimit()) {
+        long reviewed = count == null ? 0L : count;
+        boolean limited = decision.getReviewLimit() != null && decision.getReviewLimit() > 0;
+        if (limited && reviewed >= decision.getReviewLimit()) {
             throw new RunException(ResultCodeEnum.LIMIT_REACHED);
         }
         ReviewEntity entity = new ReviewEntity()
@@ -126,6 +131,11 @@ public class ReviewServiceImpl extends ServiceImplX<ReviewMapper, ReviewEntity> 
         if (isPublic) {
             entity.setCheckStatus(checkPublic(entity.getId(), dto.getContent(), loginUser.getOpenid()));
             baseMapper.updateById(entity);
+        }
+        // 人数达标自动截止：设了人数上限的单据，末位评议提交后即出报告收口（与到期扫描/提前结束同一条生成链路）；
+        // 报告生成失败则回滚本次提交，保证「评议落库 ⇔ 满员收口」原子一致
+        if (limited && reviewed + 1 >= decision.getReviewLimit()) {
+            reportService.generate(decision.getId());
         }
         return ReviewConvert.INSTANCE.convert(entity);
     }

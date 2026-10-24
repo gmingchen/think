@@ -11,7 +11,7 @@
           </view>
         </view>
         <view class="detail__badges">
-          <ts-status-badge status="{{ data.status }}"></ts-status-badge>
+          <status-badge status="{{ data.status }}"></status-badge>
           <text wx:if="{{ data.visibility === 2 }}" class="detail__vis">🔒 群内专属</text>
           <text wx:elif="{{ data.visibility === 3 }}" class="detail__vis">公开</text>
           <text wx:if="{{ data.checkStatus === CHECK.PENDING }}" class="detail__check detail__check--pending">审核中</text>
@@ -41,25 +41,27 @@
       </view>
     </view>
 
-    <!-- 冷静期倒计时 + 进度 -->
+    <!-- 评议时限倒计时 + 进度（不限时走「满员即截止」文案；人数不限时计数无分母、不展进度条） -->
     <view class="detail__cooloff">
       <view class="detail__countdown-title">
-        <text>⏳ 冷静期倒计时 {{ countdown || '—' }}</text>
-        <text class="detail__count">{{ data.reviewCount || 0 }} / {{ data.reviewLimit || 0 }} 人已评</text>
+        <text wx:if="{{ timeUnlimited }}">⏳ 不限时 · 满 {{ data.reviewLimit }} 人即截止</text>
+        <text wx:else>⏳ 评议时限倒计时 {{ countdown || '—' }}</text>
+        <text wx:if="{{ countUnlimited }}" class="detail__count">已评 {{ data.reviewCount || 0 }} 人 · 不限</text>
+        <text wx:else class="detail__count">{{ data.reviewCount || 0 }} / {{ data.reviewLimit || 0 }} 人已评</text>
       </view>
       <view class="detail__countdown-sub">全员盲审保护期：截止前不展示票数偏向，杜绝羊群盲从效应</view>
-      <view class="detail__track"><view class="detail__fill" style="width: {{ percent }}%;"></view></view>
+      <view wx:if="{{ !countUnlimited }}" class="detail__track"><view class="detail__fill" style="width: {{ percent }}%;"></view></view>
     </view>
 
-    <!-- 备选方案 -->
+    <!-- 你会怎么选 -->
     <view class="detail__card">
-      <view class="detail__section-title">备选方案</view>
+      <view class="detail__section-title">你会怎么选</view>
       <view
         wx:for="{{ data.options }}"
         wx:key="index"
         class="detail__option {{ data.myReview && data.myReview.option === index ? 'detail__option--mine' : '' }}"
       >
-        <text class="detail__option-text">{{ index + 1 }}. {{ item.label }}</text>
+        <text class="detail__option-text">{{ index + 1 }}. {{ item }}</text>
         <text wx:if="{{ data.myReview && data.myReview.option === index }}" class="detail__option-mine">你的倾向</text>
       </view>
     </view>
@@ -78,7 +80,7 @@
           <view class="detail__review-head">
             <image class="detail__review-avatar" src="{{ item.user.avatar }}" mode="aspectFill" />
             <text class="detail__review-nick">{{ item.user.nickname }}</text>
-            <text wx:if="{{ item.option >= 0 }}" class="detail__review-opt">倾向 · {{ data.options[item.option].label }}</text>
+            <text wx:if="{{ item.option >= 0 }}" class="detail__review-opt">倾向 · {{ data.options[item.option] }}</text>
           </view>
           <view class="detail__review-content">{{ item.content }}</view>
         </view>
@@ -111,7 +113,7 @@
   </view>
 </container>
 
-<ts-review-popup
+<review-popup
   show="{{ showReview }}"
   options="{{ data.options }}"
   myOption="{{ data.myReview ? data.myReview.option : -1 }}"

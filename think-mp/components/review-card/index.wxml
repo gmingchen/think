@@ -1,0 +1,68 @@
+<view class="review-card" bindtap="onTap">
+  <!-- 头部：头像（左） + 昵称在上/时间在下（右）；评议中专用，无状态徽章 -->
+  <view class="review-card__author f f_a_i-c">
+    <image wx:if="{{ item.initiator.avatar }}" class="review-card__avatar" src="{{ item.initiator.avatar }}" mode="aspectFill" />
+    <view wx:else class="review-card__avatar review-card__avatar--text">{{ avatarChar }}</view>
+    <view class="review-card__author-info">
+      <text class="review-card__name">{{ item.initiator.nickname || '匿名' }}</text>
+      <text wx:if="{{ timeText }}" class="review-card__time">{{ timeText }}</text>
+    </view>
+  </view>
+
+  <!-- 标题（宋体品牌层） -->
+  <view class="review-card__title font-serif">{{ item.title }}</view>
+
+  <!-- 详情文案，超两行折叠，可展开 -->
+  <block wx:if="{{ item.digest || item.content }}">
+    <view class="review-card__content {{ expanded ? '' : 'e-2' }}">{{ item.digest || item.content }}</view>
+    <!-- 隐藏的等宽不钳制克隆：仅用于测量全文真实高度，判断是否溢出两行 -->
+    <view class="review-card__content review-card__measure" aria-hidden="true">{{ item.digest || item.content }}</view>
+    <view wx:if="{{ contentLong }}" class="review-card__expand" catchtap="onToggleExpand">{{ expanded ? '收起' : '展开' }}</view>
+  </block>
+
+  <!-- 图片缩略图（最多3张，点击就地预览） -->
+  <view wx:if="{{ item.images && item.images.length }}" class="review-card__images f">
+    <image
+      wx:for="{{ item.images }}"
+      wx:for-item="img"
+      wx:key="index"
+      wx:if="{{ index < 3 }}"
+      class="review-card__img"
+      src="{{ img }}"
+      mode="aspectFill"
+      data-url="{{ img }}"
+      catchtap="onPreviewImage"
+    />
+  </view>
+
+  <!-- 标签 -->
+  <view wx:if="{{ item.tags && item.tags.length }}" class="review-card__tags f f_w-wrap">
+    <text wx:for="{{ item.tags }}" wx:for-item="tag" wx:key="index" class="review-card__tag">{{ tag }}</text>
+  </view>
+
+  <!-- 评议进度（标签行 + 通栏进度条） -->
+  <view class="review-card__foot">
+    <view class="review-card__progress-label f f_j_c-sb">
+      <text>评议进度</text>
+      <text wx:if="{{ countUnlimited }}">已评 {{ item.reviewCount || 0 }} 人 · 不限</text>
+      <text wx:else>{{ item.reviewCount || 0 }} / {{ item.reviewLimit || 0 }} 人已评</text>
+    </view>
+    <view wx:if="{{ !countUnlimited }}" class="review-card__track">
+      <view class="review-card__fill" style="width: {{ percent }}%;"></view>
+    </view>
+    <!-- 结束条件：满员 或 到时，任一满足即结束 -->
+    <view wx:if="{{ endText }}" class="review-card__end">⏳ {{ endText }}后结束</view>
+  </view>
+
+  <!-- 选项按钮（点击就地弹评议，catchtap 阻断进入详情） -->
+  <view wx:if="{{ item.options && item.options.length }}" class="review-card__options f f_w-wrap">
+    <view
+      wx:for="{{ item.options }}"
+      wx:for-item="opt"
+      wx:key="index"
+      class="review-card__option"
+      data-index="{{ index }}"
+      catchtap="onOptionTap"
+    >{{ opt }}</view>
+  </view>
+</view>

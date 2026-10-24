@@ -45,19 +45,31 @@ export const checkStatusList = [
   { label: '暂未能发布', value: CHECK_STATUS_ENUM.REJECT },
 ]
 
-// 冷静期档位（decision.cool_down_hours，单位：小时）
+// 评议时限（decision.cool_down_minutes，单位：分钟）：1~1440（≤ 24 小时）；0=不限（靠人数达标或手动结束收口，与人数不限不可同时选）
+// 创建页采用两段式 stepper（小时 0~24 + 分钟 0/15/30/45），此处仅提供边界常量与可算参数，不再提供固定档位列表
 export const COOL_DOWN_ENUM = {
-  H12: 12,
-  H24: 24,
-  H72: 72,
-  H168: 168,
+  UNLIMITED: 0,
+}
+export const COOL_DOWN_MAX_MINUTES = 1440 // 上限 24 小时
+export const COOL_DOWN_MIN_MINUTES = 15 // 非不限时的最小时长（一个分钟档步进）
+export const COOL_DOWN_HOUR_MAX = 24 // 小时位上限
+export const COOL_DOWN_MINUTE_OPTIONS = [0, 15, 30, 45] // 分钟位可选值
+
+// 评议人数上限档位（decision.review_limit；0=不限，与评议时限不限不可同时选，发布时拦截）
+export const REVIEW_LIMIT_ENUM = {
+  N5: 5,
+  N10: 10,
+  N20: 20,
+  N50: 50,
+  UNLIMITED: 0,
 }
 
-export const coolDownList = [
-  { label: '12 小时', value: COOL_DOWN_ENUM.H12 },
-  { label: '24 小时', value: COOL_DOWN_ENUM.H24 },
-  { label: '3 天', value: COOL_DOWN_ENUM.H72 },
-  { label: '7 天', value: COOL_DOWN_ENUM.H168 },
+export const reviewLimitList = [
+  { label: '5 人', value: REVIEW_LIMIT_ENUM.N5 },
+  { label: '10 人', value: REVIEW_LIMIT_ENUM.N10 },
+  { label: '20 人', value: REVIEW_LIMIT_ENUM.N20 },
+  { label: '50 人', value: REVIEW_LIMIT_ENUM.N50 },
+  { label: '不限', value: REVIEW_LIMIT_ENUM.UNLIMITED },
 ]
 
 // 决策单列表场景（subpackages/decision/list ?scene=）

@@ -34,7 +34,7 @@ page {
 
 /* 决策单区 */
 .gd__section {
-  margin-top: 8rpx;
+  margin-top: 32rpx;
 }
 
 .gd__feed-head {

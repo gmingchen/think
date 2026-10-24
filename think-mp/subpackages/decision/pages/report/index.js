@@ -29,7 +29,7 @@ Page({
     const rows = (data.options || []).map((o, i) => {
       const count = counts[i] != null ? counts[i] : (counts[String(i)] || 0)
       return {
-        label: o.label,
+        label: o,
         count,
         percent: total ? Math.round((count / total) * 100) : 0,
       }

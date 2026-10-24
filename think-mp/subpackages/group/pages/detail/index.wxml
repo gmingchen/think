@@ -27,7 +27,7 @@
       <view wx:if="{{ loading }}" class="gd__loading">加载中...</view>
       <block wx:elif="{{ list.length }}">
         <view class="gd__item" wx:for="{{ list }}" wx:key="id">
-          <ts-decision-card item="{{ item }}" bind:click="onCardTap" />
+          <review-card item="{{ item }}" bind:click="onCardTap" bind:review="onReviewFromCard" />
         </view>
         <view wx:if="{{ list.length < page.total }}" class="gd__more" bindtap="loadPageData">加载更多</view>
       </block>
@@ -44,3 +44,13 @@
 <edit-popup id="editPopup" bind:confirm="onEditConfirm" />
 
 <confirm-popup id="actionConfirmPopup" bind:confirm="onConfirmDone" />
+
+<!-- 填写评议表单弹窗（卡片选项按钮回抛 review 事件触发；van-popup 底部滑出） -->
+<review-popup
+  show="{{ showReview }}"
+  options="{{ reviewOptions }}"
+  myOption="{{ reviewPreselect }}"
+  myContent=""
+  bind:close="onReviewClose"
+  bind:submit="onReviewSubmit"
+/>

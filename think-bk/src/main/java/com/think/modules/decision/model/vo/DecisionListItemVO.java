@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 决策单列表项（我的 / 群内 / 公开广场通用）
@@ -43,7 +44,7 @@ public class DecisionListItemVO {
      */
     private Integer reportGenerated;
     /**
-     * 冷静期截止时间
+     * 评议时限截止时间
      */
     private LocalDateTime coolDownEndAt;
     /**
@@ -66,4 +67,16 @@ public class DecisionListItemVO {
      * 发起人简要信息
      */
     private UserBriefVO initiator;
+    /**
+     * 决策内容（feed 卡片展示详情、可折叠）
+     */
+    private String content;
+    /**
+     * 决策图片URL数组（feed 卡片缩略图）
+     */
+    private List<String> images;
+    /**
+     * 备选方案文案数组（feed 卡片选项按钮）
+     */
+    private List<String> options;
 }

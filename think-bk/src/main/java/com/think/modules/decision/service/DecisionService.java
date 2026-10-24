@@ -88,7 +88,7 @@ public interface DecisionService extends IServiceX<DecisionEntity> {
     void publish(DecisionPublishDTO dto);
 
     /**
-     * 提前结束评议（未满冷静期）：打 ended_early=1 标记并立即生成报告（status→已截止）
+     * 提前结束评议（未满评议时限）：打 ended_early=1 标记并立即生成报告（status→已截止）
      * @param dto 参数
      */
     void endEarly(DecisionIdDTO dto);

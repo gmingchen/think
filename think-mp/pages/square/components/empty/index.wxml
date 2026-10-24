@@ -1,0 +1,6 @@
+<view class="empty">
+  <view class="empty__icon"><iconfont name="talk" size="{{ 120 }}" color="#C4C8D0" /></view>
+  <view class="empty__title">众思广场还很安静</view>
+  <view class="empty__desc">公开你的抉择，让旁观者帮你三思每一个两难</view>
+  <view class="empty__tip">点底部中间「＋」发布第一份决策单；也可以先给别人的一份纠结，给点严谨的推演。</view>
+</view>

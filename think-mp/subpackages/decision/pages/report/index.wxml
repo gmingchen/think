@@ -1,6 +1,3 @@
-<wxs module="l">
-module.exports.letter = function (i) { return String.fromCharCode(65 + i) }
-</wxs>
 <container title="决策终览报告" use-back use-scroll use-footer>
   <view wx:if="{{ loading }}" class="rp__loading">加载中...</view>
 
@@ -24,7 +21,7 @@ module.exports.letter = function (i) { return String.fromCharCode(65 + i) }
       >
         <view class="rp__vote-header">
           <view class="rp__vote-name">
-            <text>方案 {{ l.letter(index) }}：{{ item.label }}</text>
+            <text>{{ index + 1 }}. {{ item.label }}</text>
             <text wx:if="{{ item.isTop }}" class="rp__vote-badge">最高建议</text>
           </view>
           <text class="rp__vote-stat">{{ item.count }} 人 · {{ item.percent }}%</text>

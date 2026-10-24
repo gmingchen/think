@@ -15,6 +15,29 @@
 -- =============================================================
 
 -- -------------------------------------------------------------
+-- 0. 删除表（置于顶部，令本脚本可重复执行：先清空旧表，再重建并灌种子数据）
+--    全表为逻辑外键、无物理 FOREIGN KEY，故删除/创建顺序不受约束限制；
+--    此处按「依赖倒序」排列（先删引用方，后删被引用方），仅为可读性。
+-- -------------------------------------------------------------
+DROP TABLE IF EXISTS `operation_log`;
+DROP TABLE IF EXISTS `review_check`;
+DROP TABLE IF EXISTS `decision_check`;
+DROP TABLE IF EXISTS `abuse_report`;
+DROP TABLE IF EXISTS `subscribe_log`;
+DROP TABLE IF EXISTS `subscribe`;
+DROP TABLE IF EXISTS `subscribe_template`;
+DROP TABLE IF EXISTS `recap`;
+DROP TABLE IF EXISTS `report`;
+DROP TABLE IF EXISTS `review`;
+DROP TABLE IF EXISTS `decision__tag`;
+DROP TABLE IF EXISTS `tag`;
+DROP TABLE IF EXISTS `decision`;
+DROP TABLE IF EXISTS `grp_member`;
+DROP TABLE IF EXISTS `grp`;
+DROP TABLE IF EXISTS `user_login_log`;
+DROP TABLE IF EXISTS `user`;
+
+-- -------------------------------------------------------------
 -- 1. user 用户表（§3.1 openid 身份）
 -- -------------------------------------------------------------
 CREATE TABLE `user` (
@@ -94,16 +117,16 @@ CREATE TABLE `decision` (
   `user_id`          BIGINT UNSIGNED NOT NULL COMMENT '发起人用户ID',
   `title`            VARCHAR(120) NOT NULL COMMENT '决策单标题（<=30字，列表与详情展示）',
   `content`          TEXT NOT NULL COMMENT '决策内容（自由描述两难处境、背景与纠结点）',
-  `options`          JSON NOT NULL COMMENT '备选方案数组，>=2项，如 [{"label":"..."}]；发布后锁定',
-  `images`           JSON DEFAULT NULL COMMENT '决策单图片URL数组，最多3张（可选）',
+  `options`          VARCHAR(2000) NOT NULL COMMENT '备选方案文案数组，>=2项，逗号分隔（如 选项一,选项二）；发布后锁定，review.option 按下标对齐',
+  `images`           VARCHAR(1000) DEFAULT NULL COMMENT '决策单图片URL数组，逗号分隔，最多3张（可选）',
   `visibility`       TINYINT NOT NULL DEFAULT 1 COMMENT '可见范围：1-仅自己(草稿) 2-群内 3-公开',
   `grp_id`           BIGINT UNSIGNED DEFAULT NULL COMMENT '目标群ID（visibility=2 必填，发起人须为该群成员，不限于群主）',
-  `cool_down_hours`  INT UNSIGNED NOT NULL DEFAULT 24 COMMENT '冷静期时长(小时)：12/24/72/168',
-  `cool_down_end_at` DATETIME DEFAULT NULL COMMENT '冷静期截止时间 = 发布时间 + 时长',
+  `cool_down_minutes` INT UNSIGNED NOT NULL DEFAULT 1440 COMMENT '评议时限(分钟)：1~1440（≤24小时）；0=不限（靠人数达标或手动结束收口）',
+  `cool_down_end_at` DATETIME DEFAULT NULL COMMENT '评议时限截止时间 = 发布时间 + 时长（不限时则为 NULL）',
   `review_limit`     INT UNSIGNED NOT NULL DEFAULT 1 COMMENT '评议人数上限：>=1；群内<=群成员数；公开<=100',
   `status`           TINYINT NOT NULL DEFAULT 0 COMMENT '状态：0-草稿 1-评议中 2-已截止 3-已复盘 4-已关闭',
   `check_status`     TINYINT NOT NULL DEFAULT 0 COMMENT '审核闸门（仅公开档）：0-无需审核 1-待审核 2-通过 3-不通过；公开档须=2 才由 0->1',
-  `ended_early`      TINYINT NOT NULL DEFAULT 0 COMMENT '未满冷静期标记：0-否 1-提前结束',
+  `ended_early`      TINYINT NOT NULL DEFAULT 0 COMMENT '未满评议时限标记：0-否 1-提前结束',
   `report_generated` TINYINT NOT NULL DEFAULT 0 COMMENT '报告是否已生成：0-否 1-是',
   `published_at`     DATETIME DEFAULT NULL COMMENT '发布时间（进入评议中时间）',
   `created_at`       DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
@@ -134,7 +157,7 @@ CREATE TABLE `tag` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='标签表（预置主数据，圈子雏形）';
 
 -- -------------------------------------------------------------
--- 7. decision__tag 决策单标签关联表（多对多，仅公开档，<=5）
+-- 7. decision__tag 决策单标签关联表（多对多，仅公开档，<=3）
 -- -------------------------------------------------------------
 CREATE TABLE `decision__tag` (
   `id`          BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID',
@@ -208,7 +231,7 @@ CREATE TABLE `recap` (
 -- -------------------------------------------------------------
 CREATE TABLE `subscribe_template` (
   `id`          BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID',
-  `type`        VARCHAR(30) NOT NULL COMMENT '通知类型：COOL_DOWN_END-冷静期到期提醒（预留扩展）',
+  `type`        VARCHAR(30) NOT NULL COMMENT '通知类型：COOL_DOWN_END-评议时限到期提醒（预留扩展）',
   `template_id` VARCHAR(50) NOT NULL COMMENT '微信订阅消息模板ID',
   `remark`      VARCHAR(100) DEFAULT NULL COMMENT '备注',
   `created_at`  DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
@@ -356,4 +379,4 @@ INSERT INTO `tag` (`name`, `sort`, `status`) VALUES
 
 -- 订阅消息模板配置（template_id 上线后替换为实际申请的模板 ID）
 INSERT INTO `subscribe_template` (`type`, `template_id`, `remark`) VALUES
-('COOL_DOWN_END', 'TEMPLATE_ID_PLACEHOLDER', '冷静期到期提醒');
+('COOL_DOWN_END', 'TEMPLATE_ID_PLACEHOLDER', '评议时限到期提醒');

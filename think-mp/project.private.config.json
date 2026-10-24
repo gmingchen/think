@@ -23,50 +23,29 @@
     "miniprogram": {
       "list": [
         {
-          "name": "群成员",
-          "pathName": "subpackages/group/pages/members/index",
-          "query": "grpId=2",
+          "name": "群详情",
+          "pathName": "subpackages/group/pages/detail/index",
+          "query": "id=1",
           "scene": null,
           "launchMode": "default"
         },
         {
-          "name": "群组详情",
-          "pathName": "subpackages/group/pages/detail/index",
-          "query": "id=2",
+          "name": "众思",
+          "pathName": "pages/square/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "发起决策单",
+          "pathName": "subpackages/decision/pages/create/index",
+          "query": "",
           "launchMode": "default",
           "scene": null
         },
         {
           "name": "群组",
           "pathName": "pages/group/index",
-          "query": "",
-          "launchMode": "default",
-          "scene": null
-        },
-        {
-          "name": "评价列表",
-          "pathName": "subpackages/dish/pages/review/index",
-          "query": "id=6",
-          "launchMode": "default",
-          "scene": null
-        },
-        {
-          "name": "关于厨菜记",
-          "pathName": "subpackages/user/pages/about/index",
-          "query": "",
-          "launchMode": "default",
-          "scene": null
-        },
-        {
-          "name": "编辑资料",
-          "pathName": "subpackages/user/pages/edit/index",
-          "query": "",
-          "launchMode": "default",
-          "scene": null
-        },
-        {
-          "name": "我的",
-          "pathName": "pages/mine/index",
           "query": "",
           "launchMode": "default",
           "scene": null

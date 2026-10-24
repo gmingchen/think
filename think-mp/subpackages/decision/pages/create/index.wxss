@@ -119,83 +119,18 @@ page {
   box-sizing: border-box;
 }
 
-/* 图片上传 */
-.form__img-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20rpx;
+/* 图片上传（uploader 组件，此处仅控制宿主外边距） */
+.form__img-upload {
+  display: block;
   margin-top: 24rpx;
 }
 
-.form__img-slot {
-  position: relative;
-  width: 136rpx;
-  height: 136rpx;
-  border-radius: 20rpx;
-  background: var(--ts-fill);
-  border: 2rpx dashed var(--ts-line-dash);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: 20rpx;
-  color: var(--ts-text-sub);
-  box-sizing: border-box;
-}
-
-.form__img-slot--filled {
-  padding: 0;
-  overflow: hidden;
-  border-style: solid;
-  border-color: transparent;
-  background: var(--ts-fill-thumb);
-}
-
-.form__img {
-  width: 100%;
-  height: 100%;
-}
-
-.form__img-plus {
-  font-size: 36rpx;
-  line-height: 1;
-  margin-bottom: 4rpx;
-}
-
-.form__img-del {
-  position: absolute;
-  top: -8rpx;
-  right: -8rpx;
-  width: 36rpx;
-  height: 36rpx;
-  line-height: 34rpx;
-  text-align: center;
-  font-size: 26rpx;
-  color: #FFFFFF;
-  background: var(--ts-seal);
-  border-radius: 50%;
-}
-
-/* 备选方案 */
+/* 你会怎么选 */
 .form__option {
   display: flex;
   align-items: center;
   gap: 16rpx;
   margin-bottom: 16rpx;
-}
-
-.form__option-prefix {
-  width: 52rpx;
-  height: 52rpx;
-  flex-shrink: 0;
-  border-radius: 12rpx;
-  background: var(--ts-tag-bg);
-  color: var(--ts-brand);
-  font-size: 22rpx;
-  font-weight: var(--font-weight-6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .form__option-box {
@@ -314,9 +249,9 @@ page {
   color: var(--ts-text-sub);
 }
 
+/* 选群入口右侧箭头（iconfont right，颜色经组件 color 属性传入） */
 .form__picker-change {
-  font-size: 22rpx;
-  color: var(--ts-primary);
+  flex-shrink: 0;
 }
 
 /* 标签多选 */
@@ -339,27 +274,37 @@ page {
 .form__tag-chip--active {
   background: var(--ts-tag-bg);
   color: var(--ts-brand);
-  font-weight: 500;
 }
 
-/* 评议人数步进器 */
-.form__stepper-row {
+/* 评议人数上限（stepper 逐数 + 不限开关） */
+.form__limit {
+  margin-top: 24rpx;
+}
+
+.form__limit-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 20rpx;
 }
 
-.form__stepper-label {
-  font-size: 26rpx;
-  font-weight: 500;
-  color: var(--ts-text);
+.form__limit-ctrl {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
 }
 
-.form__stepper-sub {
-  font-size: 20rpx;
+.form__unlimit {
+  padding: 12rpx 24rpx;
+  border-radius: var(--ts-radius-pill);
+  background: var(--ts-fill);
   color: var(--ts-text-sub);
-  margin-top: 4rpx;
+  font-size: 24rpx;
+}
+
+.form__unlimit--active {
+  background: var(--ts-primary);
+  color: #FFFFFF;
+  font-weight: 500;
 }
 
 .form__stepper {
@@ -376,28 +321,52 @@ page {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 28rpx;
+  font-size: 30rpx;
   color: var(--ts-text);
   background: var(--ts-fill-seg);
 }
 
 .form__stepper-val {
-  width: 88rpx;
+  width: 96rpx;
   text-align: center;
   font-size: 26rpx;
   font-weight: var(--font-weight-6);
   color: var(--ts-brand);
 }
 
-/* 冷静期分段 */
-.form__cooloff {
-  display: flex;
-  gap: 12rpx;
+.form__stepper-val--wide {
+  width: 120rpx;
 }
 
-.form__cooloff-pill {
+/* 人数点击输入：复用数字位外观 */
+.form__stepper-input {
+  width: 96rpx;
+  text-align: center;
+  font-size: 26rpx;
+  font-weight: var(--font-weight-6);
+  color: var(--ts-brand);
+}
+
+.form__limit-sub {
+  font-size: 20rpx;
+  color: var(--ts-text-sub);
+  margin-top: 12rpx;
+}
+
+/* 评议时限·分钟档（小时 stepper 下方的 0/15/30/45 可选） */
+.form__minute {
+  display: flex;
+  gap: 12rpx;
+  margin-top: 16rpx;
+}
+
+.form__minute--disabled {
+  opacity: 0.4;
+}
+
+.form__minute-pill {
   flex: 1;
-  height: 72rpx;
+  height: 64rpx;
   background: var(--ts-fill);
   border-radius: var(--ts-radius-pill);
   display: flex;
@@ -407,7 +376,7 @@ page {
   color: var(--ts-text);
 }
 
-.form__cooloff-pill--active {
+.form__minute-pill--active {
   background: var(--ts-primary);
   color: #FFFFFF;
   font-weight: 500;
@@ -421,32 +390,6 @@ page {
   margin-top: 8rpx;
 }
 
-/* 群选择弹窗列表 */
-.form__grp-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 24rpx 0;
-  border-bottom: 1rpx solid var(--ts-line-weak);
-}
-
-.form__grp-name {
-  font-size: 30rpx;
-  color: var(--ts-text);
-}
-
-.form__grp-meta {
-  font-size: 24rpx;
-  color: var(--ts-text-sub);
-}
-
-.form__grp-empty {
-  padding: 40rpx 0;
-  text-align: center;
-  font-size: 26rpx;
-  color: var(--ts-text-sub);
-}
-
 /* 底部操作 */
 .form__actions {
   display: flex;
@@ -458,19 +401,23 @@ page {
 
 .form__btn {
   flex: 1;
-  height: 92rpx;
+  height: 72rpx;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 12rpx;
   font-size: 28rpx;
-  font-weight: 500;
+  font-weight: var(--font-weight-5);
   border-radius: var(--ts-radius-pill);
 }
 
+.form__btn:active {
+  opacity: .9;
+}
+
 .form__btn--ghost {
-  color: var(--ts-text-sub);
-  background: var(--ts-fill);
+  color: var(--ts-brand);
+  background: var(--ts-tag-bg);
 }
 
 .form__btn--primary {

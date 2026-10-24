@@ -98,7 +98,7 @@ Page({
     wx.$navigateTo(decisionDetailUrl(e.detail.id))
   },
 
-  // 空态引导：前往众议广场（tabbar 页，$navigateTo 内部转 switchTab）
+  // 空态引导：前往众思广场（tabbar 页，$navigateTo 内部转 switchTab）
   onGoSquare() {
     wx.$navigateTo(ROUTE.TAB_SQUARE)
   },

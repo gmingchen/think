@@ -2,7 +2,6 @@ package com.think.modules.report.prompt;
 
 import com.think.modules.ai.client.LlmClient;
 import com.think.modules.decision.entity.DecisionEntity;
-import com.think.modules.decision.model.dto.DecisionOption;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +36,6 @@ public class ReportPrompt {
      */
     public static List<Map<String, Object>> buildMessages(DecisionEntity decision) {
         String optionsText = decision.getOptions() == null ? "" : decision.getOptions().stream()
-                .map(DecisionOption::getLabel)
                 .collect(Collectors.joining(" / "));
         String userContent = String.format(
                 "【决策标题】%s%n【两难处境】%s%n【备选项】%s%n请按思危、思退、思变给出分析，并对每个备选项做简要权衡。",

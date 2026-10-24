@@ -24,7 +24,6 @@ import com.think.modules.decision.mapper.DecisionTagMapper;
 import com.think.modules.decision.model.dto.DecisionCreateDTO;
 import com.think.modules.decision.model.dto.DecisionGrpPageDTO;
 import com.think.modules.decision.model.dto.DecisionIdDTO;
-import com.think.modules.decision.model.dto.DecisionOption;
 import com.think.modules.decision.model.dto.DecisionPageDTO;
 import com.think.modules.decision.model.dto.DecisionPlazaPageDTO;
 import com.think.modules.decision.model.dto.DecisionPublishDTO;
@@ -149,6 +148,7 @@ public class DecisionServiceImpl extends ServiceImplX<DecisionMapper, DecisionEn
 
     @Override
     public PageResult<DecisionListItemVO> pagePlaza(DecisionPlazaPageDTO dto) {
+        Long me = SecurityUtils.getLoginUserId();
         List<Long> tagDecisionIds = null;
         if (dto.getTagId() != null) {
             tagDecisionIds = CollectionUtils.mapList(decisionTagMapper.selectList(
@@ -161,6 +161,8 @@ public class DecisionServiceImpl extends ServiceImplX<DecisionMapper, DecisionEn
         LambdaQueryWrapper<DecisionEntity> wrapper = new LambdaQueryWrapper<DecisionEntity>()
                 .eq(DecisionEntity::getVisibility, VisibilityEnum.PUBLIC.getCode())
                 .eq(DecisionEntity::getCheckStatus, CheckStatusEnum.PASS.getCode())
+                // 广场不展示当前用户自己发布的决策（自己发的去「我的」看）
+                .ne(DecisionEntity::getUserId, me)
                 .in(DecisionEntity::getStatus, Arrays.asList(
                         DecisionStatusEnum.REVIEWING.getCode(),
                         DecisionStatusEnum.ENDED.getCode(),
@@ -172,10 +174,13 @@ public class DecisionServiceImpl extends ServiceImplX<DecisionMapper, DecisionEn
 
     @Override
     public DecisionDetailVO randomPlaza() {
+        Long me = SecurityUtils.getLoginUserId();
         List<DecisionEntity> pool = baseMapper.selectList(new LambdaQueryWrapper<DecisionEntity>()
                 .eq(DecisionEntity::getVisibility, VisibilityEnum.PUBLIC.getCode())
                 .eq(DecisionEntity::getCheckStatus, CheckStatusEnum.PASS.getCode())
-                .eq(DecisionEntity::getStatus, DecisionStatusEnum.REVIEWING.getCode()));
+                .eq(DecisionEntity::getStatus, DecisionStatusEnum.REVIEWING.getCode())
+                // 随机「去看看」同样排除当前用户自己的决策
+                .ne(DecisionEntity::getUserId, me));
         if (CollectionUtils.isEmpty(pool)) {
             return null;
         }
@@ -220,7 +225,7 @@ public class DecisionServiceImpl extends ServiceImplX<DecisionMapper, DecisionEn
                 || VisibilityEnum.PUBLIC.getCode().equals(visibility);
         boolean canReview = DecisionStatusEnum.REVIEWING.getCode().equals(decision.getStatus())
                 && !owner && accessOk
-                && (reviewer || reviewCount < decision.getReviewLimit());
+                && (reviewer || isUnlimited(decision.getReviewLimit()) || reviewCount < decision.getReviewLimit());
 
         // 组装评议列表（先评后看）
         List<ReviewEntity> allReviews = reviewMapper.selectList(new LambdaQueryWrapper<ReviewEntity>()
@@ -248,7 +253,7 @@ public class DecisionServiceImpl extends ServiceImplX<DecisionMapper, DecisionEn
                 .setTags(loadTagNames(id))
                 .setVisibility(decision.getVisibility())
                 .setGrpId(decision.getGrpId())
-                .setCoolDownHours(decision.getCoolDownHours())
+                .setCoolDownMinutes(decision.getCoolDownMinutes())
                 .setCoolDownEndAt(decision.getCoolDownEndAt())
                 .setReviewLimit(decision.getReviewLimit())
                 .setStatus(decision.getStatus())
@@ -350,7 +355,7 @@ public class DecisionServiceImpl extends ServiceImplX<DecisionMapper, DecisionEn
                 .setImages(dto.getImages())
                 .setVisibility(dto.getVisibility())
                 .setGrpId(dto.getGrpId())
-                .setCoolDownHours(dto.getCoolDownHours())
+                .setCoolDownMinutes(dto.getCoolDownMinutes())
                 .setReviewLimit(dto.getReviewLimit())
                 .setStatus(DecisionStatusEnum.DRAFT.getCode())
                 .setCheckStatus(CheckStatusEnum.NONE.getCode())
@@ -375,7 +380,7 @@ public class DecisionServiceImpl extends ServiceImplX<DecisionMapper, DecisionEn
                 .setImages(dto.getImages())
                 .setVisibility(dto.getVisibility())
                 .setGrpId(dto.getGrpId())
-                .setCoolDownHours(dto.getCoolDownHours())
+                .setCoolDownMinutes(dto.getCoolDownMinutes())
                 .setReviewLimit(dto.getReviewLimit());
         baseMapper.updateById(decision);
         saveTags(decision.getId(), dto.getVisibility(), dto.getTagIds());
@@ -391,6 +396,12 @@ public class DecisionServiceImpl extends ServiceImplX<DecisionMapper, DecisionEn
             throw new RunException("该决策单不可重复发布");
         }
         Integer visibility = decision.getVisibility();
+        // 发布兼做兜底校验（正常不会触发：validateForSave 已在创建/更新拦住双不限；此处防历史脏数据）：时间不限与人数不限不可同时选
+        boolean timeUnlimited = decision.getCoolDownMinutes() == null || decision.getCoolDownMinutes() <= 0;
+        boolean countUnlimited = decision.getReviewLimit() == null || decision.getReviewLimit() <= 0;
+        if (timeUnlimited && countUnlimited) {
+            throw new RunException("评议时限与评议人数不能同时不限，请至少给一个设上限");
+        }
         if (VisibilityEnum.GRP.getCode().equals(visibility)) {
             validateGrp(decision.getGrpId(), loginUser.getId(), decision.getReviewLimit());
             activate(decision);
@@ -398,6 +409,9 @@ public class DecisionServiceImpl extends ServiceImplX<DecisionMapper, DecisionEn
             return;
         }
         if (VisibilityEnum.PUBLIC.getCode().equals(visibility)) {
+            if (countUnlimited) {
+                throw new RunException("公开档需设置评议人数上限（不超过100人）");
+            }
             if (decision.getReviewLimit() > 100) {
                 throw new RunException("公开档评议人数上限不能超过100");
             }
@@ -463,14 +477,22 @@ public class DecisionServiceImpl extends ServiceImplX<DecisionMapper, DecisionEn
 
     private void activate(DecisionEntity decision) {
         LocalDateTime now = LocalDateTime.now();
-        decision.setStatus(DecisionStatusEnum.REVIEWING.getCode())
-                .setPublishedAt(now)
-                .setCoolDownEndAt(now.plusHours(decision.getCoolDownHours()));
+        decision.setStatus(DecisionStatusEnum.REVIEWING.getCode()).setPublishedAt(now);
+        // 不限时（cool_down_minutes=0）不产生到期时间：到期扫描依 cool_down_end_at 天然跳过，收口靠人数达标或手动结束
+        Integer coolDownMinutes = decision.getCoolDownMinutes();
+        decision.setCoolDownEndAt(coolDownMinutes == null || coolDownMinutes <= 0
+                ? null : now.plusMinutes(coolDownMinutes));
     }
 
     private void validateForSave(DecisionCreateDTO dto, Long userId) {
-        for (DecisionOption option : dto.getOptions()) {
-            if (option == null || StringUtils.isBlank(option.getLabel())) {
+        // 收口通道校验（任何场景禁止双不限，含存草稿）：评议时限与评议人数不能同时不限
+        boolean timeUnlimited = dto.getCoolDownMinutes() == null || dto.getCoolDownMinutes() <= 0;
+        boolean countUnlimited = dto.getReviewLimit() == null || dto.getReviewLimit() <= 0;
+        if (timeUnlimited && countUnlimited) {
+            throw new RunException("评议时限与评议人数不能同时不限，请至少给一个设上限");
+        }
+        for (String option : dto.getOptions()) {
+            if (StringUtils.isBlank(option)) {
                 throw new RunException("备选方案内容不能为空");
             }
         }
@@ -495,7 +517,8 @@ public class DecisionServiceImpl extends ServiceImplX<DecisionMapper, DecisionEn
         if (!grpMemberService.isMember(grpId, userId)) {
             throw new RunException("你不是该群成员，无法发布到该群");
         }
-        if (reviewLimit > grpMemberService.countByGrp(grpId)) {
+        // reviewLimit=0 为人数不限，不受群成员数封顶
+        if (reviewLimit != null && reviewLimit > 0 && reviewLimit > grpMemberService.countByGrp(grpId)) {
             throw new RunException("评议人数上限不能超过当前群成员数");
         }
     }
@@ -545,6 +568,13 @@ public class DecisionServiceImpl extends ServiceImplX<DecisionMapper, DecisionEn
         Long count = reviewMapper.selectCount(new LambdaQueryWrapper<ReviewEntity>()
                 .eq(ReviewEntity::getDecisionId, decisionId));
         return count == null ? 0 : count.intValue();
+    }
+
+    /**
+     * 人数上限是否为「不限」哨兵值（0/null）
+     */
+    private static boolean isUnlimited(Integer reviewLimit) {
+        return reviewLimit == null || reviewLimit <= 0;
     }
 
     private List<String> loadTagNames(Long decisionId) {
@@ -600,6 +630,9 @@ public class DecisionServiceImpl extends ServiceImplX<DecisionMapper, DecisionEn
                 .setCreatedAt(decision.getCreatedAt())
                 .setReviewCount(countReviews(decision.getId()))
                 .setReviewLimit(decision.getReviewLimit())
+                .setContent(decision.getContent())
+                .setImages(decision.getImages())
+                .setOptions(decision.getOptions())
                 .setInitiator(briefMap.get(decision.getUserId()));
     }
 

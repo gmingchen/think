@@ -1,0 +1,11 @@
+.uploader {
+  box-sizing: border-box;
+  background: var(--ts-fill);
+  border: 2rpx dashed var(--ts-line-dash);
+  color: var(--ts-text-sub);
+  font-size: var(--font-size-small-2);
+}
+.uploader__placeholder {
+  margin-top: 4rpx;
+  font-size: var(--font-size-small-4);
+}

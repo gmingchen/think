@@ -32,6 +32,17 @@ export const navigateTo = (target) => {
 }
 
 /**
+ * 页面跳转（关闭当前页，不在历史栈中保留当前页）
+ * @param {*} target 目标页路径
+ */
+export const redirectTo = (target) => {
+  if (!target) {
+    return
+  }
+  wx.redirectTo({ url: target })
+}
+
+/**
  * 返回目标页
  * @param {*} target 目标页路径
  */

@@ -1,0 +1,5 @@
+<view class="fab" bindtap="onTap">
+  <text class="fab__plus">＋</text>
+  <text wx:if="{{ text }}" class="fab__text">{{ text }}</text>
+  <view class="fab__seal"></view>
+</view>
