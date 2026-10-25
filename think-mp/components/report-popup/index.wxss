@@ -1,0 +1,87 @@
+.report-popup {
+  padding: 40rpx 32rpx 32rpx;
+}
+
+.report-popup__title {
+  font-size: 32rpx;
+  font-weight: var(--font-weight-6);
+  color: var(--ts-text);
+  text-align: center;
+  margin-bottom: 36rpx;
+}
+
+/* 理由列表 */
+.report-popup__reasons {
+  margin-bottom: 32rpx;
+}
+
+.report-popup__reason {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid var(--ts-line-weak);
+  font-size: 28rpx;
+  color: var(--ts-text);
+}
+
+.report-popup__reason:last-child {
+  border-bottom: none;
+}
+
+.report-popup__radio {
+  width: 32rpx;
+  height: 32rpx;
+  border-radius: 50%;
+  border: 3rpx solid var(--ts-line);
+  flex-shrink: 0;
+  position: relative;
+}
+
+.report-popup__reason--active .report-popup__radio {
+  border-color: var(--ts-brand);
+}
+
+.report-popup__reason--active .report-popup__radio::after {
+  content: '';
+  position: absolute;
+  inset: 6rpx;
+  border-radius: 50%;
+  background: var(--ts-brand);
+}
+
+.report-popup__reason--active {
+  color: var(--ts-brand);
+}
+
+/* 补充说明 */
+.report-popup__textarea {
+  width: 100%;
+  min-height: 120rpx;
+  padding: 20rpx;
+  background: var(--ts-bg);
+  border-radius: 16rpx;
+  font-size: 26rpx;
+  color: var(--ts-text);
+  box-sizing: border-box;
+  margin-bottom: 32rpx;
+}
+
+/* 提交按钮 */
+.report-popup__btn {
+  width: 100%;
+  height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ts-brand);
+  color: #fff;
+  font-size: 30rpx;
+  font-weight: 500;
+  border-radius: 999rpx;
+}
+
+.report-popup__btn--disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}

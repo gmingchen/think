@@ -5,6 +5,7 @@ import com.think.common.enums.CheckStatusEnum;
 import com.think.common.enums.ContentCheckResultEnum;
 import com.think.common.enums.DecisionStatusEnum;
 import com.think.common.enums.GrpStatusEnum;
+import com.think.common.enums.MediaBizTypeEnum;
 import com.think.common.enums.OperationActionEnum;
 import com.think.common.enums.OperationBizTypeEnum;
 import com.think.common.enums.ResultCodeEnum;
@@ -49,13 +50,18 @@ import com.think.modules.tag.mapper.TagMapper;
 import com.think.modules.user.entity.UserEntity;
 import com.think.modules.user.model.vo.UserBriefVO;
 import com.think.modules.user.service.UserService;
+import com.think.modules.wechat.service.AppletMediaCheckService;
 import com.think.modules.wechat.service.AppletSecCheckService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -70,6 +76,7 @@ import java.util.stream.Collectors;
  *
  * @author 好市民
  */
+@Slf4j
 @Service("decisionService")
 public class DecisionServiceImpl extends ServiceImplX<DecisionMapper, DecisionEntity> implements DecisionService {
 
@@ -84,6 +91,8 @@ public class DecisionServiceImpl extends ServiceImplX<DecisionMapper, DecisionEn
     private GrpMapper grpMapper;
     @Autowired
     private AppletSecCheckService appletSecCheckService;
+    @Autowired
+    private AppletMediaCheckService appletMediaCheckService;
     @Autowired
     private DecisionTagMapper decisionTagMapper;
     @Autowired
@@ -149,6 +158,8 @@ public class DecisionServiceImpl extends ServiceImplX<DecisionMapper, DecisionEn
     @Override
     public PageResult<DecisionListItemVO> pagePlaza(DecisionPlazaPageDTO dto) {
         Long me = SecurityUtils.getLoginUserId();
+        // 当前用户已参与评议过的决策ID：广场需将其剔除（评过的不再展示）
+        List<Long> reviewedIds = reviewedDecisionIds(me);
         List<Long> tagDecisionIds = null;
         if (dto.getTagId() != null) {
             tagDecisionIds = CollectionUtils.mapList(decisionTagMapper.selectList(
@@ -163,10 +174,10 @@ public class DecisionServiceImpl extends ServiceImplX<DecisionMapper, DecisionEn
                 .eq(DecisionEntity::getCheckStatus, CheckStatusEnum.PASS.getCode())
                 // 广场不展示当前用户自己发布的决策（自己发的去「我的」看）
                 .ne(DecisionEntity::getUserId, me)
-                .in(DecisionEntity::getStatus, Arrays.asList(
-                        DecisionStatusEnum.REVIEWING.getCode(),
-                        DecisionStatusEnum.ENDED.getCode(),
-                        DecisionStatusEnum.RECAPTURED.getCode()))
+                // 广场不展示当前用户已参与过评议的决策（评过的不再重复出现，去「我的-我评过的」看）
+                .notIn(CollectionUtils.isNotEmpty(reviewedIds), DecisionEntity::getId, reviewedIds)
+                // 众思广场只呈现「评议中」的公开决策（截止/复盘的不在广场展示），与「去看看」随机池同口径
+                .eq(DecisionEntity::getStatus, DecisionStatusEnum.REVIEWING.getCode())
                 .in(tagDecisionIds != null, DecisionEntity::getId, tagDecisionIds)
                 .orderByDesc(DecisionEntity::getPublishedAt);
         return toPage(baseMapper.selectPage(dto, wrapper));
@@ -175,17 +186,53 @@ public class DecisionServiceImpl extends ServiceImplX<DecisionMapper, DecisionEn
     @Override
     public DecisionDetailVO randomPlaza() {
         Long me = SecurityUtils.getLoginUserId();
+        List<Long> reviewedIds = reviewedDecisionIds(me);
         List<DecisionEntity> pool = baseMapper.selectList(new LambdaQueryWrapper<DecisionEntity>()
                 .eq(DecisionEntity::getVisibility, VisibilityEnum.PUBLIC.getCode())
                 .eq(DecisionEntity::getCheckStatus, CheckStatusEnum.PASS.getCode())
                 .eq(DecisionEntity::getStatus, DecisionStatusEnum.REVIEWING.getCode())
                 // 随机「去看看」同样排除当前用户自己的决策
-                .ne(DecisionEntity::getUserId, me));
+                .ne(DecisionEntity::getUserId, me)
+                // 已参与过评议的决策不再推来
+                .notIn(CollectionUtils.isNotEmpty(reviewedIds), DecisionEntity::getId, reviewedIds));
         if (CollectionUtils.isEmpty(pool)) {
             return null;
         }
         DecisionEntity pick = pool.get(new Random().nextInt(pool.size()));
         return detail(pick.getId());
+    }
+
+    @Override
+    public DecisionDetailVO changePlaza(Long excludeId) {
+        Long me = SecurityUtils.getLoginUserId();
+        List<Long> reviewedIds = reviewedDecisionIds(me);
+        List<DecisionEntity> pool = baseMapper.selectList(new LambdaQueryWrapper<DecisionEntity>()
+                .eq(DecisionEntity::getVisibility, VisibilityEnum.PUBLIC.getCode())
+                .eq(DecisionEntity::getCheckStatus, CheckStatusEnum.PASS.getCode())
+                .eq(DecisionEntity::getStatus, DecisionStatusEnum.REVIEWING.getCode())
+                // 同样排除当前用户自己的决策
+                .ne(DecisionEntity::getUserId, me)
+                // 已参与过评议的决策不再推来
+                .notIn(CollectionUtils.isNotEmpty(reviewedIds), DecisionEntity::getId, reviewedIds)
+                // 「换一个」硬规则：在查询层直接排除上一条（excludeId），保证不与上一个重复；
+                // 排除后无剩余则返回空（而非退回重复），由前端提示“没有更多可换”
+                .ne(excludeId != null, DecisionEntity::getId, excludeId));
+        if (CollectionUtils.isEmpty(pool)) {
+            return null;
+        }
+        DecisionEntity pick = pool.get(new Random().nextInt(pool.size()));
+        return detail(pick.getId());
+    }
+
+    /**
+     * 当前用户已参与评议过的决策ID（去重），用于广场列表与随机池剔除“评过的不再显示”
+     * @param me 当前登录用户ID
+     * @return 决策ID列表，无则空列表
+     */
+    private List<Long> reviewedDecisionIds(Long me) {
+        return CollectionUtils.mapList(
+                reviewMapper.selectList(new LambdaQueryWrapper<ReviewEntity>().eq(ReviewEntity::getUserId, me)),
+                ReviewEntity::getDecisionId).stream().distinct().collect(Collectors.toList());
     }
 
     @Override
@@ -236,8 +283,8 @@ public class DecisionServiceImpl extends ServiceImplX<DecisionMapper, DecisionEn
         if (canViewReviews) {
             reviews = allReviews.stream()
                     .filter(r -> !r.getUserId().equals(me))
-                    .filter(r -> !VisibilityEnum.PUBLIC.getCode().equals(visibility)
-                            || CheckStatusEnum.PASS.getCode().equals(r.getCheckStatus()))
+                    // 审核不通过的评议对所有可见范围都隐藏（公开/群内均送审后拦截）
+                    .filter(r -> !CheckStatusEnum.REJECT.getCode().equals(r.getCheckStatus()))
                     .map(r -> toReviewItem(r, briefMap))
                     .collect(Collectors.toList());
         }
@@ -404,7 +451,7 @@ public class DecisionServiceImpl extends ServiceImplX<DecisionMapper, DecisionEn
         }
         if (VisibilityEnum.GRP.getCode().equals(visibility)) {
             validateGrp(decision.getGrpId(), loginUser.getId(), decision.getReviewLimit());
-            activate(decision);
+            publishWithCheck(decision, loginUser.getOpenid());
             baseMapper.updateById(decision);
             return;
         }
@@ -415,16 +462,7 @@ public class DecisionServiceImpl extends ServiceImplX<DecisionMapper, DecisionEn
             if (decision.getReviewLimit() > 100) {
                 throw new RunException("公开档评议人数上限不能超过100");
             }
-            decision.setCheckStatus(CheckStatusEnum.PENDING.getCode());
-            try {
-                appletSecCheckService.checkText(decision.getTitle() + "\n" + decision.getContent(), loginUser.getOpenid());
-                decision.setCheckStatus(CheckStatusEnum.PASS.getCode());
-                activate(decision);
-                writeCheck(decision.getId(), ContentCheckResultEnum.PASS, "pass", "");
-            } catch (RunException e) {
-                decision.setCheckStatus(CheckStatusEnum.REJECT.getCode());
-                writeCheck(decision.getId(), ContentCheckResultEnum.REJECT, "", e.getMessage());
-            }
+            publishWithCheck(decision, loginUser.getOpenid());
             baseMapper.updateById(decision);
             return;
         }
@@ -541,6 +579,85 @@ public class DecisionServiceImpl extends ServiceImplX<DecisionMapper, DecisionEn
                 .setCheckStatus(result.getCode())
                 .setDetail(StringUtils.abbreviate(detail, 500))
                 .setCheckedAt(LocalDateTime.now()));
+    }
+
+    /**
+     * 发布送审闸门（公开/群内均需，仅自己草稿不走发布）：标题+正文+选项合并送审。
+     * 通过则激活并记 PASS；违规记 REJECT 且不激活（决策单维持草稿态，可编辑后重新发布）。
+     */
+    private void publishWithCheck(DecisionEntity decision, String openid) {
+        decision.setCheckStatus(CheckStatusEnum.PENDING.getCode());
+        try {
+            appletSecCheckService.checkText(buildCheckText(decision), openid, AppletSecCheckService.SCENE_FORUM);
+            decision.setCheckStatus(CheckStatusEnum.PASS.getCode());
+            activate(decision);
+            writeCheck(decision.getId(), ContentCheckResultEnum.PASS, "pass", "");
+            // 文本通过并已激活后，图片逐张异步送审（先放行、回调命中再摘除）。
+            // 登记到事务提交后再发，避免 mediaCheckAsync 的外部 HTTP 在发布事务内长时间占锁
+            scheduleImageChecks(decision, openid);
+        } catch (RunException e) {
+            decision.setCheckStatus(CheckStatusEnum.REJECT.getCode());
+            writeCheck(decision.getId(), ContentCheckResultEnum.REJECT, "", e.getMessage());
+        }
+    }
+
+    /**
+     * 把图片送审登记到事务提交之后触发：mediaCheckAsync 是外部 HTTP，放进带 @Transactional 的发布流程里，
+     * 微信接口一旦变慢就会长时间占住事务与决策单行锁。仅当本次发布确实提交成功才真正送审；
+     * 无图或当前不在事务同步语境时，直接提交。
+     */
+    private void scheduleImageChecks(DecisionEntity decision, String openid) {
+        List<String> images = decision.getImages();
+        if (CollectionUtils.isEmpty(images)) {
+            return;
+        }
+        Long decisionId = decision.getId();
+        List<String> snapshot = new ArrayList<>(images);
+        if (!TransactionSynchronizationManager.isSynchronizationActive()) {
+            submitImageChecks(decisionId, snapshot, openid);
+            return;
+        }
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
+                submitImageChecks(decisionId, snapshot, openid);
+            }
+        });
+    }
+
+    /**
+     * 逐张提交 mediaCheckAsync。整段兜异常：运行在事务提交之后，任何失败都不能再冒泡影响已成功的发布响应。
+     */
+    private void submitImageChecks(Long decisionId, List<String> images, String openid) {
+        try {
+            for (int i = 0; i < images.size(); i++) {
+                String url = images.get(i);
+                if (StringUtils.isNotBlank(url)) {
+                    appletMediaCheckService.submitImageCheck(MediaBizTypeEnum.DECISION_IMAGE,
+                            decisionId, i, url, openid, AppletSecCheckService.SCENE_FORUM);
+                }
+            }
+        } catch (Exception e) {
+            log.error("决策单图片送审登记失败（不影响已发布的决策单）：decisionId={}, err={}", decisionId, e.getMessage());
+        }
+    }
+
+    /**
+     * 拼接送审文本：标题 + 正文 + 各选项文案（选项同为 UGC，不能漏检）
+     */
+    private String buildCheckText(DecisionEntity decision) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(StringUtils.defaultString(decision.getTitle())).append('\n')
+                .append(StringUtils.defaultString(decision.getContent()));
+        List<String> options = decision.getOptions();
+        if (options != null) {
+            for (String option : options) {
+                if (StringUtils.isNotBlank(option)) {
+                    sb.append('\n').append(option);
+                }
+            }
+        }
+        return sb.toString();
     }
 
     private void checkEditable(DecisionEntity decision) {

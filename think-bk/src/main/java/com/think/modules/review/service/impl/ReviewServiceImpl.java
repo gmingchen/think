@@ -95,22 +95,16 @@ public class ReviewServiceImpl extends ServiceImplX<ReviewMapper, ReviewEntity> 
         if (options == null || dto.getOption() < 0 || dto.getOption() >= options.size()) {
             throw new RunException("所选备选项不合法");
         }
-        boolean isPublic = VisibilityEnum.PUBLIC.getCode().equals(decision.getVisibility());
-
         ReviewEntity existing = baseMapper.selectOne(new LambdaQueryWrapper<ReviewEntity>()
                 .eq(ReviewEntity::getDecisionId, dto.getDecisionId())
                 .eq(ReviewEntity::getUserId, userId));
-        // 已有评议：修改（一条有效，UPDATE）
+        // 已有评议：修改（一条有效，UPDATE）。公开/群内决策单的评议均送审
         if (existing != null) {
-            existing.setOption(dto.getOption()).setContent(dto.getContent());
-            if (isPublic) {
-                existing.setCheckStatus(CheckStatusEnum.PENDING.getCode());
-            }
+            existing.setOption(dto.getOption()).setContent(dto.getContent())
+                    .setCheckStatus(CheckStatusEnum.PENDING.getCode());
             baseMapper.updateById(existing);
-            if (isPublic) {
-                existing.setCheckStatus(checkPublic(existing.getId(), dto.getContent(), loginUser.getOpenid()));
-                baseMapper.updateById(existing);
-            }
+            existing.setCheckStatus(checkPublic(existing.getId(), dto.getContent(), loginUser.getOpenid()));
+            baseMapper.updateById(existing);
             return ReviewConvert.INSTANCE.convert(existing);
         }
         // 新评议：满员校验（reviewLimit=0 为人数不限，不拦）
@@ -126,12 +120,10 @@ public class ReviewServiceImpl extends ServiceImplX<ReviewMapper, ReviewEntity> 
                 .setUserId(userId)
                 .setOption(dto.getOption())
                 .setContent(dto.getContent())
-                .setCheckStatus(isPublic ? CheckStatusEnum.PENDING.getCode() : CheckStatusEnum.NONE.getCode());
+                .setCheckStatus(CheckStatusEnum.PENDING.getCode());
         baseMapper.insert(entity);
-        if (isPublic) {
-            entity.setCheckStatus(checkPublic(entity.getId(), dto.getContent(), loginUser.getOpenid()));
-            baseMapper.updateById(entity);
-        }
+        entity.setCheckStatus(checkPublic(entity.getId(), dto.getContent(), loginUser.getOpenid()));
+        baseMapper.updateById(entity);
         // 人数达标自动截止：设了人数上限的单据，末位评议提交后即出报告收口（与到期扫描/提前结束同一条生成链路）；
         // 报告生成失败则回滚本次提交，保证「评议落库 ⇔ 满员收口」原子一致
         if (limited && reviewed + 1 >= decision.getReviewLimit()) {
@@ -141,17 +133,13 @@ public class ReviewServiceImpl extends ServiceImplX<ReviewMapper, ReviewEntity> 
     }
 
     /**
-     * 公开档评议同步送审：返回闸门态（通过=2 / 不通过=3），并写审核流水
+     * 评议同步送审（公开/群内均适用）：命中违规时 {@code checkText} 抛出 RunException，本次提交整体回滚
+     * （不落库、不占名额，与昵称/群名/复盘的拒绝口径一致）；通过则写 PASS 流水并返回闸门态。
      */
     private Integer checkPublic(Long reviewId, String content, String openid) {
-        try {
-            appletSecCheckService.checkText(content, openid);
-            writeCheck(reviewId, ContentCheckResultEnum.PASS, "pass", "");
-            return CheckStatusEnum.PASS.getCode();
-        } catch (RunException e) {
-            writeCheck(reviewId, ContentCheckResultEnum.REJECT, "", e.getMessage());
-            return CheckStatusEnum.REJECT.getCode();
-        }
+        appletSecCheckService.checkText(content, openid, AppletSecCheckService.SCENE_COMMENT);
+        writeCheck(reviewId, ContentCheckResultEnum.PASS, "pass", "");
+        return CheckStatusEnum.PASS.getCode();
     }
 
     private void writeCheck(Long reviewId, ContentCheckResultEnum result, String suggest, String detail) {

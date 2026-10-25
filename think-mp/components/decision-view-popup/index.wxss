@@ -5,7 +5,7 @@
   top: 0;
   right: 0;
   bottom: 0;
-  z-index: 1000;
+  z-index: 90;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -22,8 +22,9 @@
   position: relative;
   width: 640rpx;
   max-width: 90vw;
-  height: 64vh;
-  max-height: 64vh;
+  /* 面板整体随内容自适应（不固定高度）；max-height 仅作不超出视口的兜底 guard，
+     取得比“头部+主体上限+底部”自然高度更大，确保不会裁掉底部按钮 */
+  max-height: 84vh;
   display: flex;
   flex-direction: column;
   background: var(--ts-card);
@@ -79,6 +80,14 @@
   padding: 40rpx 36rpx 20rpx;
 }
 
+.decision-view__report {
+  flex-shrink: 0;
+  margin-left: 16rpx;
+  font-size: 22rpx;
+  color: var(--ts-text-sub);
+  padding: 8rpx 0 8rpx 16rpx;
+}
+
 .decision-view__title {
   font-size: 34rpx;
   font-weight: var(--font-weight-6);
@@ -86,12 +95,20 @@
 }
 
 /* ── 可滚动主体：决策内容 ──
-   必须 border-box + width:100%，且面板给确定高度，否则内容溢出压底、无法滚动 */
+   关键：scroll-view 必须自身有确定高度才能内部滚动。用 max-height 直接给它高度上限：
+   内容少→自然高（面板贴合）；内容多→卡在 max-height 并内部滚动（不能靠 flex:1，
+   自适应高度的 flex 容器里 flex-grow 拿不到确定高，会导致展开后溢出压底）。 */
 .decision-view__body {
-  flex: 1;
-  min-height: 0;
+  flex: 0 0 auto;
+  max-height: 60vh;
   width: 100%;
   box-sizing: border-box;
+  /* 滚动容器自身不留左右 padding，否则滚动条会被内边距挤离弹窗边缘；横向内缩交给内层 */
+  padding: 0;
+}
+
+/* 内层包裹：承担正文区左右 36rpx 内缩（与固定头/底对齐） */
+.decision-view__body-inner {
   padding: 4rpx 36rpx;
 }
 
@@ -126,6 +143,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  flex: 1;
   min-width: 0;
 }
 
@@ -161,6 +179,53 @@
   line-height: 1.6;
   margin-bottom: 20rpx;
   word-break: break-all;
+}
+
+/* 正文包裹层：为隐藏测量克隆提供定位基准（= 正文可用宽度）。
+   overflow:hidden 必须：把绝对定位克隆（全文高、visibility:hidden 仍占布局）的溢出就地裁掉，
+   否则其高度会向上传播到 scroll-view，导致正文未展开时也可滚动；克隆自身布局高度不变，仍可测。 */
+.decision-view__content-wrap {
+  position: relative;
+  overflow: hidden;
+}
+
+/* 测量专用克隆：复用正文样式但不加 .e-2（不钳制、自然撑到全文高），
+   绝对定位 + left/right:0 与正文等宽，visibility 隐藏不影响布局 */
+.decision-view__measure {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin-bottom: 0;
+  visibility: hidden;
+  pointer-events: none;
+  z-index: -1;
+  white-space: normal;
+}
+
+/* 展开/收起（靠右） */
+.decision-view__expand {
+  font-size: 24rpx;
+  color: var(--ts-brand);
+  font-weight: var(--font-weight-5);
+  text-align: right;
+  margin-bottom: 20rpx;
+}
+
+/* 标签 */
+.decision-view__tags {
+  display: flex;
+  flex-wrap: wrap;
+  grid-gap: 12rpx;
+  margin-bottom: 20rpx;
+}
+
+.decision-view__tag {
+  font-size: 22rpx;
+  color: var(--ts-brand);
+  background: var(--ts-fill);
+  padding: 6rpx 16rpx;
+  border-radius: 8rpx;
 }
 
 .decision-view__images {
@@ -202,8 +267,16 @@
   border-radius: 999rpx;
 }
 
+/* 结束条件（满员/到时）次要提示行 */
+.decision-view__end {
+  margin-top: 12rpx;
+  font-size: 22rpx;
+  color: var(--ts-text-sub);
+}
+
 /* ── 固定底部：仅选项按钮（点选项弹评议表单） ── */
 .decision-view__footer {
+  z-index: 10;
   flex-shrink: 0;
   width: 100%;
   box-sizing: border-box;
@@ -232,4 +305,23 @@
 
 .decision-view__option:active {
   opacity: 0.85;
+}
+
+/* 「换一个」：选项下方的居中次要文字按钮（图标 + 文字横排） */
+.decision-view__shuffle {
+  margin-top: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  grid-gap: 8rpx;
+  font-size: 26rpx;
+  color: var(--ts-text-sub);
+}
+
+.decision-view__shuffle-text {
+  line-height: 1;
+}
+
+.decision-view__shuffle:active {
+  opacity: 0.6;
 }

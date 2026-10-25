@@ -1,0 +1,247 @@
+/* 邀请落地页：严格对齐 docs/UI/UI-邀请落地页.html（px×2→rpx，套用 --ts- 令牌） */
+.iv {
+  min-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 48rpx 32rpx;
+  box-sizing: border-box;
+}
+
+/* ===== 品牌冠部（三态共有） ===== */
+.iv__brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 48rpx;
+}
+
+.iv__brand-name {
+  font-size: 48rpx;
+  font-weight: var(--font-weight-6);
+  color: var(--ts-text);
+  letter-spacing: 8rpx;
+  margin-bottom: 12rpx;
+}
+
+.iv__brand-slogan {
+  font-size: 22rpx;
+  color: var(--ts-text-sub);
+  letter-spacing: 2rpx;
+}
+
+/* 加载中 */
+.iv__loading {
+  text-align: center;
+  font-size: 26rpx;
+  color: var(--ts-text-sub);
+  padding: 80rpx 0;
+}
+
+/* ===== 核心承载白卡 ===== */
+.iv__card {
+  padding: 48rpx 40rpx;
+  background: var(--ts-card);
+  border-radius: 40rpx;
+  box-shadow: var(--ts-shadow);
+}
+
+.iv__card--center {
+  text-align: center;
+}
+
+/* 邀请人简述行 */
+.iv__inviter {
+  display: flex;
+  align-items: center;
+  grid-gap: 20rpx;
+  gap: 20rpx;
+  padding-bottom: 32rpx;
+  border-bottom: 1rpx solid var(--ts-line-weak);
+  margin-bottom: 40rpx;
+}
+
+.iv__inviter-avatar {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--ts-tag-bg);
+  color: var(--ts-brand);
+  font-size: 24rpx;
+  font-weight: var(--font-weight-6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iv__inviter-text {
+  font-size: 26rpx;
+  color: var(--ts-text);
+}
+
+.iv__inviter-name {
+  font-weight: var(--font-weight-6);
+  color: var(--ts-brand);
+}
+
+/* 群展示展台 */
+.iv__group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 40rpx;
+}
+
+.iv__group-avatar {
+  width: 128rpx;
+  height: 128rpx;
+  border-radius: 32rpx;
+  background: var(--ts-tag-bg);
+  color: var(--ts-brand);
+  font-size: 48rpx;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24rpx;
+  box-shadow: 0 8rpx 24rpx rgba(78, 117, 201, 0.15);
+}
+
+.iv__group-title {
+  font-size: 36rpx;
+  font-weight: var(--font-weight-6);
+  color: var(--ts-text);
+  letter-spacing: 1rpx;
+  margin-bottom: 12rpx;
+}
+
+.iv__group-meta {
+  font-size: 22rpx;
+  color: var(--ts-text-sub);
+}
+
+/* 隐私约定微条 */
+.iv__privacy {
+  background: var(--ts-tag-bg);
+  border-radius: 16rpx;
+  padding: 16rpx 20rpx;
+  font-size: 22rpx;
+  color: var(--ts-brand);
+  line-height: 1.4;
+  margin-bottom: 40rpx;
+  text-align: left;
+}
+
+.iv__privacy-strong {
+  font-weight: var(--font-weight-6);
+}
+
+/* 主操作按钮（主蓝胶囊 + 印章红落款点） */
+.iv__btn {
+  width: 100%;
+  height: 96rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  grid-gap: 12rpx;
+  gap: 12rpx;
+  font-size: 28rpx;
+  font-weight: var(--font-weight-5);
+  color: #FFFFFF;
+  background: var(--ts-primary);
+  border-radius: var(--ts-radius-pill);
+  box-shadow: var(--ts-shadow-btn);
+}
+
+.iv__btn--disabled {
+  opacity: 0.6;
+}
+
+.iv__seal-dot {
+  width: 10rpx;
+  height: 10rpx;
+  border-radius: 50%;
+  background: var(--ts-seal);
+}
+
+/* 次级线框按钮 */
+.iv__btn-ghost {
+  width: 100%;
+  height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20rpx;
+  font-size: 26rpx;
+  font-weight: var(--font-weight-5);
+  color: var(--ts-text);
+  background: var(--ts-card);
+  border: 2rpx solid var(--ts-line-dash);
+  border-radius: var(--ts-radius-pill);
+}
+
+/* 状态指示戳 */
+.iv__seal {
+  width: 104rpx;
+  height: 104rpx;
+  border-radius: 50%;
+  font-size: 44rpx;
+  font-weight: var(--font-weight-bold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 16rpx auto 28rpx;
+}
+
+.iv__seal--ok {
+  background: var(--ts-seal-bg);
+  border: 3rpx solid var(--ts-seal);
+  color: var(--ts-seal);
+}
+
+.iv__seal--expired {
+  background: var(--ts-bg);
+  border: 3rpx solid var(--ts-line-dash);
+  color: var(--ts-text-sub);
+}
+
+/* 成功/失效态标题与文案 */
+.iv__h {
+  font-size: 34rpx;
+  font-weight: var(--font-weight-6);
+  color: var(--ts-text);
+  margin-bottom: 16rpx;
+}
+
+.iv__ok-sub {
+  font-size: 26rpx;
+  color: var(--ts-brand);
+  font-weight: var(--font-weight-5);
+  margin-bottom: 12rpx;
+}
+
+.iv__ok-tip {
+  font-size: 22rpx;
+  color: var(--ts-text-sub);
+  line-height: 1.5;
+  margin-bottom: 48rpx;
+}
+
+.iv__exp-tip {
+  font-size: 24rpx;
+  color: var(--ts-text-sub);
+  line-height: 1.5;
+  padding: 0 20rpx;
+  margin-bottom: 48rpx;
+}
+
+/* 底部声明 */
+.iv__footer {
+  text-align: center;
+  font-size: 22rpx;
+  color: var(--ts-text-sub);
+  padding-top: 48rpx;
+}

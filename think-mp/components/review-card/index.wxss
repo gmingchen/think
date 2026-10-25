@@ -1,6 +1,10 @@
 /* ===== review-card：评议中专用信息流卡（广场 / 群详情） ===== */
 .review-card {
   position: relative;
+  /* overflow:hidden：裁掉测量克隆（绝对定位、visibility:hidden 仍占布局）的溢出，
+     否则其全文高会传播到外层 scroll-view，导致卡片未展开也给页面滚动区加隐形高度；
+     自身 box-shadow 画在 border-box 外不受影响，克隆布局高度不变仍可测 */
+  overflow: hidden;
   background: var(--ts-card);
   border-radius: var(--ts-radius);
   box-shadow: var(--ts-shadow);
@@ -39,7 +43,16 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  flex: 1;
   min-width: 0;
+}
+
+.review-card__report {
+  flex-shrink: 0;
+  margin-left: 16rpx;
+  font-size: 22rpx;
+  color: var(--ts-text-sub);
+  padding: 8rpx 0 8rpx 16rpx;
 }
 
 .review-card__name {

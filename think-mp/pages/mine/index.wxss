@@ -3,71 +3,77 @@ page {
 }
 
 .mine {
-  padding: 24rpx 28rpx 32rpx;
+  padding: 24rpx 28rpx 40rpx;
 }
 
-/* 个人信息卡 */
-.mine__profile {
+/* ===== 居中个人信息头 ===== */
+.mine__header {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 28rpx;
-  background: var(--ts-card);
-  border-radius: var(--ts-radius);
-  box-shadow: var(--ts-shadow);
-  padding: 32rpx;
-  margin-bottom: 24rpx;
+  text-align: center;
+  padding: 32rpx 0 40rpx;
 }
 
 .mine__avatar {
-  width: 120rpx;
-  height: 120rpx;
+  width: 140rpx;
+  height: 140rpx;
   border-radius: 50%;
   background: var(--ts-tag-bg);
   border: 3rpx solid var(--ts-line-dash);
   flex-shrink: 0;
 }
 
-.mine__profile-info {
-  flex: 1;
-  min-width: 0;
+.mine__avatar--text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ts-brand);
+  font-size: 56rpx;
+  font-weight: var(--font-weight-6);
+  line-height: 1;
 }
 
-.mine__nickname {
+.mine__nick-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  margin-top: 20rpx;
+}
+
+.mine__nick {
+  max-width: 480rpx;
   font-size: 36rpx;
   font-weight: var(--font-weight-6);
   color: var(--ts-text);
   letter-spacing: 1rpx;
-  margin-bottom: 8rpx;
 }
 
-.mine__profile-sub {
-  font-size: 22rpx;
+.mine__days {
+  margin-top: 12rpx;
+  font-size: 24rpx;
   color: var(--ts-text-sub);
 }
 
-.mine__go {
-  flex-shrink: 0;
-  font-size: 28rpx;
-  color: var(--ts-line-dash);
-}
-
-/* 统计看板 */
+/* ===== 统计卡（对齐 UI：三列网格 + 竖分隔线） ===== */
 .mine__stats {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   background: var(--ts-card);
   border-radius: var(--ts-radius);
   box-shadow: var(--ts-shadow);
   padding: 28rpx 16rpx;
   margin-bottom: 24rpx;
-}
-
-.mine__stat {
-  flex: 1;
   text-align: center;
 }
 
-.mine__stat--line {
-  border-right: 1rpx solid var(--ts-line);
+.mine__stat {
+  border-right: 1rpx solid var(--ts-line-weak);
+}
+
+.mine__stat:last-child {
+  border-right: none;
 }
 
 .mine__stat-num {
@@ -82,7 +88,47 @@ page {
   color: var(--ts-text-sub);
 }
 
-/* Cell 组 */
+/* ===== 通用卡片（记录宫格容器） ===== */
+.mine__card {
+  background: var(--ts-card);
+  border-radius: var(--ts-radius);
+  box-shadow: var(--ts-shadow);
+  padding: 28rpx 24rpx 32rpx;
+  margin-bottom: 24rpx;
+}
+
+.mine__grid {
+  display: flex;
+}
+
+.mine__grid-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14rpx;
+}
+
+.mine__grid-item:active .mine__grid-icon {
+  background: var(--ts-fill-blue);
+}
+
+.mine__grid-icon {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 24rpx;
+  background: var(--ts-tag-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mine__grid-label {
+  font-size: 22rpx;
+  color: var(--ts-text);
+}
+
+/* ===== 设置行卡 ===== */
 .mine__group {
   background: var(--ts-card);
   border-radius: var(--ts-radius);
@@ -107,6 +153,23 @@ page {
   background: var(--ts-fill-blue);
 }
 
+/* 微信客服按钮：重置 button 默认样式，与普通行卡对齐 */
+.mine__contact {
+  width: 100% !important;
+  margin: 0;
+  font-size: 28rpx;
+  line-height: normal;
+  color: var(--ts-text);
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  text-align: left;
+}
+
+.mine__contact::after {
+  border: none;
+}
+
 .mine__cell-left {
   display: flex;
   align-items: center;
@@ -117,21 +180,14 @@ page {
   width: 56rpx;
   height: 56rpx;
   border-radius: 16rpx;
-  background: var(--ts-fill);
-  color: var(--ts-primary);
+  background: var(--ts-tag-bg);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 26rpx;
-}
-
-.mine__cell-icon--brand {
-  background: var(--ts-tag-bg);
-  color: var(--ts-brand);
 }
 
 .mine__cell-label {
-  font-size: 26rpx;
+  font-size: 28rpx;
   font-weight: 500;
   color: var(--ts-text);
 }
@@ -144,15 +200,3 @@ page {
   font-size: 24rpx;
 }
 
-.mine__cell-tip {
-  color: var(--ts-primary);
-  font-size: 22rpx;
-}
-
-/* 去责任化声明 */
-.mine__notice {
-  margin-top: 28rpx;
-  text-align: center;
-  font-size: 22rpx;
-  color: var(--ts-text-sub);
-}

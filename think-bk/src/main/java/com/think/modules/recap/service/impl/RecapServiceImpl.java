@@ -15,6 +15,7 @@ import com.think.modules.recap.mapper.RecapMapper;
 import com.think.modules.recap.model.dto.RecapDTO;
 import com.think.modules.recap.model.dto.RecapSaveDTO;
 import com.think.modules.recap.service.RecapService;
+import com.think.modules.wechat.service.AppletSecCheckService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +33,8 @@ public class RecapServiceImpl extends ServiceImplX<RecapMapper, RecapEntity> imp
 
     @Autowired
     private DecisionMapper decisionMapper;
+    @Autowired
+    private AppletSecCheckService appletSecCheckService;
 
     @Override
     public RecapDTO infoByDecision(Long decisionId) {
@@ -68,6 +71,8 @@ public class RecapServiceImpl extends ServiceImplX<RecapMapper, RecapEntity> imp
                 throw new RunException("最终选择不合法");
             }
         }
+        // 实际结局文本送审（命中违规抛异常→本次回填回滚；空文本由 checkText 内部跳过）
+        appletSecCheckService.checkText(dto.getActualResult(), loginUser.getOpenid(), AppletSecCheckService.SCENE_SOCIAL);
         RecapEntity existing = baseMapper.selectOne(new LambdaQueryWrapper<RecapEntity>()
                 .eq(RecapEntity::getDecisionId, dto.getDecisionId()));
         RecapEntity recap = existing != null ? existing : new RecapEntity().setDecisionId(dto.getDecisionId());

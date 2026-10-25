@@ -50,10 +50,17 @@ public interface DecisionService extends IServiceX<DecisionEntity> {
     PageResult<DecisionListItemVO> pagePlaza(DecisionPlazaPageDTO dto);
 
     /**
-     * 随机查看：随机取一条评议中的公开决策单
+     * 随机查看：随机取一条评议中的公开决策单（首次「去看看」）
      * @return 详情，无则 null
      */
     DecisionDetailVO randomPlaza();
+
+    /**
+     * 换一个：随机取一条公开决策单，硬规则保证不与上一条重复
+     * @param excludeId 上一个正在查看的决策单ID（查询层直接排除）；排除后无剩余则返回 null
+     * @return 详情，无可换时 null
+     */
+    DecisionDetailVO changePlaza(Long excludeId);
 
     /**
      * 决策单详情（含可见性判定、角色标记、先评后看评议与报告）

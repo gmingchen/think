@@ -60,11 +60,19 @@ public class DecisionController {
     }
 
     /**
-     * 随机查看一条公开决策单
+     * 随机查看一条公开决策单（首次「去看看」）
      */
     @GetMapping("/randomPlaza")
     public Result<?> randomPlaza() {
         return Result.success(decisionService.randomPlaza());
+    }
+
+    /**
+     * 换一个：随机取一条且保证不与 excludeId（上一条）重复；无可换时 data 为 null
+     */
+    @GetMapping("/changePlaza")
+    public Result<?> changePlaza(@RequestParam(required = false) Long excludeId) {
+        return Result.success(decisionService.changePlaza(excludeId));
     }
 
     /**

@@ -3,6 +3,7 @@ package com.think.modules.wechat.controller;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.think.modules.wechat.config.WechatProperties;
+import com.think.modules.wechat.service.AppletMediaCheckService;
 import com.think.modules.wechat.utils.WechatUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -49,6 +50,8 @@ public class WechatNotifyController {
 
     @Autowired
     private WechatProperties wechatProperties;
+    @Autowired
+    private AppletMediaCheckService appletMediaCheckService;
 
     /**
      * MP 后台保存「消息推送」配置时，微信服务器发来的 GET 校验
@@ -120,7 +123,12 @@ public class WechatNotifyController {
             String event = json.getStr("Event", json.getStr("MsgType", StringUtils.EMPTY));
             log.info("收到微信推送，event：{}，env：{}，body：{}", event, json.getInt("Env"), message);
 
-            // TODO: 按 event 分派到具体业务；本版未接任何业务事件，一律留痕后回 OK
+            // 多媒体内容安全异步结果（wxa_media_check）：命中该事件则内部消化并回 OK 停推
+            if (appletMediaCheckService.handleMediaCheck(json)) {
+                return notifyResult(NOTIFY_OK, "success");
+            }
+
+            // TODO: 其余事件按 event 分派到具体业务；未接的事件一律留痕后回 OK
             return notifyResult(NOTIFY_OK, "success");
         } catch (Exception e) {
             log.error("微信消息推送处理异常，body：" + body, e);

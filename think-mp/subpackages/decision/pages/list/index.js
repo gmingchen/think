@@ -7,13 +7,29 @@ import {
 import {
   DECISION_SCENE_ENUM,
   DECISION_MINE_TAB_ENUM,
+  DECISION_STATUS_ENUM,
   decisionStatusList,
   decisionMineTabList,
   decisionGrpTabList,
 } from '../../../../common/enums/index'
 import { decisionDetailUrl, ROUTE } from '../../../../common/constants/index'
+import dayjs from 'dayjs'
 
 const STATUS_ALL = '' // 状态筛选「全部」哨兵（空串，避免 null 在 data 属性中渲染为 "null"）
+
+// 列表卡倒计时（HH:mm:ss）：仅评议中且有截止时间；到点显「即将截止」，与卡片旧值相同则复用引用避免重绘
+function withCountdown(list) {
+  return (list || []).map(it => {
+    if (it.status !== DECISION_STATUS_ENUM.REVIEWING || !it.coolDownEndAt) return it
+    const diff = dayjs(it.coolDownEndAt).diff(dayjs(), 'second')
+    let text = '即将截止'
+    if (diff > 0) {
+      const pad = n => (n < 10 ? `0${ n }` : `${ n }`)
+      text = `倒计时 ${ pad(Math.floor(diff / 3600)) }:${ pad(Math.floor((diff % 3600) / 60)) }:${ pad(diff % 60) }`
+    }
+    return (it.countdownText === text) ? it : { ...it, countdownText: text }
+  })
+}
 
 Page({
   behaviors: [storePageBehavior, paginationBehavior('getData')],
@@ -21,6 +37,7 @@ Page({
     loading: true,
     scene: DECISION_SCENE_ENUM.MINE,
     grpId: null,
+    grpName: '',
     tab: DECISION_MINE_TAB_ENUM.CREATED,
     activeStatus: STATUS_ALL,
     tabs: decisionMineTabList,
@@ -38,6 +55,8 @@ Page({
       this.setData({
         scene: DECISION_SCENE_ENUM.GROUP,
         grpId: options.grpId,
+        // 导航标题「群名 · 决策单」（入口 encodeURIComponent 传入，缺省回退「群内决策单」）
+        grpName: options.grpName ? decodeURIComponent(options.grpName) : '',
         tabs: decisionGrpTabList,
         tab: decisionGrpTabList[0].value,
       })
@@ -51,6 +70,13 @@ Page({
     if (tab === DECISION_MINE_TAB_ENUM.REVIEWED) activeStatus = STATUS_ALL
     this.setData({ tab, activeStatus })
     this.reloadPageData()
+  },
+
+  // 每次回到本页重算倒计时（列表数据不重拉，仅刷新剩余时长）
+  onShow() {
+    if (this.data.list && this.data.list.length) {
+      this.setData({ list: withCountdown(this.data.list) })
+    }
   },
 
   async getData(params) {
@@ -67,6 +93,8 @@ Page({
       }
       r = await decisionPageMineApi(reqParams)
     }
+    // 统一注入列表卡倒计时（就地附加，不影响分页游标）
+    if (r.data) r.data.list = withCountdown(r.data.list)
     this.pageDataHandler(r.data)
     this.setData({ loading: false })
   },
@@ -96,6 +124,11 @@ Page({
 
   onCardTap(e) {
     wx.$navigateTo(decisionDetailUrl(e.detail.id))
+  },
+
+  // 空态引导：发起决策单（「我发起的」场景）
+  onCreateTap() {
+    wx.$navigateTo(ROUTE.DECISION_CREATE)
   },
 
   // 空态引导：前往众思广场（tabbar 页，$navigateTo 内部转 switchTab）

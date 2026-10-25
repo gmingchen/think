@@ -2,13 +2,44 @@ page {
   background: var(--ts-bg);
 }
 
-/* 一级宋体 Tab */
+/* 一级 Tab（mine：左对齐宋体栏，对齐 UI mine-top-tabs） */
 .dl__tabs {
   display: flex;
   grid-gap: 48rpx;
   padding: 16rpx 32rpx 8rpx;
   background: var(--ts-card);
   border-bottom: 1rpx solid var(--ts-line);
+}
+
+/* group 场景变体：等分居中状态栏（对齐 UI single-tab-bar） */
+.dl__tabs--grp {
+  grid-gap: 0;
+  padding: 0;
+  height: 88rpx;
+  align-items: stretch;
+}
+
+.dl__tabs--grp .dl__tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 0;
+  font-size: 26rpx;
+}
+
+/* 选中态短线：24px 宽居中（区别于 mine 的通栏下划线）；群场景选中态用品牌深蓝 */
+.dl__tabs--grp .dl__tab--active {
+  color: var(--ts-brand);
+}
+
+.dl__tabs--grp .dl__tab--active::after {
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+  width: 48rpx;
+  height: 6rpx;
+  border-radius: 6rpx 6rpx 0 0;
 }
 
 .dl__tab {
@@ -87,44 +118,51 @@ page {
   letter-spacing: 2rpx;
 }
 
-/* 空态 */
+/* 空态：对齐广场页私有 empty 范式——绝对定位撑满 container__body（position:relative 且视口高确定），
+   在整页可视区域内垂直居中 */
 .dl__empty {
-  padding: 40rpx 0;
-}
-
-.dl__empty-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 120rpx 40rpx;
+  justify-content: center;
+  padding: 48rpx;
+  text-align: center;
+  /* 撑满层自身不接收点击：透明区域若可命中会盖住文档流里的状态筛选条导致点不动 */
+  pointer-events: none;
+}
+
+/* 实际内容面板恢复命中（空态下仅有的可交互元素：胶囊按钮） */
+.dl__empty-card {
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
 }
 
+/* 空态：对齐广场页私有 empty 范式（大号 iconfont 缺省图标，无描边框） */
 .dl__empty-icon {
-  width: 112rpx;
-  height: 112rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 32rpx;
-  font-size: 44rpx;
-  color: var(--ts-line-dash);
-  background: var(--ts-card);
-  border: 3rpx solid var(--ts-line-dash);
-  border-radius: 24rpx;
+  margin-bottom: 24rpx;
 }
 
 .dl__empty-lead {
   margin-bottom: 12rpx;
-  font-size: 32rpx;
+  font-size: 34rpx;
   font-weight: var(--font-weight-6);
   color: var(--ts-text);
+  text-align: center;
 }
 
 .dl__empty-sub {
-  max-width: 440rpx;
-  margin-bottom: 48rpx;
-  font-size: 24rpx;
+  max-width: 480rpx;
+  margin-bottom: 56rpx;
+  font-size: 26rpx;
   line-height: 1.5;
   color: var(--ts-text-sub);
 }

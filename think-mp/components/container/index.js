@@ -56,7 +56,16 @@ Component({
     useFooter: {
       type: Boolean,
       value: false
-    }
+    },
+    // 下拉刷新（仅 useScroll 时生效）
+    useRefresher: {
+      type: Boolean,
+      value: false
+    },
+    refresherTriggered: {
+      type: Boolean,
+      value: false
+    },
   },
   data: {
     isTabbar: false,
@@ -70,6 +79,9 @@ Component({
   methods: {
     onScrollLower(e) {
       this.triggerEvent('on-scroll-lower')
-    }
+    },
+    onRefresherRefresh() {
+      this.triggerEvent('refresherrefresh')
+    },
   },
 })

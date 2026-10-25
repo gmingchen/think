@@ -20,9 +20,14 @@ export const decisionPagePlazaApi = params => {
   return service({ url: '/decision/pagePlaza', method: 'POST', params })
 }
 
-// 随机查看一条公开决策单
+// 随机查看一条公开决策单（首次「去看看」）
 export const decisionRandomPlazaApi = () => {
   return service({ url: '/decision/randomPlaza', method: 'GET' })
+}
+
+// 换一个：随机取一条且保证不与 params.excludeId（上一条）重复
+export const decisionChangePlazaApi = params => {
+  return service({ url: '/decision/changePlaza', method: 'GET', params })
 }
 
 // 决策单详情

@@ -1,22 +1,24 @@
-<container title="个人中心" use-scroll use-footer>
+<wxs src="../../wxs/index.wxs" module="s" />
+<container use-scroll use-footer>
   <view class="mine">
-    <!-- 个人信息卡（点击跳转个人信息编辑） -->
-    <view class="mine__profile" bindtap="onProfileTap">
-      <image class="mine__avatar" src="{{ user.avatar }}" mode="aspectFill" />
-      <view class="mine__profile-info">
-        <view class="mine__nickname font-serif e">{{ user.nickname }}</view>
-        <view class="mine__profile-sub">完善昵称与头像</view>
+    <!-- 居中个人信息头（点击进入编辑资料） -->
+    <view class="mine__header" bindtap="onProfileTap">
+      <image wx:if="{{ user.avatar }}" class="mine__avatar" src="{{ user.avatar }}" mode="aspectFill" />
+      <view wx:else class="mine__avatar mine__avatar--text">{{ s.first(user.nickname, '我') }}</view>
+      <view class="mine__nick-row">
+        <text class="mine__nick font-serif e">{{ user.nickname || '未设置昵称' }}</text>
+        <iconfont name="edit" size="30" color="#9AA0AA" />
       </view>
-      <text class="mine__go">➔</text>
+      <view wx:if="{{ registerDays }}" class="mine__days">加入 · 第 {{ registerDays }} 天</view>
     </view>
 
-    <!-- 统计看板（三栏分隔） -->
+    <!-- 统计卡 -->
     <view class="mine__stats">
-      <view class="mine__stat mine__stat--line">
+      <view class="mine__stat">
         <view class="mine__stat-num">{{ stats.createdCount }}</view>
         <view class="mine__stat-label">发起决策</view>
       </view>
-      <view class="mine__stat mine__stat--line">
+      <view class="mine__stat">
         <view class="mine__stat-num">{{ stats.reviewedCount }}</view>
         <view class="mine__stat-label">参与评议</view>
       </view>
@@ -26,50 +28,45 @@
       </view>
     </view>
 
-    <!-- 核心业务入口组 -->
-    <view class="mine__group">
-      <view class="mine__cell" bindtap="onCreateTap">
-        <view class="mine__cell-left">
-          <view class="mine__cell-icon mine__cell-icon--brand">＋</view>
-          <text class="mine__cell-label font-serif">发起两难决策</text>
+    <!-- 我的记录（图标宫格） -->
+    <view class="mine__card">
+      <view class="mine__grid">
+        <view class="mine__grid-item" bindtap="onDecisionTap">
+          <view class="mine__grid-icon"><iconfont name="file" size="44" color="#3B5BA5" /></view>
+          <text class="mine__grid-label">我发起的</text>
         </view>
-        <view class="mine__cell-right"><text class="mine__cell-tip">快捷入口</text><text>➔</text></view>
-      </view>
-      <view class="mine__cell" bindtap="onDecisionTap">
-        <view class="mine__cell-left">
-          <view class="mine__cell-icon">▤</view>
-          <text class="mine__cell-label">我的决策单</text>
+        <view class="mine__grid-item" bindtap="onReviewTap">
+          <view class="mine__grid-icon"><iconfont name="talk" size="44" color="#3B5BA5" /></view>
+          <text class="mine__grid-label">我评议的</text>
         </view>
-        <view class="mine__cell-right"><text>{{ stats.createdCount }} 卷</text><text>➔</text></view>
-      </view>
-      <view class="mine__cell" bindtap="onGroupTap">
-        <view class="mine__cell-left">
-          <view class="mine__cell-icon">👥</view>
-          <text class="mine__cell-label">我的智囊群</text>
+        <view class="mine__grid-item" bindtap="onDraftTap">
+          <view class="mine__grid-icon"><iconfont name="draft" size="44" color="#3B5BA5" /></view>
+          <text class="mine__grid-label">草稿箱</text>
         </view>
-        <view class="mine__cell-right"><text>➔</text></view>
+        <view class="mine__grid-item" bindtap="onRecapTap">
+          <view class="mine__grid-icon"><iconfont name="review" size="44" color="#3B5BA5" /></view>
+          <text class="mine__grid-label">待复盘</text>
+        </view>
       </view>
     </view>
 
-    <!-- 系统与支持入口组 -->
+    <!-- 设置行卡 -->
     <view class="mine__group">
-      <view class="mine__cell" bindtap="onFeedbackTap">
+      <button class="mine__cell mine__contact" open-type="contact">
         <view class="mine__cell-left">
-          <view class="mine__cell-icon">💬</view>
-          <text class="mine__cell-label">意见反馈</text>
+          <view class="mine__cell-icon"><iconfont name="talk" size="36" color="#3B5BA5" /></view>
+          <text class="mine__cell-label">联系客服</text>
         </view>
-        <view class="mine__cell-right"><text>➔</text></view>
-      </view>
+        <view class="mine__cell-right"><iconfont name="right" size="26" color="#B7BCC4" /></view>
+      </button>
       <view class="mine__cell" bindtap="onAboutTap">
         <view class="mine__cell-left">
-          <view class="mine__cell-icon">ⓘ</view>
+          <view class="mine__cell-icon"><iconfont name="about" size="36" color="#3B5BA5" /></view>
           <text class="mine__cell-label">关于众三思</text>
         </view>
-        <view class="mine__cell-right"><text>➔</text></view>
+        <view class="mine__cell-right"><iconfont name="right" size="26" color="#B7BCC4" /></view>
       </view>
     </view>
-
-    <view class="mine__notice">建议仅供参考，最终决定权归你</view>
   </view>
 
   <tabbar slot="footer"></tabbar>

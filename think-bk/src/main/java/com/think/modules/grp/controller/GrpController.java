@@ -85,6 +85,14 @@ public class GrpController {
     }
 
     /**
+     * 邀请落地页信息（凭 code 查群/邀请人概览与可加入/失效态）
+     */
+    @GetMapping("/inviteInfo")
+    public Result<?> inviteInfo(@RequestParam String code) {
+        return Result.success(grpService.inviteInfo(code));
+    }
+
+    /**
      * 退出群
      */
     @PostMapping("/leave")

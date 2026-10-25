@@ -11,6 +11,7 @@ import com.think.modules.grp.model.dto.GrpPageDTO;
 import com.think.modules.grp.model.dto.GrpRemoveMemberDTO;
 import com.think.modules.grp.model.dto.GrpUpdateDTO;
 import com.think.modules.grp.model.vo.GrpDetailVO;
+import com.think.modules.grp.model.vo.GrpInviteInfoVO;
 import com.think.modules.grp.model.vo.GrpMemberVO;
 
 /**
@@ -65,6 +66,13 @@ public interface GrpService extends IServiceX<GrpEntity> {
      * @param dto 参数
      */
     void join(GrpJoinDTO dto);
+
+    /**
+     * 邀请落地页信息：凭邀请码查群/邀请人概览 + 成员数/在评数，并标记可加入/失效
+     * @param code 邀请码
+     * @return 邀请信息（joinable=false 表示码失效/过期或群已解散）
+     */
+    GrpInviteInfoVO inviteInfo(String code);
 
     /**
      * 退出群（群主不可退，需解散）

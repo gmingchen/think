@@ -92,6 +92,10 @@ Component({
     onTap() {
       this.triggerEvent('click', { id: this.data.item.id })
     },
+    // 举报按钮 → 回抛 report 事件，由上层弹举报弹层
+    onReportTap() {
+      this.triggerEvent('report', { id: this.data.item.id })
+    },
     // 结束条件：人数上限 + 相对剩余时长，缺哪个省哪个（均不限时为空），结尾接“后结束”
     _buildEndText(limit, coolDownEndAt) {
       const parts = []

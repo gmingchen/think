@@ -14,7 +14,7 @@ USER = 'root'
 PASSWORD = 'Gmc950830.'
 
 # 部署配置
-LOCAL_JAR = r'e:\github\think-twice\think-bk\target\think-bk-2.0.0.jar'
+LOCAL_JAR = r'e:\github\think\think-bk\target\think-bk-2.0.0.jar'
 REMOTE_DIR = '/opt/think'
 REMOTE_JAR = f'{REMOTE_DIR}/think-bk-2.0.0.jar'
 REMOTE_JAR_BACKUP = f'{REMOTE_DIR}/think-bk-2.0.0.jar.bak'

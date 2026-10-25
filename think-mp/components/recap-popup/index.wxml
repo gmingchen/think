@@ -1,0 +1,47 @@
+<van-popup
+  show="{{ show }}"
+  position="bottom"
+  round
+  closeable
+  safe-area-inset-bottom
+  custom-style="max-height: 88vh; border-radius: 32rpx 32rpx 0 0;"
+  bind:close="onClose"
+>
+  <view class="recap-popup">
+    <view class="recap-popup__title font-serif">回填你的复盘结局</view>
+    <view class="recap-popup__intro">回看这件事，你最终怎么选了？后来发生了什么？</view>
+
+    <!-- 最终实际选择 -->
+    <view class="recap-popup__label">您最终做出的实际选择是？</view>
+    <view class="recap-popup__options">
+      <view
+        wx:for="{{ options }}"
+        wx:key="index"
+        class="recap-popup__option {{ selected === index ? 'recap-popup__option--active' : '' }}"
+        data-index="{{ index }}"
+        bindtap="onSelectChoice"
+      >{{ item }}</view>
+      <view
+        class="recap-popup__option {{ selected === OTHER ? 'recap-popup__option--active' : '' }}"
+        data-index="{{ OTHER }}"
+        bindtap="onSelectChoice"
+      >其他 / 暂缓</view>
+    </view>
+
+    <!-- 实际结局输入 -->
+    <view class="recap-popup__label">实际执行结局与当初预测的偏差</view>
+    <textarea
+      class="recap-popup__textarea"
+      value="{{ content }}"
+      placeholder="请详述结局：当初众人的推演是否应验？最坏的暗礁发生了吗？如今是否有新的感悟…"
+      maxlength="{{ RESULT_MAX }}"
+      bindinput="onInputResult"
+    />
+
+    <!-- 提交 -->
+    <view class="recap-popup__submit" bindtap="onSubmit">
+      <text>完成复盘 · 封存档案</text>
+      <view class="recap-popup__seal"></view>
+    </view>
+  </view>
+</van-popup>

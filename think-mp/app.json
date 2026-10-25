@@ -8,23 +8,15 @@
   "subpackages": [
     {
       "root": "subpackages/decision",
-      "pages": ["pages/create/index", "pages/detail/index", "pages/list/index", "pages/report/index", "pages/recap/index"]
+      "pages": ["pages/create/index", "pages/detail/index", "pages/list/index", "pages/report/index"]
     },
     {
       "root": "subpackages/group",
-      "pages": ["pages/detail/index", "pages/members/index"]
-    },
-    {
-      "root": "subpackages/invite",
-      "pages": ["pages/landing/index"]
+      "pages": ["pages/detail/index", "pages/members/index", "pages/invite/index"]
     },
     {
       "root": "subpackages/user",
       "pages": ["pages/edit/index", "pages/about/index", "pages/agreement/index", "pages/privacy/index"]
-    },
-    {
-      "root": "subpackages/feedback",
-      "pages": ["pages/merchant/index"]
     }
   ],
   "tabBar": {

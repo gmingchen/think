@@ -29,10 +29,6 @@ public class AppletSecCheckServiceImpl implements AppletSecCheckService {
      */
     private static final int VERSION = 2;
     /**
-     * 场景值 1-资料（昵称/简介等短文本），本项目用于菜名与菜谱描述
-     */
-    private static final int SCENE_PROFILE = 1;
-    /**
      * 审核结论：通过
      */
     private static final String RESULT_PASS = "pass";
@@ -45,14 +41,14 @@ public class AppletSecCheckServiceImpl implements AppletSecCheckService {
     private WechatAccessTokenService wechatAccessTokenService;
 
     @Override
-    public void checkText(String content, String openid) {
+    public void checkText(String content, String openid, int scene) {
         if (content == null || content.trim().isEmpty()) {
             return;
         }
         Map<String, Object> params = new HashMap<>(4);
         params.put("content", content.length() > MAX_CONTENT_LEN ? content.substring(0, MAX_CONTENT_LEN) : content);
         params.put("version", VERSION);
-        params.put("scene", SCENE_PROFILE);
+        params.put("scene", scene);
         params.put("openid", openid);
 
         AppletSecCheckDTO response;
@@ -81,9 +77,9 @@ public class AppletSecCheckServiceImpl implements AppletSecCheckService {
         if (RESULT_PASS.equalsIgnoreCase(result.getSuggest())) {
             return;
         }
-        // review（疑似）一并拒绝：AI 生图产出的是可对外分享的图片，风险容忍度须低于普通文本
+        // review（疑似）一并拒绝：送审内容可被他人浏览（公开/群内决策单与评议），风险容忍度须低，宁拦勿放
         log.error("内容安全审核未通过，suggest={}, label={}, detail={}, openid={}, content={}",
                 result.getSuggest(), result.getLabel(), response.getDetail(), openid, content);
-        throw new RunException("内容涉嫌违规，已拒绝生成，请修改后重试");
+        throw new RunException("内容涉嫌违规，请修改后重试");
     }
 }

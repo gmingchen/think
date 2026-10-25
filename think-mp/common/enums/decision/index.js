@@ -96,10 +96,3 @@ export const decisionMineTabList = [
   { label: '我发起的', value: DECISION_MINE_TAB_ENUM.CREATED },
   { label: '我评议过的', value: DECISION_MINE_TAB_ENUM.REVIEWED },
 ]
-
-// 评议写作引导（思危/思退/思变 三视角，纯 UI 辅助，不落库）
-export const reviewAngleList = [
-  { label: '思危', value: '危', hint: '这个选择最大的风险是什么？' },
-  { label: '思退', value: '退', hint: '有没有更稳妥的退路或折中？' },
-  { label: '思变', value: '变', hint: '换个角度看，还有什么可能？' },
-]

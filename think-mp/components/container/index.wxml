@@ -20,6 +20,9 @@
     class="container__scroll"
     scroll-top="{{ scrollTop }}"
     scroll-y="{{ true }}"
+    refresher-enabled="{{ useRefresher }}"
+    refresher-triggered="{{ refresherTriggered }}"
+    bindrefresherrefresh="onRefresherRefresh"
     bindscrolltolower="onScrollLower">
     <view class="container__body">
       <slot></slot>

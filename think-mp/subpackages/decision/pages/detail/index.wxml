@@ -1,12 +1,15 @@
+<wxs src="../../../../wxs/index.wxs" module="s" />
 <container title="决策详情" use-back use-scroll use-footer="{{ data.canReview }}">
   <view class="detail">
     <!-- 决策主体卡 -->
     <view class="detail__card">
       <view class="detail__author-row">
         <view class="detail__author">
-          <image class="detail__avatar" src="{{ data.initiator.avatar }}" mode="aspectFill" />
+          <image wx:if="{{ data.initiator.avatar }}" class="detail__avatar" src="{{ data.initiator.avatar }}" mode="aspectFill" />
+          <view wx:else class="detail__avatar detail__avatar--text">{{ s.first(data.initiator.nickname) }}</view>
           <view class="detail__author-meta">
             <view class="detail__nick">{{ data.initiator.nickname }}</view>
+            <view wx:if="{{ timeText }}" class="detail__time">{{ timeText }}</view>
             <view wx:if="{{ data.endedEarly === 1 }}" class="detail__ended">已提前结束</view>
           </view>
         </view>
@@ -22,18 +25,18 @@
       <view class="detail__title font-serif">{{ data.title }}</view>
       <view class="detail__content">{{ data.content }}</view>
 
-      <!-- 图片 -->
-      <view wx:if="{{ data.images && data.images.length }}" class="detail__thumbs">
-        <image
-          wx:for="{{ data.images }}"
-          wx:key="*this"
-          src="{{ item }}"
-          mode="aspectFill"
-          class="detail__thumb"
-          data-url="{{ item }}"
-          bindtap="onPreviewImage"
-        />
-      </view>
+      <!-- 图片：统一用通用 previewer 组件（内置点击预览 wx.previewMedia），尺寸/圆角与创建页 uploader 一致 -->
+      <previewer
+        wx:if="{{ data.images && data.images.length }}"
+        class="detail__thumbs"
+        value="{{ data.images }}"
+        width="136rpx"
+        height="136rpx"
+        radius="20rpx"
+        gap="20rpx"
+        fit="cover"
+        preview="{{ true }}"
+      />
 
       <!-- 标签 -->
       <view wx:if="{{ data.tags && data.tags.length }}" class="detail__tags">
@@ -78,7 +81,8 @@
         <view class="detail__section-title">他人观点评议（{{ data.reviewCount || 0 }}）</view>
         <view wx:for="{{ data.reviews }}" wx:key="id" class="detail__review">
           <view class="detail__review-head">
-            <image class="detail__review-avatar" src="{{ item.user.avatar }}" mode="aspectFill" />
+            <image wx:if="{{ item.user.avatar }}" class="detail__review-avatar" src="{{ item.user.avatar }}" mode="aspectFill" />
+            <view wx:else class="detail__review-avatar detail__review-avatar--text">{{ s.first(item.user.nickname) }}</view>
             <text class="detail__review-nick">{{ item.user.nickname }}</text>
             <text wx:if="{{ item.option >= 0 }}" class="detail__review-opt">倾向 · {{ data.options[item.option] }}</text>
           </view>
@@ -96,15 +100,28 @@
       </view>
     </view>
 
+    <!-- 现实结局 · 亲历沉淀（仅发起人 + 已复盘：只读展示回填结果） -->
+    <view wx:if="{{ data.owner && recap }}" class="detail__card">
+      <view class="detail__section-title">现实结局 · 亲历沉淀</view>
+      <view class="detail__recap-row">
+        <text class="detail__recap-k">最终选择</text>
+        <text class="detail__recap-v font-serif">{{ recapChoiceText }}</text>
+      </view>
+      <view wx:if="{{ recap.actualResult }}" class="detail__recap-result">{{ recap.actualResult }}</view>
+    </view>
+
     <!-- 发起人管理动作 -->
     <view wx:if="{{ data.owner }}" class="detail__actions">
       <view wx:if="{{ data.status === STATUS.DRAFT }}" class="detail__action" bindtap="onEdit">编辑</view>
       <view wx:if="{{ data.status === STATUS.DRAFT }}" class="detail__action detail__action--danger" bindtap="onDelete">删除</view>
-      <view wx:if="{{ data.reportGenerated === 1 }}" class="detail__action detail__action--primary" bindtap="onViewReport">查看报告</view>
-      <view wx:if="{{ data.status === STATUS.ENDED || data.status === STATUS.RECAPTURED }}" class="detail__action" bindtap="onRecap">决策复盘</view>
-      <view wx:if="{{ data.status === STATUS.REVIEWING }}" class="detail__action" bindtap="onEndEarly">提前结束</view>
+      <view wx:if="{{ data.reportGenerated === 1 }}" class="detail__action detail__action--primary" bindtap="onViewReport">查看报告<view class="detail__action-seal"></view></view>
+      <view wx:if="{{ data.status === STATUS.ENDED || data.status === STATUS.RECAPTURED }}" class="detail__action detail__action--primary" bindtap="onRecap">{{ recap ? '修改复盘' : '回填结局' }}<view class="detail__action-seal"></view></view>
+      <view wx:if="{{ data.status === STATUS.REVIEWING }}" class="detail__action detail__action--primary" bindtap="onEndEarly">提前结束<view class="detail__action-seal"></view></view>
       <view wx:if="{{ data.status === STATUS.REVIEWING }}" class="detail__action detail__action--danger" bindtap="onClose">关闭</view>
     </view>
+
+    <!-- 举报入口（公开档 + 非发起人） -->
+    <view wx:if="{{ !data.owner && data.visibility === 3 }}" class="detail__report" bindtap="onReportTap">举报此内容</view>
   </view>
 
   <view wx:if="{{ data.canReview }}" slot="footer" class="detail__review-btn" bindtap="onReviewTap">
@@ -123,3 +140,19 @@
 />
 
 <confirm-popup id="actionConfirmPopup" bind:confirm="onConfirmDone" />
+
+<report-popup
+  show="{{ showReport }}"
+  targetType="{{ 1 }}"
+  targetId="{{ id }}"
+  bind:close="onReportClose"
+/>
+
+<recap-popup
+  show="{{ showRecap }}"
+  options="{{ data.options }}"
+  choice="{{ recap ? recap.finalChoice : null }}"
+  result="{{ recap ? recap.actualResult : '' }}"
+  bind:close="onRecapClose"
+  bind:submit="onRecapSubmit"
+/>

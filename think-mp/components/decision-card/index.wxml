@@ -1,8 +1,10 @@
-<view class="decision-card" bindtap="onTap">
-  <!-- 头部：状态徽章（左，showStatus 可关） + 可见范围/发起人（右） -->
+<view class="decision-card {{ isDraft ? 'decision-card--draft' : '' }}" bindtap="onTap">
+  <!-- 头部：状态徽章 + 辅助信息（左：倒计时/仅自己可见），发起人/可见范围（右） -->
   <view class="decision-card__head f f_a_i-c f_j_c-sb">
-    <view wx:if="{{ showStatus }}" class="f f_a_i-c">
-      <status-badge status="{{ item.status }}"></status-badge>
+    <view class="decision-card__head-left f f_a_i-c">
+      <status-badge wx:if="{{ showStatus && badgeLabel }}" status="{{ item.status }}"></status-badge>
+      <text wx:if="{{ countdownText }}" class="decision-card__countdown">{{ countdownText }}</text>
+      <text wx:elif="{{ isDraft }}" class="decision-card__private">仅自己可见</text>
     </view>
     <text wx:if="{{ item.visibility === 2 }}" class="decision-card__vis">🔒 群内专属</text>
     <text wx:elif="{{ item.initiator && item.initiator.nickname }}" class="decision-card__author e">{{ item.initiator.nickname }} 发起</text>
@@ -11,15 +13,40 @@
   <!-- 标题（宋体品牌层） -->
   <view class="decision-card__title font-serif">{{ item.title }}</view>
 
-  <!-- 评议进度（标签行 + 通栏进度条） -->
-  <view class="decision-card__foot">
+  <!-- 摘要（至多两行截断） -->
+  <view wx:if="{{ item.content }}" class="decision-card__summary e-2">{{ item.content }}</view>
+
+  <!-- 缩略图（至多 3 张，点击就地预览） -->
+  <view wx:if="{{ thumbs.length }}" class="decision-card__thumbs">
+    <image
+      wx:for="{{ thumbs }}"
+      wx:key="*this"
+      class="decision-card__thumb"
+      src="{{ item }}"
+      mode="aspectFill"
+      data-url="{{ item }}"
+      catchtap="onPreviewImage"
+    />
+  </view>
+
+  <!-- 底部：草稿显引导行；否则评数上限显「计数 + 进度条」，不限显「已评 N 人 · 不限」 -->
+  <view wx:if="{{ isDraft }}" class="decision-card__draft-hint">
+    <text>✎ 尚未提交评议，点击继续完善</text>
+    <iconfont name="right" size="{{ 28 }}" color="#4E75C9" />
+  </view>
+  <view wx:elif="{{ !countUnlimited }}" class="decision-card__foot">
     <view class="decision-card__progress-label f f_j_c-sb">
       <text>评议进度</text>
-      <text wx:if="{{ countUnlimited }}">已评 {{ item.reviewCount || 0 }} 人 · 不限</text>
-      <text wx:else>{{ item.reviewCount || 0 }} / {{ item.reviewLimit || 0 }} 人已评</text>
+      <text>{{ item.reviewCount || 0 }} / {{ item.reviewLimit || 0 }} 人已评</text>
     </view>
-    <view wx:if="{{ !countUnlimited }}" class="decision-card__track">
+    <view class="decision-card__track">
       <view class="decision-card__fill" style="width: {{ percent }}%;"></view>
+    </view>
+  </view>
+  <view wx:else class="decision-card__foot">
+    <view class="decision-card__progress-label f f_j_c-sb">
+      <text>评议进度</text>
+      <text>已评 {{ item.reviewCount || 0 }} 人 · 不限</text>
     </view>
   </view>
 </view>

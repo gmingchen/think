@@ -27,12 +27,16 @@ import com.think.modules.grp.model.dto.GrpPageDTO;
 import com.think.modules.grp.model.dto.GrpRemoveMemberDTO;
 import com.think.modules.grp.model.dto.GrpUpdateDTO;
 import com.think.modules.grp.model.vo.GrpDetailVO;
+import com.think.modules.grp.model.vo.GrpInviteInfoVO;
 import com.think.modules.grp.model.vo.GrpMemberVO;
 import com.think.modules.grp.service.GrpMemberService;
 import com.think.modules.grp.service.GrpService;
 import com.think.modules.user.entity.UserEntity;
+import com.think.modules.user.model.dto.UserDTO;
 import com.think.modules.user.model.vo.UserBriefVO;
 import com.think.modules.user.service.UserService;
+import com.think.modules.auth.model.LoginUser;
+import com.think.modules.wechat.service.AppletSecCheckService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -66,6 +70,8 @@ public class GrpServiceImpl extends ServiceImplX<GrpMapper, GrpEntity> implement
     private DecisionMapper decisionMapper;
     @Autowired
     private RedisUtils redisUtils;
+    @Autowired
+    private AppletSecCheckService appletSecCheckService;
 
     @Override
     public PageResult<GrpDetailVO> pageMy(GrpPageDTO dto) {
@@ -90,6 +96,10 @@ public class GrpServiceImpl extends ServiceImplX<GrpMapper, GrpEntity> implement
     @Transactional(rollbackFor = RunException.class)
     public Long create(GrpCreateDTO dto) {
         Long userId = SecurityUtils.getLoginUserId();
+        // 群名称送审（scene=资料）：命中违规抛异常拒绝建群
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        appletSecCheckService.checkText(dto.getName(),
+                loginUser == null ? null : loginUser.getOpenid(), AppletSecCheckService.SCENE_PROFILE);
         GrpEntity grp = new GrpEntity()
                 .setName(dto.getName())
                 .setAvatar(dto.getAvatar())
@@ -120,6 +130,10 @@ public class GrpServiceImpl extends ServiceImplX<GrpMapper, GrpEntity> implement
     public void update(GrpUpdateDTO dto) {
         GrpEntity grp = validateExists(dto.getGrpId());
         checkOwner(grp);
+        // 群名称送审（scene=资料）：命中违规抛异常拒绝改名
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        appletSecCheckService.checkText(dto.getName(),
+                loginUser == null ? null : loginUser.getOpenid(), AppletSecCheckService.SCENE_PROFILE);
         baseMapper.update(new GrpEntity().setName(dto.getName()).setAvatar(dto.getAvatar()),
                 new LambdaUpdateWrapper<GrpEntity>().eq(GrpEntity::getId, grp.getId()));
     }
@@ -175,6 +189,42 @@ public class GrpServiceImpl extends ServiceImplX<GrpMapper, GrpEntity> implement
         }
         grpMemberService.addMember(grpId, userId, GrpMemberRoleEnum.MEMBER.getCode());
         // 邀请码不核销：入群后保留，有效期内（1 天）可反复使用，到期由 Redis TTL 自然过期
+    }
+
+    @Override
+    public GrpInviteInfoVO inviteInfo(String code) {
+        // 默认失效态；仅当码命中且群正常时置为可加入
+        GrpInviteInfoVO vo = new GrpInviteInfoVO().setJoinable(false);
+        if (StringUtils.isBlank(code)) {
+            return vo;
+        }
+        Object value = redisUtils.get(RedisConstant.GRP_INVITE + code).orElse(null);
+        if (value == null) {
+            // 码不存在 / 已过期（Redis TTL 到期）
+            return vo;
+        }
+        String[] parts = String.valueOf(value).split(":");
+        Long grpId = Long.parseLong(parts[0]);
+        Long inviterId = parts.length > 1 ? Long.parseLong(parts[1]) : null;
+        GrpEntity grp = baseMapper.selectById(grpId);
+        if (grp == null || !GrpStatusEnum.NORMAL.getCode().equals(grp.getStatus())) {
+            // 群已被删除/归档解散
+            return vo;
+        }
+        UserDTO inviter = inviterId == null ? null : userService.info(inviterId);
+        Integer reviewingCount = decisionMapper.selectCount(new LambdaQueryWrapper<DecisionEntity>()
+                .eq(DecisionEntity::getGrpId, grpId)
+                .eq(DecisionEntity::getVisibility, VisibilityEnum.GRP.getCode())
+                .eq(DecisionEntity::getStatus, DecisionStatusEnum.REVIEWING.getCode())).intValue();
+        return vo.setJoinable(true)
+                .setGrpId(grp.getId())
+                .setGrpName(grp.getName())
+                .setGrpAvatar(grp.getAvatar())
+                .setMemberCount(grpMemberService.countByGrp(grpId))
+                .setReviewingCount(reviewingCount)
+                .setInviterId(inviterId)
+                .setInviterNickname(inviter == null ? null : inviter.getNickname())
+                .setInviterAvatar(inviter == null ? null : inviter.getAvatar());
     }
 
     @Override

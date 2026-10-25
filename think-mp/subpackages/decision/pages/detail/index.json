@@ -2,6 +2,9 @@
   "usingComponents": {
     "status-badge": "/components/status-badge/index",
     "review-popup": "/components/review-popup/index",
-    "confirm-popup": "/components/confirm-popup/index"
+    "recap-popup": "/components/recap-popup/index",
+    "confirm-popup": "/components/confirm-popup/index",
+    "previewer": "/components/previewer/index",
+    "report-popup": "/components/report-popup/index"
   }
 }

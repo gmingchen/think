@@ -1,40 +1,58 @@
-<container use-scroll title="编辑资料" use-back>
+<wxs src="../../../../wxs/index.wxs" module="s" />
+<container use-scroll title="个人信息" use-back use-footer>
 
-  <!-- 头像 -->
-  <button class="edit__avatar-section" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
-    <image class="edit__avatar-box" src="{{ avatar || defaultAvatar }}" mode="aspectFill" />
-    <text class="edit__avatar-tip">点击更换头像</text>
-  </button>
+  <!-- 头像微信选择区 -->
+  <view class="edit__avatar-box">
+    <button class="edit__avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+      <view class="edit__avatar-picker">
+        <image wx:if="{{ avatar }}" class="edit__avatar-img" src="{{ avatar }}" mode="aspectFill" />
+        <view wx:else class="edit__avatar-char font-serif">{{ s.first(nickname, '我') }}</view>
+        <view class="edit__avatar-pen">✎</view>
+      </view>
+    </button>
+    <view class="edit__avatar-tip">点击选用微信头像或自定义相册</view>
+  </view>
 
-  <!-- 表单 -->
-  <view class="zk__card edit__form-card">
-    <view class="edit__form-item">
-      <text class="edit__form-label">昵称</text>
-      <input
-        type="nickname"
-        class="edit__form-input"
-        value="{{ nickname }}"
-        placeholder="点击输入昵称"
-        data-field="nickname"
-        bindinput="onFieldChange"
-        bindblur="onFieldChange"
-        maxlength="30" />
+  <!-- 核心表单卡 -->
+  <view class="edit__card">
+    <!-- 昵称 -->
+    <view class="edit__field">
+      <text class="edit__field-label">昵称</text>
+      <view class="edit__field-input-box">
+        <input
+          type="nickname"
+          class="edit__field-input"
+          value="{{ nickname }}"
+          placeholder="填写昵称或选用微信昵称"
+          data-field="nickname"
+          bindinput="onFieldChange"
+          bindblur="onFieldChange"
+          maxlength="30" />
+      </view>
     </view>
-    <view class="edit__form-item edit__form-item--last">
-      <text class="edit__form-label">性别</text>
-      <view class="edit__gender-group">
+
+    <!-- 性别（纯手动选择，不收集微信敏感信息） -->
+    <view class="edit__field edit__field--last">
+      <text class="edit__field-label">性别</text>
+      <view class="edit__gender-seg">
         <view
           wx:for="{{ SEX_LIST }}"
           wx:key="value"
-          class="edit__gender-item {{ sex === item.value ? 'edit__gender-item--active' : '' }}"
+          class="edit__gender-pill {{ sex === item.value ? 'edit__gender-pill--active' : '' }}"
           data-value="{{ item.value }}"
           bind:tap="onSexChange">{{ item.label }}</view>
       </view>
     </view>
   </view>
 
-  <!-- 保存按钮 -->
-  <view class="edit__save-section">
-    <view class="btn--primary edit__save-btn" bind:tap="onSave">保存</view>
+  <!-- 隐私安全提示 -->
+  <view class="edit__privacy">🛡️ 众三思遵循极简数据准则，个人信息仅用于决策单署名与评议互动展示，绝不向第三方机构商业化流转。</view>
+
+  <!-- 底部固定保存栏 -->
+  <view slot="footer" class="edit__save-bar">
+    <view class="edit__save-btn" bind:tap="onSave">
+      <text>保存修改 · 立即生效</text>
+      <text class="edit__save-seal"></text>
+    </view>
   </view>
 </container>

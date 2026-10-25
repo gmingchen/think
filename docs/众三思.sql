@@ -117,15 +117,15 @@ CREATE TABLE `decision` (
   `user_id`          BIGINT UNSIGNED NOT NULL COMMENT '发起人用户ID',
   `title`            VARCHAR(120) NOT NULL COMMENT '决策单标题（<=30字，列表与详情展示）',
   `content`          TEXT NOT NULL COMMENT '决策内容（自由描述两难处境、背景与纠结点）',
-  `options`          VARCHAR(2000) NOT NULL COMMENT '备选方案文案数组，>=2项，逗号分隔（如 选项一,选项二）；发布后锁定，review.option 按下标对齐',
-  `images`           VARCHAR(1000) DEFAULT NULL COMMENT '决策单图片URL数组，逗号分隔，最多3张（可选）',
+  `options`          VARCHAR(2000) NOT NULL COMMENT '备选方案文案数组，>=2项，JSON 字符串数组（如 ["选项一","选项二"]）；发布后锁定，review.option 按下标对齐',
+  `images`           VARCHAR(1000) DEFAULT NULL COMMENT '决策单图片URL数组，JSON 字符串数组，最多3张（可选）',
   `visibility`       TINYINT NOT NULL DEFAULT 1 COMMENT '可见范围：1-仅自己(草稿) 2-群内 3-公开',
   `grp_id`           BIGINT UNSIGNED DEFAULT NULL COMMENT '目标群ID（visibility=2 必填，发起人须为该群成员，不限于群主）',
   `cool_down_minutes` INT UNSIGNED NOT NULL DEFAULT 1440 COMMENT '评议时限(分钟)：1~1440（≤24小时）；0=不限（靠人数达标或手动结束收口）',
   `cool_down_end_at` DATETIME DEFAULT NULL COMMENT '评议时限截止时间 = 发布时间 + 时长（不限时则为 NULL）',
   `review_limit`     INT UNSIGNED NOT NULL DEFAULT 1 COMMENT '评议人数上限：>=1；群内<=群成员数；公开<=100',
   `status`           TINYINT NOT NULL DEFAULT 0 COMMENT '状态：0-草稿 1-评议中 2-已截止 3-已复盘 4-已关闭',
-  `check_status`     TINYINT NOT NULL DEFAULT 0 COMMENT '审核闸门（仅公开档）：0-无需审核 1-待审核 2-通过 3-不通过；公开档须=2 才由 0->1',
+  `check_status`     TINYINT NOT NULL DEFAULT 0 COMMENT '文本审核闸门（公开/群内档均适用，仅自己恒为0）：0-无需审核 1-待审核 2-通过 3-不通过；通过才激活（公开进广场、群内进评议中）；图片另走异步 media_check 不回填本列', 
   `ended_early`      TINYINT NOT NULL DEFAULT 0 COMMENT '未满评议时限标记：0-否 1-提前结束',
   `report_generated` TINYINT NOT NULL DEFAULT 0 COMMENT '报告是否已生成：0-否 1-是',
   `published_at`     DATETIME DEFAULT NULL COMMENT '发布时间（进入评议中时间）',
@@ -181,7 +181,7 @@ CREATE TABLE `review` (
   `user_id`      BIGINT UNSIGNED NOT NULL COMMENT '评议人用户ID（!= 发起人，禁自评）',
   `option`       INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '倾向备选项下标（0-based，< options 数组长度）；MySQL 保留字，SQL 中须加反引号',
   `content`      VARCHAR(500) NOT NULL COMMENT '评议观点文字（不能为空，应用层校验）',
-  `check_status` TINYINT NOT NULL DEFAULT 0 COMMENT '评议审核闸门（仅公开档）：0-无需 1-待审 2-通过 3-不通过',
+  `check_status` TINYINT NOT NULL DEFAULT 0 COMMENT '评议审核闸门（公开/群内档 decision 下的评议适用）：0-无需 1-待审 2-通过 3-不通过；命中违规采用拒绝提交（本次落库整体回滚、不占名额），故已提交评议本列实际恒为2',
   `created_at`   DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at`   DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间（修改评议走 UPDATE）',
   `deleted_at`   DATETIME DEFAULT NULL COMMENT '删除时间',
@@ -303,7 +303,7 @@ CREATE TABLE `abuse_report` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='举报表（仅公开档）';
 
 -- -------------------------------------------------------------
--- 15. decision_check 决策单内容审核流水表（仅公开档；每次审核一行）
+-- 15. decision_check 决策单文本审核流水表（公开/群内档；每次审核一行）
 -- -------------------------------------------------------------
 CREATE TABLE `decision_check` (
   `id`           BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID',
@@ -319,10 +319,10 @@ CREATE TABLE `decision_check` (
   `deleted`      TINYINT  NOT NULL DEFAULT 0 COMMENT '是否删除：0-未删除 1-已删除',
   PRIMARY KEY (`id`),
   KEY `idx_decision` (`decision_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='决策单内容审核流水表（仅公开档）';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='决策单文本审核流水表（公开/群内档）';
 
 -- -------------------------------------------------------------
--- 16. review_check 评议内容审核流水表（仅公开档；每次审核一行）
+-- 16. review_check 评议文本审核流水表（公开/群内档；每次审核一行）
 -- -------------------------------------------------------------
 CREATE TABLE `review_check` (
   `id`           BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID',
@@ -338,7 +338,33 @@ CREATE TABLE `review_check` (
   `deleted`      TINYINT  NOT NULL DEFAULT 0 COMMENT '是否删除：0-未删除 1-已删除',
   PRIMARY KEY (`id`),
   KEY `idx_review` (`review_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='评议内容审核流水表（仅公开档）';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='评议文本审核流水表（公开/群内档）';
+
+-- -------------------------------------------------------------
+-- 16+. media_check 多媒体内容审核流水表（图片/头像异步送审；每次送审一行）
+-- -------------------------------------------------------------
+CREATE TABLE `media_check` (
+  `id`           BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `biz_type`     TINYINT NOT NULL COMMENT '资产类型：1-决策单图片 2-用户头像',
+  `biz_id`       BIGINT UNSIGNED NOT NULL COMMENT '业务主键：决策单ID 或 用户ID',
+  `target`       INT DEFAULT NULL COMMENT '图片在 images 数组中的下标（头像为空）',
+  `media_url`    VARCHAR(512) NOT NULL COMMENT '送审的图片URL（回调命中违规时按此URL精确移除，防下标漂移误删）',
+  `trace_id`     VARCHAR(64) DEFAULT NULL COMMENT '微信 media_checkAsync 返回的 trace_id（异步结果关联键）',
+  `openid`       VARCHAR(64) DEFAULT NULL COMMENT '内容发布者 openid',
+  `scene`        TINYINT DEFAULT NULL COMMENT '场景值 1-资料 2-评论 3-论坛 4-社交日志',
+  `provider`     VARCHAR(16) NOT NULL DEFAULT 'wx' COMMENT '审核渠道',
+  `suggest`      VARCHAR(16) DEFAULT 'pending' COMMENT '微信回调结论：pass/review/risky（未回调为 pending）',
+  `check_status` TINYINT NOT NULL DEFAULT 0 COMMENT '单次审核结果：0-待审 1-通过 2-不通过 3-需人工复审',
+  `detail`       VARCHAR(500) DEFAULT '' COMMENT '命中标签/明细',
+  `checked_at`   DATETIME DEFAULT NULL COMMENT '审核时间（回调落库时间）',
+  `created_at`   DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at`   DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `deleted_at`   DATETIME DEFAULT NULL COMMENT '删除时间',
+  `deleted`      TINYINT  NOT NULL DEFAULT 0 COMMENT '是否删除：0-未删除 1-已删除',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_trace` (`trace_id`),
+  KEY `idx_biz` (`biz_type`, `biz_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='多媒体内容审核流水表（图片/头像异步送审）';
 
 -- -------------------------------------------------------------
 -- 17. operation_log 操作审计日志表（append-only，不随业务级联删除）

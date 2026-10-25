@@ -1,6 +1,6 @@
 Component({
   properties: {
-    // invite | exit | dissolve | share | edit | fork | tick | plus | left | right | mine | group | talk | home
+    // review | draft | about | file | lock | change | invite | exit | dissolve | share | edit | fork | tick | plus | left | right | mine | group | talk | home
     name: {
       type: String,
     },

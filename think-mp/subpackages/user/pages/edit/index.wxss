@@ -1,87 +1,179 @@
-/* 头像 */
-.edit__avatar-section {
+page {
+  background: var(--ts-bg);
+}
+
+/* ===== 头像选择区 ===== */
+.edit__avatar-box {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 48rpx 0 32rpx;
-  background: none;
-  border: none;
-  margin: 0;
-  line-height: normal;
-}
-.edit__avatar-section::after {
-  display: none;
-}
-.edit__avatar-box {
-  width: 160rpx;
-  height: 160rpx;
-  border-radius: 50%;
-  border: 4rpx dashed var(--color-primary);
-}
-.edit__avatar-tip {
-  font-size: 22rpx;
-  color: var(--font-color-sub);
-  margin-top: 12rpx;
+  padding: 32rpx 0 40rpx;
 }
 
-/* 表单 */
-.edit__form-card {
-  margin: 0 32rpx;
-  padding: 8rpx 32rpx;
+/* 重置 button 默认样式，使头像圆形选择器居中展示 */
+.edit__avatar-btn {
+  width: auto !important;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: none;
+  line-height: normal;
 }
-.edit__form-item {
-  padding: 28rpx 0;
-  border-bottom: var(--border-dashed);
+.edit__avatar-btn::after {
+  border: none;
+}
+
+.edit__avatar-picker {
+  position: relative;
+  width: 144rpx;
+  height: 144rpx;
+  border-radius: 50%;
+  background: var(--ts-tag-bg);
+  color: var(--ts-brand);
+  border: 4rpx solid #FFFFFF;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+}
+
+.edit__avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+.edit__avatar-char {
+  font-size: 52rpx;
+  font-weight: var(--font-weight-6);
+  color: var(--ts-brand);
+  line-height: 1;
+}
+
+/* 右下角编辑笔角标 */
+.edit__avatar-pen {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 50%;
+  background: var(--ts-brand);
+  color: #FFFFFF;
+  font-size: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3rpx solid #FFFFFF;
+}
+
+.edit__avatar-tip {
+  margin-top: 16rpx;
+  font-size: 22rpx;
+  color: var(--ts-text-sub);
+}
+
+/* ===== 表单卡 ===== */
+.edit__card {
+  margin: 0 28rpx;
+  padding: 0 32rpx;
+  background: var(--ts-card);
+  border-radius: var(--ts-radius);
+  box-shadow: var(--ts-shadow);
+}
+
+.edit__field {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 28rpx 0;
+  border-bottom: 1rpx solid var(--ts-line-weak);
 }
-.edit__form-item--last {
+.edit__field--last {
   border-bottom: none;
 }
-.edit__form-label {
-  font-size: 28rpx;
-  color: var(--font-color);
-  font-weight: 600;
+
+.edit__field-label {
+  font-size: 26rpx;
+  font-weight: var(--font-weight-5);
+  color: var(--ts-text);
+  width: 140rpx;
   flex-shrink: 0;
-  width: 120rpx;
 }
-.edit__form-input {
+
+.edit__field-input-box {
   flex: 1;
-  font-size: 28rpx;
-  color: var(--font-color);
-  text-align: right;
-}
-
-/* 性别选择 */
-.edit__gender-group {
   display: flex;
-  gap: 16rpx;
+  align-items: center;
+  justify-content: flex-end;
 }
-.edit__gender-item {
-  padding: 8rpx 24rpx;
-  font-size: 24rpx;
-  border-radius: 99rpx;
-  background: var(--bg-base);
-  color: var(--font-color-sub);
-  border: 1rpx solid var(--border-color);
-}
-.edit__gender-item--active {
-  background: rgba(200, 109, 81, 0.12);
-  color: var(--color-primary);
-  border-color: var(--color-primary);
+.edit__field-input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  text-align: right;
+  font-size: 26rpx;
+  color: var(--ts-text);
 }
 
-/* 保存 */
-.edit__save-section {
-  padding: 48rpx 32rpx;
+/* 性别分段胶囊 */
+.edit__gender-seg {
+  display: flex;
+  gap: 12rpx;
+}
+.edit__gender-pill {
+  height: 64rpx;
+  padding: 0 28rpx;
+  border-radius: var(--ts-radius-pill);
+  background: var(--ts-bg);
+  color: var(--ts-text);
+  font-size: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1rpx solid transparent;
+}
+.edit__gender-pill--active {
+  background: var(--ts-tag-bg);
+  color: var(--ts-brand);
+  font-weight: var(--font-weight-6);
+  border-color: var(--ts-primary);
+}
+
+/* ===== 隐私安全提示 ===== */
+.edit__privacy {
+  margin: 24rpx 28rpx 0;
+  padding: 20rpx 24rpx;
+  background: var(--ts-tag-bg);
+  border-radius: 20rpx;
+  font-size: 22rpx;
+  color: var(--ts-brand);
+  line-height: 1.5;
+}
+
+/* ===== 底部固定保存栏 ===== */
+.edit__save-bar {
+  background: var(--ts-card);
+  border-top: 1rpx solid var(--ts-line);
+  padding: 16rpx 32rpx calc(16rpx + env(safe-area-inset-bottom));
 }
 .edit__save-btn {
-  padding: 24rpx 0;
+  height: 92rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  background: var(--ts-primary);
+  color: #FFFFFF;
   font-size: 28rpx;
-  font-weight: bold;
+  font-weight: var(--font-weight-5);
+  border-radius: var(--ts-radius-pill);
+  box-shadow: var(--ts-shadow-btn);
 }
-/* Banner 广告：左右间距由外层 view（p_h-32）承担，原生 ad 只加上下 margin */
-.page__ad {
-  margin: 0 0 24rpx;
+.edit__save-seal {
+  width: 10rpx;
+  height: 10rpx;
+  border-radius: 50%;
+  background: var(--ts-seal);
 }

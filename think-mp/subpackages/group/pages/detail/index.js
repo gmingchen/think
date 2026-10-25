@@ -92,7 +92,9 @@ Page({
 
   // ── 群内决策单列表页入口跳转（组件仅回抛点击，页面持有 grpId）──
   onDecisionListTap() {
-    wx.$navigateTo(decisionListUrl(DECISION_SCENE_ENUM.GROUP, `&grpId=${ this.data.grpId }`))
+    // 附群名供列表页导航标题「群名 · 决策单」（含中文/特殊字符需 encodeURIComponent）
+    const name = this.data.group && this.data.group.name ? `&grpName=${ encodeURIComponent(this.data.group.name) }` : ''
+    wx.$navigateTo(decisionListUrl(DECISION_SCENE_ENUM.GROUP, `&grpId=${ this.data.grpId }${ name }`))
   },
 
   // ── 邀请入群（弹窗显隐与申请码内聚于 invite-popup 组件）──

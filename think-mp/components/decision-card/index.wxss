@@ -1,4 +1,4 @@
-/* ===== decision-card：紧凑卡（我的列表，多状态） ===== */
+/* ===== decision-card：决策单列表卡（严格对齐 UI-决策单列表.html decision-card 规范） ===== */
 .decision-card {
   background: var(--ts-card);
   border-radius: var(--ts-radius);
@@ -7,8 +7,31 @@
   box-sizing: border-box;
 }
 
+/* 草稿态：虚线描边（UI draft-mode） */
+.decision-card--draft {
+  border: 2rpx dashed var(--ts-line-dash);
+}
+
 .decision-card__head {
-  margin-bottom: 20rpx;
+  margin-bottom: 16rpx;
+}
+
+.decision-card__head-left {
+  min-width: 0;
+}
+
+/* 倒计时（UI：11px 次文字，徽章右侧 gap 12rpx） */
+.decision-card__countdown {
+  margin-left: 12rpx;
+  font-size: 22rpx;
+  color: var(--ts-text-sub);
+}
+
+/* 草稿「仅自己可见」（UI：11px 品牌深蓝） */
+.decision-card__private {
+  margin-left: 12rpx;
+  font-size: 22rpx;
+  color: var(--ts-brand);
 }
 
 .decision-card__vis {
@@ -24,20 +47,54 @@
 }
 
 .decision-card__title {
-  font-size: 32rpx;
-  font-weight: 600;
+  font-size: 30rpx;
+  font-weight: var(--font-weight-6);
   color: var(--ts-text);
   line-height: 1.4;
   letter-spacing: 1rpx;
   margin-bottom: 12rpx;
 }
 
-.decision-card__foot {
+/* 摘要（UI card-summary：12px、0.85 透明度、两行截断） */
+.decision-card__summary {
+  font-size: 24rpx;
+  line-height: 1.5;
+  color: var(--ts-text);
+  opacity: 0.85;
+  margin-bottom: 20rpx;
+}
+
+/* 缩略图（UI thumb-grid：64px 方块、gap 6px、圆角 8px） */
+.decision-card__thumbs {
+  display: flex;
+  grid-gap: 12rpx;
+  gap: 12rpx;
+  margin-bottom: 20rpx;
+}
+
+.decision-card__thumb {
+  width: 128rpx;
+  height: 128rpx;
+  border-radius: 16rpx;
+  background: var(--ts-fill-thumb);
+}
+
+/* 草稿引导行（UI：11px 主蓝、两端对齐） */
+.decision-card__draft-hint {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin-top: 16rpx;
+  font-size: 22rpx;
+  color: var(--ts-primary);
+}
+
+.decision-card__foot {
+  margin-top: 12rpx;
 }
 
 .decision-card__progress-label {
-  font-size: 22rpx;
+  font-size: 20rpx;
   color: var(--ts-text-sub);
   margin-bottom: 8rpx;
 }
@@ -45,12 +102,12 @@
 .decision-card__track {
   height: 8rpx;
   background: var(--ts-tag-bg);
-  border-radius: 999rpx;
+  border-radius: var(--ts-radius-pill);
   overflow: hidden;
 }
 
 .decision-card__fill {
   height: 100%;
   background: var(--ts-primary);
-  border-radius: 999rpx;
+  border-radius: var(--ts-radius-pill);
 }

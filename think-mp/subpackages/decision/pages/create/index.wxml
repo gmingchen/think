@@ -82,6 +82,7 @@ module.exports.has = function (arr, id) {
             class="form__option-input"
             placeholder="选项 {{ index + 1 }}"
             value="{{ item }}"
+            maxlength="{{ OPTION_TEXT_MAX }}"
             data-index="{{ index }}"
             bindinput="onOptionInput"
           />
@@ -122,7 +123,7 @@ module.exports.has = function (arr, id) {
 
       <!-- 群内 → 选群 -->
       <block wx:if="{{ form.visibility === VISIBILITY_ENUM.GRP }}">
-        <view class="form__sub-label">选择目标群聊</view>
+        <view class="form__sub-label">选择目标群组</view>
         <view class="form__picker-box" bindtap="onOpenGrpPicker">
           <view class="form__picker-info">
             <text wx:if="{{ form.grpName }}" class="form__group-tag">已选</text>

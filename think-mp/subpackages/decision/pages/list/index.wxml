@@ -1,6 +1,9 @@
-<container title="{{ scene === DECISION_SCENE_ENUM.GROUP ? '群内决策单' : '我的决策单' }}" use-back use-scroll>
-  <!-- 一级宋体 Tab：mine（我发起的 / 我评议过的）、group（按状态） -->
-  <view class="dl__tabs font-serif" slot="header">
+<container title="{{ grpName ? grpName + ' · 决策单' : (scene === DECISION_SCENE_ENUM.GROUP ? '群内决策单' : '我的决策单') }}" use-back use-scroll>
+  <!-- 一级 Tab：group 为等分居中状态栏（single-tab-bar），mine 为左对齐宋体栏（mine-top-tabs） -->
+  <view
+    class="dl__tabs font-serif {{ scene === DECISION_SCENE_ENUM.GROUP ? 'dl__tabs--grp' : '' }}"
+    slot="header"
+  >
     <view
       class="dl__tab {{ tab === item.value ? 'dl__tab--active' : '' }}"
       wx:for="{{ tabs }}"
@@ -10,7 +13,7 @@
     >{{ item.label }}</view>
   </view>
 
-  <!-- 二级分段控制器（仅「我发起的」） -->
+  <!-- 二级分段控制器（仅「我发起的」；属筛选入口，空态下也必须保留，不能随内容开关隐藏） -->
   <view wx:if="{{ tab === DECISION_MINE_TAB_ENUM.CREATED }}" class="dl__segment">
     <view
       class="dl__segment-pill {{ activeStatus === item.value ? 'dl__segment-pill--active' : '' }}"
@@ -31,20 +34,27 @@
     <view wx:else class="dl__nomore">—— 三思笃行 ——</view>
   </view>
 
+  <!-- 空态（分场景文案，对齐 UI 屏幕 3） -->
   <view wx:else class="dl__empty">
     <view class="dl__empty-card">
-      <view class="dl__empty-icon font-serif">卷</view>
-      <view class="dl__empty-lead font-serif">暂无决策记录</view>
-      <block wx:if="{{ scene === DECISION_SCENE_ENUM.GROUP }}">
-        <view class="dl__empty-sub">群内该状态下还没有决策单</view>
-      </block>
-      <block wx:else>
-        <view class="dl__empty-sub">三思而后行，旁观者清。前往众思广场，为他人的两难留下你的三思洞见。</view>
-        <view class="dl__empty-btn" bindtap="onGoSquare">
-          <text>前往众思广场</text>
-          <text class="dl__empty-seal"></text>
-        </view>
-      </block>
+      <view class="dl__empty-icon"><iconfont name="file" size="{{ 120 }}" color="#C4C8D0" /></view>
+      <!-- 空态标题按场景分流（注释包裹 block 防止换行空白被保留成折行） -->
+      <view class="dl__empty-lead font-serif"><!--
+        --><block wx:if="{{ scene === DECISION_SCENE_ENUM.GROUP }}">暂无决策单</block><!--
+        --><block wx:elif="{{ tab === DECISION_MINE_TAB_ENUM.REVIEWED }}">暂无评议记录</block><!--
+        --><block wx:else>暂无决策记录</block><!--
+      --></view>
+      <view wx:if="{{ scene === DECISION_SCENE_ENUM.GROUP }}" class="dl__empty-sub">群内该状态下还没有决策单</view>
+      <view wx:elif="{{ tab === DECISION_MINE_TAB_ENUM.REVIEWED }}" class="dl__empty-sub">旁观者清，众人的清醒之见尤显珍贵。前往广场或群组留下您的三思洞见。</view>
+      <view wx:else class="dl__empty-sub">三思而后行，旁观者清。发起一份决策单，或前往众思广场，为他人的两难留下你的三思洞见。</view>
+      <view wx:if="{{ scene !== DECISION_SCENE_ENUM.GROUP && tab === DECISION_MINE_TAB_ENUM.CREATED }}" class="dl__empty-btn" bindtap="onCreateTap">
+        <text>发起决策单</text>
+        <text class="dl__empty-seal"></text>
+      </view>
+      <view wx:else class="dl__empty-btn" bindtap="onGoSquare">
+        <text>前往众思广场</text>
+        <text class="dl__empty-seal"></text>
+      </view>
     </view>
   </view>
 </container>

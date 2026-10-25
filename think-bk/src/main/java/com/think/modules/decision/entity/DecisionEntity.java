@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.think.common.po.BasePO;
-import com.think.core.mybatisplus.type.StringListTypeHandler;
+import com.think.core.mybatisplus.type.StringListJsonTypeHandler;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -39,14 +39,14 @@ public class DecisionEntity extends BasePO {
      */
     private String content;
     /**
-     * 备选方案数组，>=2项；发布后锁定。列为逗号分隔的 VARCHAR，由 StringListTypeHandler 编解码（与 images 同款）
+     * 备选方案数组，>=2项；发布后锁定。列为 JSON 数组字符串（如 ["选项一","选项二"]），由 StringListJsonTypeHandler 编解码（与 images 同款）
      */
-    @TableField(typeHandler = StringListTypeHandler.class)
+    @TableField(typeHandler = StringListJsonTypeHandler.class)
     private List<String> options;
     /**
-     * 决策单图片URL数组，最多3张（可选）；列为逗号分隔的 VARCHAR，由 StringListTypeHandler 编解码
+     * 决策单图片URL数组，最多3张（可选）；列为 JSON 数组字符串，由 StringListJsonTypeHandler 编解码
      */
-    @TableField(typeHandler = StringListTypeHandler.class)
+    @TableField(typeHandler = StringListJsonTypeHandler.class)
     private List<String> images;
     /**
      * 可见范围：1-仅自己(草稿) 2-群内 3-公开（VisibilityEnum）

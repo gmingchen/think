@@ -1,4 +1,4 @@
-<container use-navbar-left use-scroll use-footer>
+<container use-navbar-left use-scroll use-footer use-refresher="{{ true }}" refresher-triggered="{{ refreshing }}" bind:refresherrefresh="onPullRefresh">
   <view slot="navbar-left" class="square__nav-brand font-serif">众三思</view>
   <!-- 随机入口横幅（置于 header 插槽：固定不随列表滚动） -->
   <view class="square__banner" slot="header" bindtap="onRandomTap">
@@ -15,7 +15,7 @@
   <!-- 列表 -->
   <view wx:elif="{{ list.length }}">
     <view class="square__item" wx:for="{{ list }}" wx:key="id">
-      <review-card item="{{ item }}" bind:click="onCardTap" bind:review="onReviewFromCard" />
+      <review-card item="{{ item }}" bind:click="onCardTap" bind:review="onReviewFromCard" bind:report="onReportFromCard" />
     </view>
     <view wx:if="{{ list.length < page.total }}" class="square__more" bindtap="loadPageData">加载更多</view>
   </view>
@@ -35,7 +35,9 @@
   item="{{ viewItem }}"
   options="{{ viewOptions }}"
   bind:review="onReviewFromCard"
+  bind:change="onChangeTap"
   bind:close="onViewClose"
+  bind:report="onReportFromCard"
 />
 
 <!-- 填写评议表单弹窗（卡片选项、或上方内容弹窗选选项回抛 review 触发；van-popup 底部滑出） -->
@@ -46,4 +48,11 @@
   myContent=""
   bind:close="onReviewClose"
   bind:submit="onReviewSubmit"
+/>
+
+<report-popup
+  show="{{ showReport }}"
+  targetType="{{ 1 }}"
+  targetId="{{ reportTargetId }}"
+  bind:close="onReportClose"
 />

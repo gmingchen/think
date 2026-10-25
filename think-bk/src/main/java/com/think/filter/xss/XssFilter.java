@@ -38,7 +38,7 @@ public class XssFilter implements Filter {
     }
 
     /**
-     * 用 endsWith 而不是 equals：requestURI 带着 context-path（实际是 /dishes/wechat/notify），
+     * 用 endsWith 而不是 equals：requestURI 带着 context-path（实际是 /think/wechat/notify），
      * 换 context-path 时不该把排除规则一起改掉
      */
     private boolean isExcluded(HttpServletRequest request) {

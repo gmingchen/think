@@ -1,0 +1,42 @@
+<van-popup
+  show="{{ show }}"
+  position="bottom"
+  round
+  closeable
+  safe-area-inset-bottom
+  custom-style="max-height: 75vh; border-radius: 32rpx 32rpx 0 0;"
+  bind:close="onClose"
+>
+  <view class="report-popup">
+    <view class="report-popup__title font-serif">举报</view>
+
+    <!-- 理由单选 -->
+    <view class="report-popup__reasons">
+      <view
+        wx:for="{{ reasons }}"
+        wx:key="index"
+        class="report-popup__reason {{ activeIndex === index ? 'report-popup__reason--active' : '' }}"
+        data-index="{{ index }}"
+        bindtap="onSelectReason"
+      >
+        <view class="report-popup__radio"></view>
+        <text>{{ item }}</text>
+      </view>
+    </view>
+
+    <!-- 补充说明 -->
+    <textarea
+      class="report-popup__textarea"
+      placeholder="补充说明（选填）"
+      value="{{ detail }}"
+      bindinput="onDetailInput"
+      maxlength="255"
+      auto-height
+    />
+
+    <!-- 提交 -->
+    <view class="report-popup__btn {{ submitting ? 'report-popup__btn--disabled' : '' }}" bindtap="onSubmit">
+      {{ submitting ? '提交中…' : '提交举报' }}
+    </view>
+  </view>
+</van-popup>

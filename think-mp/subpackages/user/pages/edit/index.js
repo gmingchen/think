@@ -1,14 +1,12 @@
 import { storePageBehavior, fieldBehavior, sharePageBehavior } from '../../../../behaviors/index'
 import { userUpdateApi, uploadAvatar } from '../../../../apis/index'
 import { SEX_ENUM, SEX_LIST } from '../../../../common/enums/index'
-import { DEFAULT_AVATAR } from '../../../../common/constants/index'
 
 Page({
   behaviors: [storePageBehavior, fieldBehavior, sharePageBehavior],
   data: {
     nickname: '',
     avatar: '',
-    defaultAvatar: DEFAULT_AVATAR,
     sex: SEX_ENUM.UNKNOWN,
     SEX_LIST,
   },

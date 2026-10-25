@@ -1,30 +1,35 @@
 <container use-scroll title="隐私政策" use-back>
   <view class="privacy__content">
-    <text class="privacy__title">厨菜记隐私政策</text>
-    <text class="privacy__update-time">更新日期：2026年10月12日</text>
+    <text class="privacy__title font-serif">众三思隐私政策</text>
+    <text class="privacy__update-time">更新日期：2026年10月24日</text>
 
     <view class="privacy__section">
-      <text class="privacy__section-title">一、信息收集</text>
-      <text class="privacy__text">我们会收集您的微信昵称、头像，用于个人展示。您上传的菜谱、食材等信息仅用于为您提供服务。</text>
+      <text class="privacy__section-title">一、我们收集的信息</text>
+      <text class="privacy__text">为提供决策评议服务，我们会收集：微信授权信息（昵称、头像）用于身份展示；你创建的决策单内容（主题、选项、图片）与你提交的评议内容，用于生成并展示决策结果。</text>
     </view>
 
     <view class="privacy__section">
-      <text class="privacy__section-title">二、信息使用</text>
-      <text class="privacy__text">我们不会将您的个人信息出售给第三方，仅用于产品功能优化和服务改进。</text>
+      <text class="privacy__section-title">二、信息的使用</text>
+      <text class="privacy__text">你的个人信息仅用于实现登录、决策单展示、评议汇总等核心功能，以及优化产品体验，不会用于与服务无关的用途。</text>
     </view>
 
     <view class="privacy__section">
-      <text class="privacy__section-title">三、信息存储</text>
-      <text class="privacy__text">您的数据存储在安全的服务器中，我们会采取合理措施保护信息安全。</text>
+      <text class="privacy__section-title">三、信息的存储与保护</text>
+      <text class="privacy__text">你的数据存储于安全的服务器中，我们采取合理的安全措施，保护信息免遭未经授权的访问、泄露或篡改。</text>
     </view>
 
     <view class="privacy__section">
-      <text class="privacy__section-title">四、信息共享</text>
-      <text class="privacy__text">在您加入厨房成员时，您的昵称和头像会对厨房内其他成员可见。</text>
+      <text class="privacy__section-title">四、信息的共享与可见性</text>
+      <text class="privacy__text">众三思遵循「知情圈」原则：公开的决策单及其评议会在众思广场展示；设为群内可见的决策单，仅该群组成员可查阅，你的昵称与头像也仅对相应范围内的成员可见。除法律法规要求外，我们不会向第三方出售你的个人信息。</text>
     </view>
 
     <view class="privacy__section">
-      <text class="privacy__section-title">五、联系我们</text>
+      <text class="privacy__section-title">五、你的权利</text>
+      <text class="privacy__text">你可以在应用内查看、修改个人资料，以及删除自己创建的决策单。删除后相关内容将不再对外展示。</text>
+    </view>
+
+    <view class="privacy__section">
+      <text class="privacy__section-title">六、联系我们</text>
       <text class="privacy__text">如有隐私相关问题，请通过小程序内客服联系我们。</text>
     </view>
   </view>

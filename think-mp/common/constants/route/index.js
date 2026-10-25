@@ -12,19 +12,17 @@ export const ROUTE = {
   DECISION_DETAIL: '/subpackages/decision/pages/detail/index',
   DECISION_LIST: '/subpackages/decision/pages/list/index',
   DECISION_REPORT: '/subpackages/decision/pages/report/index',
-  DECISION_RECAP: '/subpackages/decision/pages/recap/index',
 
   // 群组分包
   GROUP_DETAIL: '/subpackages/group/pages/detail/index',
   GROUP_MEMBERS: '/subpackages/group/pages/members/index',
 
-  // 邀请分包
-  INVITE_LANDING: '/subpackages/invite/pages/landing/index',
+  // 邀请落地页（已从独立 invite 分包并入群组分包）
+  INVITE_LANDING: '/subpackages/group/pages/invite/index',
 
-  // 复用现有脚手架页（账号资料/关于/反馈）
+  // 复用现有脚手架页（账号资料/关于）
   USER_EDIT: '/subpackages/user/pages/edit/index',
   USER_ABOUT: '/subpackages/user/pages/about/index',
-  FEEDBACK: '/subpackages/feedback/pages/merchant/index',
 }
 
 // 决策单列表带 scene 参数
@@ -40,11 +38,6 @@ export const decisionDetailUrl = id => {
 // 决策单报告
 export const decisionReportUrl = id => {
   return `${ ROUTE.DECISION_REPORT }?id=${ id }`
-}
-
-// 决策单复盘
-export const decisionRecapUrl = id => {
-  return `${ ROUTE.DECISION_RECAP }?id=${ id }`
 }
 
 // 群详情

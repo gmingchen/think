@@ -1,5 +1,5 @@
 <view class="review-card" bindtap="onTap">
-  <!-- 头部：头像（左） + 昵称在上/时间在下（右）；评议中专用，无状态徽章 -->
+  <!-- 头部：头像（左） + 昵称在上/时间在下（右） + 举报（右上角） -->
   <view class="review-card__author f f_a_i-c">
     <image wx:if="{{ item.initiator.avatar }}" class="review-card__avatar" src="{{ item.initiator.avatar }}" mode="aspectFill" />
     <view wx:else class="review-card__avatar review-card__avatar--text">{{ avatarChar }}</view>
@@ -7,6 +7,7 @@
       <text class="review-card__name">{{ item.initiator.nickname || '匿名' }}</text>
       <text wx:if="{{ timeText }}" class="review-card__time">{{ timeText }}</text>
     </view>
+    <text class="review-card__report" catchtap="onReportTap">举报</text>
   </view>
 
   <!-- 标题（宋体品牌层） -->

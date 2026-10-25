@@ -3,67 +3,69 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 60rpx 0 48rpx;
+  padding: 80rpx 0 48rpx;
 }
 .about__logo-box {
   width: 160rpx;
   height: 160rpx;
-  background: var(--bg-card);
-  border: 4rpx dashed var(--color-primary);
+  background: var(--ts-card);
+  border: 4rpx dashed var(--ts-brand);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  box-shadow: 4rpx 8rpx 20rpx rgba(0,0,0,0.06);
+  box-shadow: var(--ts-shadow);
 }
 .about__logo-img {
   width: 100%;
   height: 100%;
 }
 .about__name {
-  font-size: 40rpx;
-  font-weight: bold;
-  color: var(--font-color);
-  margin-top: 24rpx;
+  font-size: 44rpx;
+  font-weight: var(--font-weight-6);
+  color: var(--ts-text);
+  letter-spacing: 4rpx;
+  margin-top: 28rpx;
   display: block;
 }
 .about__version {
   font-size: 24rpx;
-  color: var(--font-color-sub);
+  color: var(--ts-text-sub);
   margin-top: 8rpx;
   display: block;
 }
 .about__slogan {
   font-size: 24rpx;
-  color: var(--font-color-weak);
+  color: var(--ts-text-sub);
+  letter-spacing: 2rpx;
   margin-top: 12rpx;
   display: block;
 }
 
-/* 列表 */
+/* 协议列表卡片 */
 .about__list {
   margin: 0 32rpx;
   padding: 8rpx 32rpx;
+  background: var(--ts-card);
+  border-radius: var(--ts-radius);
+  box-shadow: var(--ts-shadow);
 }
 .about__item {
   padding: 32rpx 0;
-  border-bottom: var(--border-dashed);
+  border-bottom: 1rpx solid var(--ts-line-weak);
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-size: 28rpx;
-  color: var(--font-color);
+  color: var(--ts-text);
+}
+.about__item-main {
+  display: flex;
+  align-items: center;
+  grid-gap: 20rpx;
+  gap: 20rpx;
 }
 .about__item--last {
   border-bottom: none;
-}
-.about__arrow {
-  font-size: 32rpx;
-  color: var(--font-color-weak);
-}
-
-/* Banner 广告：左右间距由页面侧 p_h-32 包裹承担，原生 ad 只加上下 margin */
-.page__ad {
-  margin: 32rpx 0 24rpx;
 }

@@ -15,8 +15,10 @@
       <view class="decision-view__title font-serif">{{ title }}</view>
     </view>
 
-    <!-- 可滚动主体：决策内容（作者/标题/详情/图片/进度） -->
+    <!-- 可滚动主体：与卡片一致的决策内容（作者/标题/详情+展开收起/图片≤3/标签/进度+结束条件），展开超出时局部滚动 -->
     <scroll-view class="decision-view__body" scroll-y>
+      <!-- 内层包裹承载左右内边距：scroll-view 自身不留横向 padding，滚动条才能贴到弹窗边缘 -->
+      <view class="decision-view__body-inner">
       <view class="decision-view__author">
         <image wx:if="{{ item.initiator.avatar }}" class="decision-view__avatar" src="{{ item.initiator.avatar }}" mode="aspectFill" />
         <view wx:else class="decision-view__avatar decision-view__avatar--text">{{ avatarChar }}</view>
@@ -24,23 +26,35 @@
           <text class="decision-view__name">{{ item.initiator.nickname || '匿名' }}</text>
           <text wx:if="{{ timeText }}" class="decision-view__time">{{ timeText }}</text>
         </view>
+        <text class="decision-view__report" catchtap="onReport">举报</text>
       </view>
 
       <view class="decision-view__c-title font-serif">{{ item.title }}</view>
 
-      <view wx:if="{{ item.content || item.digest }}" class="decision-view__c-content">{{ item.content || item.digest }}</view>
+      <view wx:if="{{ item.digest || item.content }}" class="decision-view__content-wrap">
+        <view class="decision-view__c-content {{ expanded ? '' : 'e-2' }}">{{ item.digest || item.content }}</view>
+        <!-- 隐藏等宽不钳制克隆：仅用于测全文真实高度，判断是否溢出两行 -->
+        <view class="decision-view__c-content decision-view__measure" aria-hidden="true">{{ item.digest || item.content }}</view>
+        <view wx:if="{{ contentLong }}" class="decision-view__expand" catchtap="onToggleExpand">{{ expanded ? '收起' : '展开' }}</view>
+      </view>
 
       <view wx:if="{{ item.images && item.images.length }}" class="decision-view__images">
         <image
           wx:for="{{ item.images }}"
           wx:for-item="img"
           wx:key="index"
+          wx:if="{{ index < 3 }}"
           class="decision-view__img"
           src="{{ img }}"
           mode="aspectFill"
           data-url="{{ img }}"
           catchtap="onPreviewImage"
         />
+      </view>
+
+      <!-- 标签 -->
+      <view wx:if="{{ item.tags && item.tags.length }}" class="decision-view__tags">
+        <text wx:for="{{ item.tags }}" wx:for-item="tag" wx:key="index" class="decision-view__tag">{{ tag }}</text>
       </view>
 
       <view class="decision-view__foot">
@@ -52,10 +66,13 @@
         <view wx:if="{{ !countUnlimited }}" class="decision-view__track">
           <view class="decision-view__fill" style="width: {{ percent }}%;"></view>
         </view>
+        <!-- 结束条件：满员或到时，任一满足即结束 -->
+        <view wx:if="{{ endText }}" class="decision-view__end">⏳ {{ endText }}后结束</view>
+      </view>
       </view>
     </scroll-view>
 
-    <!-- 固定底部：仅选项按钮（点选项回抛 review，由上层弹评议表单） -->
+    <!-- 固定底部：选项按钮（点选项回抛 review，由上层弹评议表单）+「换一个」随机切下一条 -->
     <view class="decision-view__footer">
       <view class="decision-view__options">
         <view
@@ -65,6 +82,10 @@
           data-index="{{ index }}"
           bindtap="onOptionTap"
         >{{ item }}</view>
+      </view>
+      <view class="decision-view__shuffle" bindtap="onShuffle">
+        <iconfont name="change" size="{{ 28 }}" color="#9AA0AA" />
+        <text class="decision-view__shuffle-text">换一个</text>
       </view>
     </view>
   </view>

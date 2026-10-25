@@ -38,10 +38,28 @@ page {
   flex-shrink: 0;
 }
 
+/* 无头像回退：昵称首字圆形徒章 */
+.detail__avatar--text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ts-brand);
+  font-size: 28rpx;
+  font-weight: var(--font-weight-6);
+  line-height: 1;
+}
+
 .detail__nick {
   font-size: 26rpx;
   font-weight: var(--font-weight-6);
   color: var(--ts-text);
+}
+
+/* 昵称下方的发表时间（次要灰，小字） */
+.detail__time {
+  font-size: 22rpx;
+  color: var(--ts-text-sub);
+  margin-top: 4rpx;
 }
 
 .detail__ended {
@@ -99,19 +117,10 @@ page {
   margin-bottom: 24rpx;
 }
 
-/* 图片网格 */
+/* 图片区：布局/尺寸交给通用 previewer 组件（内部 grid + 136rpx 图块），宿主仅保留下外边距 */
 .detail__thumbs {
-  display: flex;
-  gap: 16rpx;
+  display: block;
   margin-bottom: 24rpx;
-}
-
-.detail__thumb {
-  flex: 1;
-  min-width: 0;
-  height: 144rpx;
-  border-radius: 16rpx;
-  background: var(--ts-fill-thumb);
 }
 
 /* 标签流 */
@@ -218,6 +227,36 @@ page {
   line-height: 1.6;
 }
 
+/* 现实结局（复盘只读卡） */
+.detail__recap-row {
+  display: flex;
+  align-items: baseline;
+  gap: 16rpx;
+  margin-bottom: 16rpx;
+}
+
+.detail__recap-k {
+  font-size: 24rpx;
+  color: var(--ts-text-sub);
+  flex-shrink: 0;
+}
+
+.detail__recap-v {
+  font-size: 28rpx;
+  font-weight: var(--font-weight-6);
+  color: var(--ts-brand);
+}
+
+.detail__recap-result {
+  font-size: 26rpx;
+  color: var(--ts-text);
+  line-height: 1.6;
+  text-align: justify;
+  background: var(--ts-fill);
+  border-radius: 16rpx;
+  padding: 20rpx 24rpx;
+}
+
 /* 他人评议 */
 .detail__review {
   padding: 24rpx 0;
@@ -241,6 +280,17 @@ page {
   border-radius: 50%;
   background: var(--ts-tag-bg);
   flex-shrink: 0;
+}
+
+/* 无头像回退：昵称首字圆形徒章 */
+.detail__review-avatar--text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ts-brand);
+  font-size: 24rpx;
+  font-weight: var(--font-weight-6);
+  line-height: 1;
 }
 
 .detail__review-nick {
@@ -321,33 +371,55 @@ page {
 .detail__actions {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 20rpx;
   margin-top: 16rpx;
 }
 
 .detail__action {
-  height: 84rpx;
+  height: 72rpx;
   padding: 0 32rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24rpx;
-  color: var(--ts-text-sub);
-  background: var(--ts-card);
-  border: 2rpx solid var(--ts-line);
+  gap: 12rpx;
+  font-size: 28rpx;
+  font-weight: var(--font-weight-5);
+  color: var(--ts-brand);
+  background: var(--ts-tag-bg);
   border-radius: var(--ts-radius-pill);
+}
+
+.detail__action:active {
+  opacity: .9;
 }
 
 .detail__action--primary {
   color: #FFFFFF;
   background: var(--ts-primary);
-  border-color: var(--ts-primary);
+  box-shadow: var(--ts-shadow-btn);
 }
 
 .detail__action--danger {
   color: var(--ts-seal);
   background: var(--ts-seal-bg);
-  border-color: transparent;
+}
+
+/* 主操作落款点：与项目各处主 CTA 同款朱红印章 */
+.detail__action-seal {
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
+  background: var(--ts-seal);
+  flex-shrink: 0;
+}
+
+/* 举报链接 */
+.detail__report {
+  text-align: right;
+  font-size: 22rpx;
+  color: var(--ts-text-sub);
+  padding: 20rpx 0 0;
 }
 
 /* 底部撰写评议 */

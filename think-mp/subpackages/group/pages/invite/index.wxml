@@ -1,0 +1,63 @@
+<wxs src="../../../../wxs/index.wxs" module="s" />
+<container>
+  <view class="iv">
+    <!-- 品牌冠部（三态共有） -->
+    <view class="iv__brand">
+      <text class="iv__brand-name font-serif">众 三 思</text>
+      <text class="iv__brand-slogan">集众人所见，众三思而后抉择</text>
+    </view>
+
+    <!-- 加载中 -->
+    <view wx:if="{{ state === 'loading' }}" class="iv__loading">加载中…</view>
+
+    <!-- 态1：待加入 -->
+    <view wx:elif="{{ state === 'joinable' }}" class="iv__card">
+      <view class="iv__inviter">
+        <image wx:if="{{ info.inviterAvatar }}" class="iv__inviter-avatar" src="{{ info.inviterAvatar }}" mode="aspectFill" />
+        <view wx:else class="iv__inviter-avatar iv__inviter-avatar--text">{{ s.first(info.inviterNickname) }}</view>
+        <view class="iv__inviter-text"><text class="iv__inviter-name">{{ info.inviterNickname || '好友' }}</text> 邀请你加入群组</view>
+      </view>
+
+      <view class="iv__group">
+        <view class="iv__group-avatar font-serif">{{ s.first(info.grpName) }}</view>
+        <view class="iv__group-title font-serif">{{ info.grpName }}</view>
+        <view class="iv__group-meta">已有 {{ info.memberCount || 0 }} 位在席成员 · 正在评议 {{ info.reviewingCount || 0 }} 个决策</view>
+      </view>
+
+      <view class="iv__privacy">🛡️ <text class="iv__privacy-strong">成员约定：</text>群内决策遵循知情圈闭环，加入后即可查阅群内决策并提交你的评议洞见。</view>
+
+      <view class="iv__btn {{ joining ? 'iv__btn--disabled' : '' }}" bindtap="onJoinTap">
+        <text>{{ joining ? '加入中…' : '加入群组' }}</text>
+        <text class="iv__seal-dot"></text>
+      </view>
+
+      <view class="iv__btn-ghost" bindtap="onBrowse">随便看看</view>
+    </view>
+
+    <!-- 态2：加入成功 -->
+    <view wx:elif="{{ state === 'success' }}" class="iv__card iv__card--center">
+      <view class="iv__seal iv__seal--ok">✓</view>
+      <view class="iv__h font-serif">已成功加入群组</view>
+      <view class="iv__ok-sub">「{{ info.grpName }}」</view>
+      <view class="iv__ok-tip">你已正式成为在席成员，群内专属决策现已开放评议权限。</view>
+      <view class="iv__btn" bindtap="onEnterGroup">
+        <text>进入群详情 · 查阅在评决策</text>
+        <text class="iv__seal-dot"></text>
+      </view>
+      <view class="iv__btn-ghost" bindtap="onBrowse">随便看看</view>
+    </view>
+
+    <!-- 态3：邀请失效 -->
+    <view wx:else class="iv__card iv__card--center">
+      <view class="iv__seal iv__seal--expired">✕</view>
+      <view class="iv__h font-serif">邀请已失效</view>
+      <view class="iv__exp-tip">该邀请链接已超过时效，或该群组已被发起人归档解散。</view>
+      <view class="iv__btn" bindtap="onGoSquare">
+        <text>去众思广场看看</text>
+        <text class="iv__seal-dot"></text>
+      </view>
+    </view>
+
+    <view class="iv__footer">建议仅供参考，最终决定权归你</view>
+  </view>
+</container>

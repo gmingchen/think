@@ -1,5 +1,5 @@
 import { storePageBehavior, paginationBehavior } from '../../behaviors/index'
-import { decisionPagePlazaApi, decisionRandomPlazaApi, reviewSubmitApi } from '../../apis/index'
+import { decisionPagePlazaApi, decisionRandomPlazaApi, decisionChangePlazaApi, reviewSubmitApi } from '../../apis/index'
 import { ROUTE, decisionDetailUrl } from '../../common/constants/index'
 
 Page({
@@ -7,6 +7,7 @@ Page({
   data: {
     ROUTE,
     loading: true,
+    refreshing: false,
     // 众思广场显式锁定每页 10 条（覆写共享 paginationBehavior 默认值，仅限本页）
     page: {
       current: 0,
@@ -22,6 +23,9 @@ Page({
     showView: false,
     viewItem: {},
     viewOptions: [],
+    // 举报弹层
+    showReport: false,
+    reportTargetId: null,
   },
 
   async onLoad() {
@@ -38,6 +42,13 @@ Page({
     const r = await decisionPagePlazaApi(params)
     this.pageDataHandler(r.data)
     this.setData({ loading: false })
+  },
+
+  // 下拉刷新
+  async onPullRefresh() {
+    this.setData({ refreshing: true, list: [], 'page.current': 1 })
+    await this.getPageData()
+    this.setData({ refreshing: false })
   },
 
   onCardTap(e) {
@@ -65,7 +76,7 @@ Page({
     this.reloadPageData()
   },
 
-  // 随机查看一条公开决策（换一面镜子照照别人）：先弹「去看看」内容弹窗，点其选项再弹评议表单
+  // 随机查看一条公开决策（换一面镜子照照别人）：横幅「去看看」首次触发，弹「去看看」内容弹窗
   async onRandomTap() {
     const r = await decisionRandomPlazaApi()
     if (r.data && r.data.id) {
@@ -78,11 +89,39 @@ Page({
       wx.$toast('暂无可看的公开决策')
     }
   },
+  // 弹窗内「换一个」：走专用接口，后端硬保证不与上一条重复；无可换时提示
+  async onChangeTap() {
+    // 防抖：连点时丢弃重叠请求，避免旧响应覆盖新内容
+    if (this._randomLoading) return
+    this._randomLoading = true
+    const excludeId = this.data.viewItem && this.data.viewItem.id
+    try {
+      const r = await decisionChangePlazaApi(excludeId ? { excludeId } : {})
+      if (r.data && r.data.id) {
+        this.setData({
+          viewItem: r.data,
+          viewOptions: r.data.options || [],
+        })
+      } else {
+        wx.$toast('暂时没有更多可换的了')
+      }
+    } finally {
+      this._randomLoading = false
+    }
+  },
   onViewClose() {
     this.setData({ showView: false })
   },
 
   onCreateTap() {
     wx.$navigateTo(ROUTE.DECISION_CREATE)
+  },
+
+  // 举报：卡片长按 / 随便看看弹窗内点击
+  onReportFromCard(e) {
+    this.setData({ showReport: true, reportTargetId: e.detail.id })
+  },
+  onReportClose() {
+    this.setData({ showReport: false })
   },
 })

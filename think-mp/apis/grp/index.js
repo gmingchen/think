@@ -35,6 +35,11 @@ export const grpJoinApi = params => {
   return service({ url: '/grp/join', method: 'POST', params })
 }
 
+// 邀请落地页信息（凭 code 查群/邀请人概览 + 成员/在评数；joinable=false 为失效态）
+export const grpInviteInfoApi = params => {
+  return service({ url: '/grp/inviteInfo', method: 'GET', params })
+}
+
 // 退出群
 export const grpLeaveApi = params => {
   return service({ url: '/grp/leave', method: 'POST', params })

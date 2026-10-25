@@ -9,7 +9,7 @@ service:
 database:
   ip: 47.103.87.88
   port: 3306
-  name: think_test
+  name: think
   username: root
   password: Gmc950830.
   installation-path:  # 数据库安装路径
