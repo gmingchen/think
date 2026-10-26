@@ -34,8 +34,8 @@ const TAG_MAX = 3
 const REVIEW_LIMIT_MIN = 1
 const REVIEW_LIMIT_MAX = 50
 const DEFAULT_REVIEW_LIMIT = 5
-// 评议时限：两段式（小时 0~24 + 分钟 0/15/30/45），单位分钟；0=不限。默认 24 小时
-const DEFAULT_COOL_DOWN_MINUTES = COOL_DOWN_MAX_MINUTES
+// 评议时限：两段式（小时 0~24 + 分钟 0/15/30/45），单位分钟；0=不限。默认 2 小时
+const DEFAULT_COOL_DOWN_MINUTES = 120
 // 默认可见范围：群内评议（草稿由 status 区分，不再提供「仅自己」选项）
 const DEFAULT_VISIBILITY = VISIBILITY_ENUM.GRP
 
@@ -174,7 +174,7 @@ Page({
       this.setData({ 'form.reviewLimit': DEFAULT_REVIEW_LIMIT }) // 关不限：回落默认
       return
     }
-    // 开不限：若时限已不限，先把时限回落默认 24 小时，保证不同时不限
+    // 开不限：若时限已不限，先把时限回落默认时长，保证不同时不限
     if (this.data.form.coolDownMinutes === COOL_DOWN_ENUM.UNLIMITED) {
       this._applyCoolDown(DEFAULT_COOL_DOWN_MINUTES)
       wx.$toast('评议时限与人数不能同时不限，已为时限设上限')
@@ -208,7 +208,7 @@ Page({
   onCoolDownUnlimited() {
     const cur = this.data.form.coolDownMinutes
     if (cur === COOL_DOWN_ENUM.UNLIMITED) {
-      this._applyCoolDown(DEFAULT_COOL_DOWN_MINUTES) // 关不限：回落默认 24 小时
+      this._applyCoolDown(DEFAULT_COOL_DOWN_MINUTES) // 关不限：回落默认时长
       return
     }
     // 开不限：若人数已不限，先把人数回落默认，保证不同时不限
