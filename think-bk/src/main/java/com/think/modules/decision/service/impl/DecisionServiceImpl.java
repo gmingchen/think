@@ -33,6 +33,7 @@ import com.think.modules.decision.model.vo.DecisionDetailVO;
 import com.think.modules.decision.model.vo.DecisionListItemVO;
 import com.think.modules.decision.model.vo.ReviewItemVO;
 import com.think.modules.decision.model.vo.UserStatsVO;
+import com.think.modules.decision.service.DecisionNotifyService;
 import com.think.modules.decision.service.DecisionService;
 import com.think.modules.grp.entity.GrpEntity;
 import com.think.modules.grp.mapper.GrpMapper;
@@ -100,6 +101,8 @@ public class DecisionServiceImpl extends ServiceImplX<DecisionMapper, DecisionEn
     private DecisionCheckMapper decisionCheckMapper;
     @Autowired
     private ReportService reportService;
+    @Autowired
+    private DecisionNotifyService decisionNotifyService;
     @Autowired
     private ReviewMapper reviewMapper;
     @Autowired
@@ -517,6 +520,8 @@ public class DecisionServiceImpl extends ServiceImplX<DecisionMapper, DecisionEn
         decision.setEndedEarly(1);
         baseMapper.updateById(decision);
         reportService.generate(decision.getId());
+        // 收口提醒放到事务提交后发：微信 HTTP 不占事务与行锁，发送失败也不该回滚已完成的结束
+        scheduleEndedRemind(decision.getId());
     }
 
     @Override
@@ -548,6 +553,23 @@ public class DecisionServiceImpl extends ServiceImplX<DecisionMapper, DecisionEn
     }
 
     // ================= 私有辅助 =================
+
+    /**
+     * 注册「事务提交后下发已截止提醒」同步器（与图片异步送审同一套路）：
+     * 当前无事务同步语境时直接发，保证被非事务调用方复用时行为不变。
+     */
+    private void scheduleEndedRemind(Long decisionId) {
+        if (!TransactionSynchronizationManager.isSynchronizationActive()) {
+            decisionNotifyService.remindEnded(decisionId);
+            return;
+        }
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
+                decisionNotifyService.remindEnded(decisionId);
+            }
+        });
+    }
 
     private void activate(DecisionEntity decision) {
         LocalDateTime now = LocalDateTime.now();

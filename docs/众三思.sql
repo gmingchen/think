@@ -12,14 +12,19 @@
 -- 维护约定：本文件是数据库 schema 的权威来源，随版本迭代始终保持最新最全；
 --          任何表结构变更（新增表/增删字段/调整索引/修改种子数据）必须同步更新本文件，
 --          保证其随时可独立执行、一次性完成建库。
+--          ⚠️ 本脚本是全量重建脚本（先 DROP 再 CREATE），只用于本地/新环境初始化，
+--             切勿对带真实数据的库执行；线上表结构变更只单独跑 ALTER 语句。
 -- =============================================================
 
 -- -------------------------------------------------------------
 -- 0. 删除表（置于顶部，令本脚本可重复执行：先清空旧表，再重建并灌种子数据）
 --    全表为逻辑外键、无物理 FOREIGN KEY，故删除/创建顺序不受约束限制；
 --    此处按「依赖倒序」排列（先删引用方，后删被引用方），仅为可读性。
+--    ⚠️ 新增表时必须同步补进本清单：media_check 曾因漏在此处登记，
+--       导致第二次执行卡在「table already exists」，现清单与建表段严格一一对应（共 18 张）。
 -- -------------------------------------------------------------
 DROP TABLE IF EXISTS `operation_log`;
+DROP TABLE IF EXISTS `media_check`;
 DROP TABLE IF EXISTS `review_check`;
 DROP TABLE IF EXISTS `decision_check`;
 DROP TABLE IF EXISTS `abuse_report`;
@@ -342,7 +347,7 @@ CREATE TABLE `review_check` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='评议文本审核流水表（公开/群内档）';
 
 -- -------------------------------------------------------------
--- 16+. media_check 多媒体内容审核流水表（图片/头像异步送审；每次送审一行）
+-- 17. media_check 多媒体内容审核流水表（图片/头像异步送审；每次送审一行）
 -- -------------------------------------------------------------
 CREATE TABLE `media_check` (
   `id`           BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID',
@@ -368,7 +373,7 @@ CREATE TABLE `media_check` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='多媒体内容审核流水表（图片/头像异步送审）';
 
 -- -------------------------------------------------------------
--- 17. operation_log 操作审计日志表（append-only，不随业务级联删除）
+-- 18. operation_log 操作审计日志表（append-only，不随业务级联删除）
 -- -------------------------------------------------------------
 CREATE TABLE `operation_log` (
   `id`         BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '日志ID',
@@ -404,6 +409,11 @@ INSERT INTO `tag` (`name`, `sort`, `status`) VALUES
 ('家庭', 9, 1),
 ('生活', 10, 1);
 
--- 订阅消息模板配置（template_id 上线后替换为实际申请的模板 ID）
+-- 订阅消息模板配置（微信后台「投票结束通知」模板）：
+-- ⚠️ template_id 必须与小程序端常量 DECISION_REMIND_TMPL_ID
+--    （think-mp/common/constants/decision/index.js）同值：
+--    前端授权用的 ID 经 /subscribe/sync 记进 subscribe 表，后端再按本行的 ID 扣配额发送，
+--    两处不一致 → consume 扣不到 → 到期提醒静默不发
+-- 关键词顺序固定：投票标题→thing1、结束时间→time2、温馨提示→thing3（详见 CoolDownEndTask）
 INSERT INTO `subscribe_template` (`type`, `template_id`, `remark`) VALUES
-('COOL_DOWN_END', 'TEMPLATE_ID_PLACEHOLDER', '评议时限到期提醒');
+('COOL_DOWN_END', 'wZjDvP-cW6DukURxbF7YZ0nOuf-ht95kLaMZz8YmNLM', '评议时限到期提醒');

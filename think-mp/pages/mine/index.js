@@ -14,13 +14,22 @@ Page({
     registerDays: '',
   },
 
-  async onLoad() {
-    this.bindStore({ fields: ['user', 'system', 'tabbar'] })
+  onLoad() {
+    this.bindStore({
+      fields: {
+        user: 'user',
+        system: 'system',
+        tabbar: 'tabbar',
+        // 加入天数依赖 store.user：wx.$onLogined 在 token 到达时就 resolve，
+        // 而用户信息是其后 getUser() 异步回填，一次性读会拿到空值。
+        // 声明为计算字段，由 mobx reaction 在 user 落地时自动重算，首次进入即可显示
+        registerDays: store => this._calcRegisterDays(store.user && store.user.createdAt),
+      },
+    })
   },
 
   async onShow() {
     await wx.$onLogined
-    this.setData({ registerDays: this._calcRegisterDays(this.data.user && this.data.user.createdAt) })
     this.getData()
   },
 

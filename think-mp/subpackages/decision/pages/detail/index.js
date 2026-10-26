@@ -20,6 +20,10 @@ import dayjs from 'dayjs'
 
 const STATUS = DECISION_STATUS_ENUM
 const CHECK = CHECK_STATUS_ENUM
+// 到期后补拉间隔（ms）：后端到期扫描每分钟第 0 秒跑一次，10s 一次能较快跟上
+const END_POLL_DELAY = 10000
+// 补拉次数上限：共约 70s（足够覆盖一个完整扫描周期），超过则停止，避免后端异常时无限轮询
+const END_POLL_MAX = 7
 const OTHER = -1 // 复盘最终选择「其他/暂缓」哨兵
 
 Page({
@@ -52,6 +56,7 @@ Page({
   async onLoad(options) {
     this.bindStore({ fields: ['user', 'system'] })
     await wx.$onLogined
+    this._endPollTries = 0
     this.setData({ id: options.id })
     await this.getData()
   },
@@ -128,6 +133,9 @@ Page({
       if (diff <= 0) {
         this.setData({ countdown: '评议时限已结束' })
         this._clearTimer()
+        // 收口由后端每分钟第 0 秒的到期扫描完成，归零瞬间状态大概率仍是「评议中」，
+        // 不补拉就会长时间出现「时限已结束 + 评议中」的矛盾展示
+        this._pollUntilEnded()
         return
       }
       const d = Math.floor(diff / 86400)
@@ -140,10 +148,27 @@ Page({
     tick()
     this._timer = setInterval(tick, 1000)
   },
+
+  // 到期后有限轮询补拉：每 END_POLL_DELAY 拉一次，拉到状态不再是评议中即停；
+  // 最多 END_POLL_MAX 次（共约 70s，覆盖一个完整扫描周期）后放弃，避免后端异常时无限轮询
+  // 下一轮由 getData → _startCountdown → 仍到期归零 时再次进入本方法，形成自终止循环
+  _pollUntilEnded() {
+    if (this._endPollTimer || this._endPollTries >= END_POLL_MAX) return
+    this._endPollTimer = setTimeout(() => {
+      this._endPollTimer = null
+      if (this.data.data.status !== STATUS.REVIEWING) return
+      this._endPollTries += 1
+      this.getData()
+    }, END_POLL_DELAY)
+  },
   _clearTimer() {
     if (this._timer) {
       clearInterval(this._timer)
       this._timer = null
+    }
+    if (this._endPollTimer) {
+      clearTimeout(this._endPollTimer)
+      this._endPollTimer = null
     }
   },
 

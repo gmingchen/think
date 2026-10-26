@@ -9,7 +9,6 @@
   width: 160rpx;
   height: 160rpx;
   background: var(--ts-card);
-  border: 4rpx dashed var(--ts-brand);
   border-radius: 50%;
   display: flex;
   align-items: center;

@@ -14,6 +14,7 @@ import com.think.exception.RunException;
 import com.think.modules.auth.model.LoginUser;
 import com.think.modules.decision.entity.DecisionEntity;
 import com.think.modules.decision.mapper.DecisionMapper;
+import com.think.modules.decision.service.DecisionNotifyService;
 import com.think.modules.grp.service.GrpMemberService;
 import com.think.modules.review.convert.ReviewConvert;
 import com.think.modules.review.entity.ReviewCheckEntity;
@@ -55,6 +56,8 @@ public class ReviewServiceImpl extends ServiceImplX<ReviewMapper, ReviewEntity> 
     private ReviewCheckMapper reviewCheckMapper;
     @Autowired
     private ReportService reportService;
+    @Autowired
+    private DecisionNotifyService decisionNotifyService;
     /**
      * 自身代理：submit（无事务，含同步审核）内跨方法调用 submitInTx 以开启事务
      */
@@ -105,7 +108,16 @@ public class ReviewServiceImpl extends ServiceImplX<ReviewMapper, ReviewEntity> 
         // 此时尚未落库、不占名额（与昵称/群名/复盘的拒绝口径一致）
         appletSecCheckService.checkText(dto.getContent(), loginUser.getOpenid(), AppletSecCheckService.SCENE_COMMENT);
         // 写库走事务：decision 行锁串行化「查已有/满员校验/插入/满员收口」
-        return self.submitInTx(dto, userId);
+        ReviewDTO review = self.submitInTx(dto, userId);
+        // 满员收口的通知必须在事务提交后再发（发送是外部 HTTP，不占行锁、失败不回滚评议）：
+        // 能走到这里说明提交瞬间仍为「评议中」（已截止的单会在 submitInTx 行锁内抛异常），
+        // 故此刻状态已变「已截止」必然是本次提交收的口。极端并发下（与到期扫描同时收口）
+        // 最坏只多发一条、多耗一次配额，不影响数据正确性
+        DecisionEntity ended = decisionMapper.selectById(dto.getDecisionId());
+        if (ended != null && DecisionStatusEnum.ENDED.getCode().equals(ended.getStatus())) {
+            decisionNotifyService.remindEnded(ended.getId());
+        }
+        return review;
     }
 
     /**

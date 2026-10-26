@@ -304,6 +304,8 @@ Page({
     if (err) return wx.$toast(err)
     this.setData({ saving: true })
     try {
+      // 先等订阅授权交互结束（允许/拒绝/关闭）再发创建请求，不并行
+      await this._requestRemind()
       const payload = this._buildPayload()
       if (this.data.id) {
         await decisionUpdateApi({ ...payload, id: this.data.id })
@@ -321,12 +323,14 @@ Page({
   // ── 发布 ──
   async onPublish() {
     if (this.data.saving) return
-    // 一次性订阅提醒必须先于 await 落在 tap 调用栈内，否则微信不弹窗（留空则不弹）
-    this._requestRemind()
+    // 校验前置且必须同步：_requestRemind 要落在 tap 调用栈内，前面不能出现 await
     const err = this._validate(true)
     if (err) return wx.$toast(err)
     this.setData({ saving: true })
     try {
+      // 串行等授权弹窗结束再建单：旧写法不 await 会让创建/发布请求与弹窗并行，
+      // 发布成功后的 redirectTo 在弹窗未关时切页，授权结果与 /subscribe/sync 都会丢
+      await this._requestRemind()
       const payload = this._buildPayload()
       let id = this.data.id
       if (id) {
@@ -346,7 +350,8 @@ Page({
     }
   },
 
-  // 评议时限到期/报告生成提醒订阅：授权一次=可发一次，accept 后 sync 累加配额；任何异常均不阻断发布
+  // 评议时限到期/报告生成提醒订阅：授权一次=可发一次，accept 后 sync 累加配额；
+  // 内部已吞掉所有异常（拒授权/模板未配/同步失败），不会打断调用方的建单主流程
   async _requestRemind() {
     if (!DECISION_REMIND_TMPL_ID) return
     try {
