@@ -23,6 +23,11 @@ Component({
       type: String,
       value: '',
     },
+    // 提交中（页面控制）：防连点/重复提交，提交中禁用按钮
+    submitting: {
+      type: Boolean,
+      value: false,
+    },
   },
   data: {
     OTHER,
@@ -50,6 +55,9 @@ Component({
       this.triggerEvent('close')
     },
     onSubmit() {
+      if (this.data.submitting) {
+        return
+      }
       const { selected, content } = this.data
       if (selected === null) {
         wx.$toast('请选择最终选择')

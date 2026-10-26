@@ -1,6 +1,7 @@
 package com.think.modules.user.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.think.common.constant.RedisConstant;
 import com.think.common.enums.MediaBizTypeEnum;
 import com.think.core.mybatisplus.service.ServiceImplX;
@@ -20,6 +21,7 @@ import com.think.modules.wechat.service.AppletSecCheckService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import com.think.core.redis.utils.RedisUtils;
@@ -71,19 +73,24 @@ public class UserServiceImpl extends ServiceImplX<UserMapper, UserEntity> implem
                 .setUnionid(dto.getUnionid())
                 .setNickname("决策者-" + LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant().getEpochSecond())
                 .setInviterId(dto.getInviterId());
-        baseMapper.insert(userEntity);
+        try {
+            baseMapper.insert(userEntity);
+        } catch (DuplicateKeyException e) {
+            // 并发首次登录双建档撞 uk_openid：以先落库者为准，重查返回既有用户，
+            // 避免后到请求登录失败（重试才成功）伤害首次体验
+            UserDTO existing = infoByOpenid(dto.getOpenid());
+            if (existing != null) {
+                return existing.getId();
+            }
+            throw e;
+        }
         Long userId = userEntity.getId();
-        // 邀请人计数 +1
+        // 邀请人计数 +1：SQL 原子自增，避免并发邀请下读改写丢失更新
         Long inviterId = dto.getInviterId();
         if (inviterId != null) {
-            UserEntity inviterEntity = getById(inviterId);
-            if (inviterEntity != null) {
-                int currentCount = inviterEntity.getInviteCount() != null ? inviterEntity.getInviteCount() : 0;
-                UserEntity updateEntity = new UserEntity()
-                        .setId(inviterId)
-                        .setInviteCount(currentCount + 1);
-                updateById(updateEntity);
-            }
+            baseMapper.update(null, new LambdaUpdateWrapper<UserEntity>()
+                    .eq(UserEntity::getId, inviterId)
+                    .setSql("invite_count = COALESCE(invite_count, 0) + 1"));
         }
         return userId;
     }

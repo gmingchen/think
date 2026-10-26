@@ -29,31 +29,3 @@ export const getValueByPath = (path, json) => {
   }
   return current
 }
-
-/**
- * 经纬度计算距离
- * @param {*} longitude 
- * @param {*} latitude 
- * @param {*} targetLongitude 
- * @param {*} targetLatitude 
- */
-export function calcDistance(longitude = 0, latitude = 0, targetLongitude = 0, targetLatitude = 0) {
-  var radiu = (latitude * Math.PI) / 180.0
-  var targetRadiu = (targetLatitude * Math.PI) / 180.0
-  var a = radiu - targetRadiu
-  var b = (longitude * Math.PI) / 180.0 - (targetLongitude * Math.PI) / 180.0
-  var r = 6378138
-  var distance =
-    r *
-    2 *
-    Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2) + Math.cos(radiu) * Math.cos(targetRadiu) * Math.pow(Math.sin(b / 2), 2)))
-  return distance
-}
-
-/**
- * 手机号脱敏
- * @param {*} mobile 
- */
-export function encryptMobile(mobile) {
-  return mobile.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2')
-}

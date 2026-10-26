@@ -187,7 +187,8 @@ CREATE TABLE `review` (
   `deleted_at`   DATETIME DEFAULT NULL COMMENT '删除时间',
   `deleted`      TINYINT  NOT NULL DEFAULT 0 COMMENT '是否删除：0-未删除 1-已删除',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_decision_user` (`decision_id`, `user_id`)
+  UNIQUE KEY `uk_decision_user` (`decision_id`, `user_id`),
+  KEY `idx_decision_created` (`decision_id`, `created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='评议表';
 
 -- -------------------------------------------------------------

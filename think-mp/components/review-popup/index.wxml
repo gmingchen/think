@@ -35,8 +35,8 @@
     />
 
     <!-- 提交 -->
-    <view class="review-popup__submit" bindtap="onSubmit">
-      <text>提交深思评议</text>
+    <view class="review-popup__submit {{ submitting ? 'review-popup__submit--disabled' : '' }}" bindtap="onSubmit">
+      <text>{{ submitting ? '提交中…' : '提交深思评议' }}</text>
       <view class="review-popup__seal"></view>
     </view>
   </view>

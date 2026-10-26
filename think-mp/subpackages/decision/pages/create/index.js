@@ -1,4 +1,4 @@
-import { storePageBehavior, fileBehavior } from '../../../../behaviors/index'
+import { storePageBehavior, fileBehavior, sharePageBehavior } from '../../../../behaviors/index'
 import {
   decisionCreateApi,
   decisionUpdateApi,
@@ -43,7 +43,7 @@ const DEFAULT_VISIBILITY = VISIBILITY_ENUM.GRP
 const UPLOAD_OPTIONS = { mediaTypes: ['image'], prefix: 'decision' }
 
 Page({
-  behaviors: [storePageBehavior, fileBehavior],
+  behaviors: [storePageBehavior, fileBehavior, sharePageBehavior],
   data: {
     id: null,
     loading: true,
@@ -299,6 +299,7 @@ Page({
 
   // ── 存草稿 ──
   async onSave() {
+    if (this.data.saving) return
     const err = this._validate(false)
     if (err) return wx.$toast(err)
     this.setData({ saving: true })
@@ -319,6 +320,7 @@ Page({
 
   // ── 发布 ──
   async onPublish() {
+    if (this.data.saving) return
     // 一次性订阅提醒必须先于 await 落在 tap 调用栈内，否则微信不弹窗（留空则不弹）
     this._requestRemind()
     const err = this._validate(true)

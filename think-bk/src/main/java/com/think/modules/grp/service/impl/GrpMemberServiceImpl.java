@@ -10,6 +10,7 @@ import com.think.modules.grp.mapper.GrpMemberMapper;
 import com.think.modules.grp.model.dto.GrpMemberDTO;
 import com.think.modules.grp.model.dto.GrpMemberPageDTO;
 import com.think.modules.grp.service.GrpMemberService;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -59,8 +60,15 @@ public class GrpMemberServiceImpl extends ServiceImplX<GrpMemberMapper, GrpMembe
             baseMapper.revive(grpId, userId, role);
             return;
         }
-        // 无行：新增
-        baseMapper.insert(new GrpMemberEntity().setGrpId(grpId).setUserId(userId).setRole(role));
+        // 无行：新增；并发同刻入群撞 uk_grp_user（含软删行占键）时回退到已存在分支，按幂等处理
+        try {
+            baseMapper.insert(new GrpMemberEntity().setGrpId(grpId).setUserId(userId).setRole(role));
+        } catch (DuplicateKeyException e) {
+            GrpMemberEntity winner = baseMapper.selectAny(grpId, userId);
+            if (winner != null && Boolean.TRUE.equals(winner.getDeleted())) {
+                baseMapper.revive(grpId, userId, role);
+            }
+        }
     }
 
     @Override

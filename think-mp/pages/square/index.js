@@ -1,9 +1,9 @@
-import { storePageBehavior, paginationBehavior } from '../../behaviors/index'
+import { storePageBehavior, paginationBehavior, sharePageBehavior } from '../../behaviors/index'
 import { decisionPagePlazaApi, decisionRandomPlazaApi, decisionChangePlazaApi, reviewSubmitApi } from '../../apis/index'
 import { ROUTE, decisionDetailUrl } from '../../common/constants/index'
 
 Page({
-  behaviors: [storePageBehavior, paginationBehavior('getData')],
+  behaviors: [storePageBehavior, paginationBehavior('getData'), sharePageBehavior],
   data: {
     ROUTE,
     loading: true,
@@ -16,6 +16,8 @@ Page({
     },
     // 填写评议表单弹窗（review-popup 底部滑出）：待评议决策单ID、选项数组、预选倾向下标
     showReview: false,
+    // 评议提交中（防连点重复提交，同步传 review-popup 禁用按钮）
+    submitting: false,
     reviewId: null,
     reviewOptions: [],
     reviewPreselect: -1,
@@ -69,11 +71,17 @@ Page({
     this.setData({ showReview: false })
   },
   async onReviewSubmit(e) {
+    if (this.data.submitting) return
+    this.setData({ submitting: true })
     const { option, content } = e.detail
-    await reviewSubmitApi({ decisionId: this.data.reviewId, option, content })
-    this.setData({ showReview: false, showView: false })
-    wx.$toast('评议已提交')
-    this.reloadPageData()
+    try {
+      await reviewSubmitApi({ decisionId: this.data.reviewId, option, content })
+      this.setData({ showReview: false, showView: false })
+      wx.$toast('评议已提交')
+      this.reloadPageData()
+    } finally {
+      this.setData({ submitting: false })
+    }
   },
 
   // 随机查看一条公开决策（换一面镜子照照别人）：横幅「去看看」首次触发，弹「去看看」内容弹窗

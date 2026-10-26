@@ -92,6 +92,12 @@
   opacity: 0.92;
 }
 
+/* 提交中禁用态：降透明并阻止按压反馈 */
+.review-popup__submit--disabled,
+.review-popup__submit--disabled:active {
+  opacity: 0.6;
+}
+
 .review-popup__seal {
   width: 12rpx;
   height: 12rpx;

@@ -1,4 +1,4 @@
-import { storePageBehavior, paginationBehavior } from '../../../../behaviors/index'
+import { storePageBehavior, paginationBehavior, sharePageBehavior } from '../../../../behaviors/index'
 import {
   decisionPageMineApi,
   decisionPageReviewedApi,
@@ -32,7 +32,7 @@ function withCountdown(list) {
 }
 
 Page({
-  behaviors: [storePageBehavior, paginationBehavior('getData')],
+  behaviors: [storePageBehavior, paginationBehavior('getData'), sharePageBehavior],
   data: {
     loading: true,
     scene: DECISION_SCENE_ENUM.MINE,

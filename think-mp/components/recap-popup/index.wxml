@@ -39,8 +39,8 @@
     />
 
     <!-- 提交 -->
-    <view class="recap-popup__submit" bindtap="onSubmit">
-      <text>完成复盘 · 封存档案</text>
+    <view class="recap-popup__submit {{ submitting ? 'recap-popup__submit--disabled' : '' }}" bindtap="onSubmit">
+      <text>{{ submitting ? '提交中…' : '完成复盘 · 封存档案' }}</text>
       <view class="recap-popup__seal"></view>
     </view>
   </view>

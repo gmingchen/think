@@ -214,11 +214,11 @@ module.exports.has = function (arr, id) {
     <view class="form__disclaimer">建议仅供参考，最终决定权归你</view>
   </view>
 
-  <!-- 底部操作 -->
+  <!-- 底部操作（saving 提交中两按钮同步禁用，防双击重复建档） -->
   <view slot="footer" class="form__actions">
-    <view class="form__btn form__btn--ghost" bindtap="onSave">存草稿</view>
-    <view class="form__btn form__btn--primary" bindtap="onPublish">
-      <text>发布评议</text>
+    <view class="form__btn form__btn--ghost {{ saving ? 'form__btn--disabled' : '' }}" bindtap="onSave">存草稿</view>
+    <view class="form__btn form__btn--primary {{ saving ? 'form__btn--disabled' : '' }}" bindtap="onPublish">
+      <text>{{ saving ? '提交中…' : '发布评议' }}</text>
       <view class="form__btn-seal"></view>
     </view>
   </view>

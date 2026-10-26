@@ -55,6 +55,7 @@ import com.think.modules.wechat.service.AppletSecCheckService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
@@ -111,6 +112,12 @@ public class DecisionServiceImpl extends ServiceImplX<DecisionMapper, DecisionEn
     private UserService userService;
     @Autowired
     private TagMapper tagMapper;
+    /**
+     * 自身代理：publish（无事务，含同步审核）内跨方法调用 publishInTx 以开启事务
+     */
+    @Autowired
+    @Lazy
+    private DecisionServiceImpl self;
 
     // ================= 读 =================
 
@@ -434,7 +441,6 @@ public class DecisionServiceImpl extends ServiceImplX<DecisionMapper, DecisionEn
     }
 
     @Override
-    @Transactional(rollbackFor = RunException.class)
     public void publish(DecisionPublishDTO dto) {
         LoginUser loginUser = requireLoginUser();
         DecisionEntity decision = validateExists(dto.getId());
@@ -451,22 +457,52 @@ public class DecisionServiceImpl extends ServiceImplX<DecisionMapper, DecisionEn
         }
         if (VisibilityEnum.GRP.getCode().equals(visibility)) {
             validateGrp(decision.getGrpId(), loginUser.getId(), decision.getReviewLimit());
-            publishWithCheck(decision, loginUser.getOpenid());
-            baseMapper.updateById(decision);
-            return;
-        }
-        if (VisibilityEnum.PUBLIC.getCode().equals(visibility)) {
+        } else if (VisibilityEnum.PUBLIC.getCode().equals(visibility)) {
             if (countUnlimited) {
                 throw new RunException("公开档需设置评议人数上限（不超过100人）");
             }
             if (decision.getReviewLimit() > 100) {
                 throw new RunException("公开档评议人数上限不能超过100");
             }
-            publishWithCheck(decision, loginUser.getOpenid());
-            baseMapper.updateById(decision);
-            return;
+        } else {
+            throw new RunException("草稿仅自己可见，无需发布");
         }
-        throw new RunException("草稿仅自己可见，无需发布");
+        // 文本送审移出事务：不占用数据库连接等微信审核（标题+正文+选项合并送审）。
+        // 命中违规不抛出，转 REJECT 落库（决策单维持草稿态，可编辑后重新发布），与原口径一致
+        RunException reject = null;
+        try {
+            appletSecCheckService.checkText(buildCheckText(decision), loginUser.getOpenid(), AppletSecCheckService.SCENE_FORUM);
+        } catch (RunException e) {
+            reject = e;
+        }
+        self.publishInTx(dto.getId(), reject == null, reject == null ? "" : reject.getMessage(), loginUser.getOpenid());
+    }
+
+    /**
+     * 发布的写库事务（decision 行锁内执行，禁止直接调用）：行锁内复核状态，拦截送审期间
+     * 被并发发布/编辑的窗口；通过则激活并记 PASS，违规记 REJECT 且不激活；图片送审登记到事务提交后触发。
+     */
+    @Transactional(rollbackFor = RunException.class)
+    public void publishInTx(Long id, boolean pass, String rejectDetail, String openid) {
+        DecisionEntity decision = baseMapper.selectByIdForUpdate(id);
+        if (decision == null) {
+            throw new RunException("该决策单已被发起人删除或不存在");
+        }
+        if (!DecisionStatusEnum.DRAFT.getCode().equals(decision.getStatus())) {
+            throw new RunException("该决策单不可重复发布");
+        }
+        if (pass) {
+            decision.setCheckStatus(CheckStatusEnum.PASS.getCode());
+            activate(decision);
+            writeCheck(decision.getId(), ContentCheckResultEnum.PASS, "pass", "");
+            // 文本通过并已激活后，图片逐张异步送审（先放行、回调命中再摘除）。
+            // 登记到事务提交后再发，避免 mediaCheckAsync 的外部 HTTP 在事务内长时间占锁
+            scheduleImageChecks(decision, openid);
+        } else {
+            decision.setCheckStatus(CheckStatusEnum.REJECT.getCode());
+            writeCheck(decision.getId(), ContentCheckResultEnum.REJECT, "", rejectDetail);
+        }
+        baseMapper.updateById(decision);
     }
 
     @Override
@@ -579,26 +615,6 @@ public class DecisionServiceImpl extends ServiceImplX<DecisionMapper, DecisionEn
                 .setCheckStatus(result.getCode())
                 .setDetail(StringUtils.abbreviate(detail, 500))
                 .setCheckedAt(LocalDateTime.now()));
-    }
-
-    /**
-     * 发布送审闸门（公开/群内均需，仅自己草稿不走发布）：标题+正文+选项合并送审。
-     * 通过则激活并记 PASS；违规记 REJECT 且不激活（决策单维持草稿态，可编辑后重新发布）。
-     */
-    private void publishWithCheck(DecisionEntity decision, String openid) {
-        decision.setCheckStatus(CheckStatusEnum.PENDING.getCode());
-        try {
-            appletSecCheckService.checkText(buildCheckText(decision), openid, AppletSecCheckService.SCENE_FORUM);
-            decision.setCheckStatus(CheckStatusEnum.PASS.getCode());
-            activate(decision);
-            writeCheck(decision.getId(), ContentCheckResultEnum.PASS, "pass", "");
-            // 文本通过并已激活后，图片逐张异步送审（先放行、回调命中再摘除）。
-            // 登记到事务提交后再发，避免 mediaCheckAsync 的外部 HTTP 在发布事务内长时间占锁
-            scheduleImageChecks(decision, openid);
-        } catch (RunException e) {
-            decision.setCheckStatus(CheckStatusEnum.REJECT.getCode());
-            writeCheck(decision.getId(), ContentCheckResultEnum.REJECT, "", e.getMessage());
-        }
     }
 
     /**

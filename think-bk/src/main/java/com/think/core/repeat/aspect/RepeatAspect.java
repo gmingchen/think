@@ -52,16 +52,18 @@ public class RepeatAspect {
         }
 
         String finalParams = params;
-        boolean bool = redisUtils.get(key, String.class)
+        // setIfAbsent 原子判重：原 get+set 两步在并发下双双读到空、双双放行，防重窗口形同虚设。
+        // 未抢占到时再回读比对：同参数=重复提交拒绝；不同参数=新内容放行（保持原语义）
+        boolean acquired = Boolean.TRUE.equals(redisUtils.setIfAbsent(key, finalParams, repeat.value()));
+        if (acquired) {
+            return point.proceed();
+        }
+        boolean same = redisUtils.get(key, String.class)
                 .map(finalParams::equals)
                 .orElse(false);
-
-        if (bool) {
+        if (same) {
             throw new RunException(ResultCodeEnum.RESUBMIT);
         }
-
-        redisUtils.set(key, params, repeat.value());
-
         return point.proceed();
     }
 }

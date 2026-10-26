@@ -1,4 +1,4 @@
-import { storePageBehavior, paginationBehavior } from '../../../../behaviors/index'
+import { storePageBehavior, paginationBehavior, sharePageBehavior } from '../../../../behaviors/index'
 import {
   grpMembersPageApi,
   grpDetailApi,
@@ -11,7 +11,7 @@ import { inviteLandingUrl } from '../../../../common/constants/index'
 import dayjs from 'dayjs'
 
 Page({
-  behaviors: [storePageBehavior, paginationBehavior('getData')],
+  behaviors: [storePageBehavior, paginationBehavior('getData'), sharePageBehavior],
   data: {
     grpId: null,
     loading: true,

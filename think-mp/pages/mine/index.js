@@ -1,4 +1,4 @@
-import { storePageBehavior } from '../../behaviors/index'
+import { storePageBehavior, sharePageBehavior } from '../../behaviors/index'
 import { decisionStatsMineApi } from '../../apis/index'
 import { ROUTE, decisionListUrl } from '../../common/constants/index'
 import { DECISION_SCENE_ENUM, DECISION_MINE_TAB_ENUM, DECISION_STATUS_ENUM } from '../../common/enums/index'
@@ -7,7 +7,7 @@ import dayjs from 'dayjs'
 const DEFAULT_STATS = { createdCount: 0, reviewedCount: 0, receivedCount: 0 }
 
 Page({
-  behaviors: [storePageBehavior],
+  behaviors: [storePageBehavior, sharePageBehavior],
   data: {
     ROUTE,
     stats: { ...DEFAULT_STATS },

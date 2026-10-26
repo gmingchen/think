@@ -1,4 +1,4 @@
-import { storePageBehavior } from '../../../../behaviors/index'
+import { storePageBehavior, sharePageBehavior } from '../../../../behaviors/index'
 import {
   decisionDetailApi,
   decisionEndEarlyApi,
@@ -23,7 +23,7 @@ const CHECK = CHECK_STATUS_ENUM
 const OTHER = -1 // 复盘最终选择「其他/暂缓」哨兵
 
 Page({
-  behaviors: [storePageBehavior],
+  behaviors: [storePageBehavior, sharePageBehavior],
   data: {
     id: null,
     loading: true,
@@ -39,6 +39,8 @@ Page({
     STATUS,
     CHECK,
     showReview: false,
+    // 评议提交中（防连点重复提交，同步传 review-popup 禁用按钮）
+    submitting: false,
     showReport: false,
     pendingAction: null,
     // 复盘（仅发起人 + 已截止/已复盘）：拉取的复盘记录 + 最终选择回显文案 + 回填弹窗开关
@@ -153,11 +155,17 @@ Page({
     this.setData({ showReview: false })
   },
   async onReviewSubmit(e) {
+    if (this.data.submitting) return
+    this.setData({ submitting: true })
     const { option, content } = e.detail
-    await reviewSubmitApi({ decisionId: this.data.id, option, content })
-    this.setData({ showReview: false })
-    wx.$toast('评议已提交')
-    this.getData()
+    try {
+      await reviewSubmitApi({ decisionId: this.data.id, option, content })
+      this.setData({ showReview: false })
+      wx.$toast('评议已提交')
+      this.getData()
+    } finally {
+      this.setData({ submitting: false })
+    }
   },
 
   // ── 发起人管理动作 ──
@@ -175,11 +183,17 @@ Page({
     this.setData({ showRecap: false })
   },
   async onRecapSubmit(e) {
+    if (this.data.submitting) return
+    this.setData({ submitting: true })
     const { finalChoice, actualResult } = e.detail
-    await recapSaveApi({ decisionId: this.data.id, finalChoice, actualResult })
-    this.setData({ showRecap: false })
-    wx.$toast(this.data.recap ? '复盘已更新' : '复盘已记录')
-    this.getData()
+    try {
+      await recapSaveApi({ decisionId: this.data.id, finalChoice, actualResult })
+      this.setData({ showRecap: false })
+      wx.$toast(this.data.recap ? '复盘已更新' : '复盘已记录')
+      this.getData()
+    } finally {
+      this.setData({ submitting: false })
+    }
   },
   onEndEarly() {
     this._openConfirm('endEarly', '提前结束', '结束后将立即生成报告，确认提前结束评议？')

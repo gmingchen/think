@@ -1,8 +1,8 @@
-import { storePageBehavior } from '../../../../behaviors/index'
+import { storePageBehavior, sharePageBehavior } from '../../../../behaviors/index'
 import { decisionDetailApi } from '../../../../apis/index'
 
 Page({
-  behaviors: [storePageBehavior],
+  behaviors: [storePageBehavior, sharePageBehavior],
   data: {
     id: null,
     loading: true,

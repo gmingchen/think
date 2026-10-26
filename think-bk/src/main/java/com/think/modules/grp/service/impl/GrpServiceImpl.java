@@ -39,6 +39,7 @@ import com.think.modules.auth.model.LoginUser;
 import com.think.modules.wechat.service.AppletSecCheckService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -72,6 +73,12 @@ public class GrpServiceImpl extends ServiceImplX<GrpMapper, GrpEntity> implement
     private RedisUtils redisUtils;
     @Autowired
     private AppletSecCheckService appletSecCheckService;
+    /**
+     * 自身代理：create（无事务，含同步审核）内跨方法调用 createInTx 以开启事务
+     */
+    @Autowired
+    @Lazy
+    private GrpServiceImpl self;
 
     @Override
     public PageResult<GrpDetailVO> pageMy(GrpPageDTO dto) {
@@ -93,13 +100,21 @@ public class GrpServiceImpl extends ServiceImplX<GrpMapper, GrpEntity> implement
     }
 
     @Override
-    @Transactional(rollbackFor = RunException.class)
     public Long create(GrpCreateDTO dto) {
         Long userId = SecurityUtils.getLoginUserId();
-        // 群名称送审（scene=资料）：命中违规抛异常拒绝建群
+        // 群名称送审移出事务（scene=资料）：不占用数据库连接等微信审核；
+        // 命中违规抛异常拒绝建群，此时尚未落库
         LoginUser loginUser = SecurityUtils.getLoginUser();
         appletSecCheckService.checkText(dto.getName(),
                 loginUser == null ? null : loginUser.getOpenid(), AppletSecCheckService.SCENE_PROFILE);
+        return self.createInTx(dto, userId);
+    }
+
+    /**
+     * 建群的写库事务（禁止直接调用）：建群 + 群主入成员表两步原子落库
+     */
+    @Transactional(rollbackFor = RunException.class)
+    public Long createInTx(GrpCreateDTO dto, Long userId) {
         GrpEntity grp = new GrpEntity()
                 .setName(dto.getName())
                 .setAvatar(dto.getAvatar())

@@ -51,9 +51,15 @@ public class ReportServiceImpl extends ServiceImplX<ReportMapper, ReportEntity> 
     @Override
     @Transactional(rollbackFor = RunException.class)
     public ReportDTO generate(Long decisionId) {
-        DecisionEntity decision = decisionMapper.selectById(decisionId);
+        // 行锁串行化所有收口路径（满员提交/提前结束/到期扫描），杜绝并发生成撞 uk_decision 唯一键
+        DecisionEntity decision = decisionMapper.selectByIdForUpdate(decisionId);
         if (decision == null) {
             throw new RunException(ResultCodeEnum.NOT_EXIST);
+        }
+        // 幂等：已被其它路径收口且报告已存在，直接返回，避免重复统计覆盖已提交快照
+        ReportEntity report = selectByDecision(decisionId);
+        if (report != null && DecisionStatusEnum.ENDED.getCode().equals(decision.getStatus())) {
+            return ReportConvert.INSTANCE.convert(report);
         }
         // 票数快照：以全部备选项下标初始化为 0，按有效评议逐条累加
         Map<String, Integer> counts = new LinkedHashMap<>();
@@ -68,7 +74,6 @@ public class ReportServiceImpl extends ServiceImplX<ReportMapper, ReportEntity> 
         }
         int total = reviews.size();
 
-        ReportEntity report = selectByDecision(decisionId);
         boolean isNew = report == null;
         if (isNew) {
             report = new ReportEntity().setDecisionId(decisionId);

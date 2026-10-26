@@ -1,9 +1,9 @@
-import { storePageBehavior, paginationBehavior } from '../../behaviors/index'
+import { storePageBehavior, paginationBehavior, sharePageBehavior } from '../../behaviors/index'
 import { grpPageApi } from '../../apis/index'
 import { ROUTE, groupDetailUrl } from '../../common/constants/index'
 
 Page({
-  behaviors: [storePageBehavior, paginationBehavior('getData')],
+  behaviors: [storePageBehavior, paginationBehavior('getData'), sharePageBehavior],
   data: {
     ROUTE,
   },

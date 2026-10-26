@@ -12,6 +12,7 @@ import com.think.common.pojo.PageResult;
 import com.think.core.mybatisplus.utils.MyBatisUtils;
 import org.apache.ibatis.annotations.Param;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
@@ -100,6 +101,15 @@ public interface BaseMapperX<T> extends BaseMapper<T> {
             return null;
         }
         return list.get(0);
+    }
+
+    /**
+     * 按主键加行锁查询（悲观锁：串行化 check-then-act 竞态，逻辑删除自动过滤）
+     * @param id 主键
+     * @return 实体，不存在返回 null
+     */
+    default T selectByIdForUpdate(Serializable id) {
+        return selectOne(new QueryWrapper<T>().eq("id", id).last("FOR UPDATE"));
     }
 
 }

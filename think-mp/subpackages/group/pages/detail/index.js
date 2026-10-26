@@ -1,4 +1,4 @@
-import { storePageBehavior, paginationBehavior } from '../../../../behaviors/index'
+import { storePageBehavior, paginationBehavior, sharePageBehavior } from '../../../../behaviors/index'
 import {
   grpDetailApi,
   grpDissolveApi,
@@ -20,7 +20,7 @@ import {
 } from '../../../../common/constants/index'
 
 Page({
-  behaviors: [storePageBehavior, paginationBehavior('getData')],
+  behaviors: [storePageBehavior, paginationBehavior('getData'), sharePageBehavior],
   data: {
     grpId: null,
     loading: true,
@@ -30,6 +30,8 @@ Page({
     pendingAction: null,
     // 就地评议弹窗：当前待评议决策单ID、完整 item、选项数组、预选倾向下标
     showReview: false,
+    // 评议提交中（防连点重复提交，同步传 review-popup 禁用按钮）
+    submitting: false,
     reviewId: null,
     reviewItem: {},
     reviewOptions: [],
@@ -79,11 +81,17 @@ Page({
     this.setData({ showReview: false })
   },
   async onReviewSubmit(e) {
+    if (this.data.submitting) return
+    this.setData({ submitting: true })
     const { option, content } = e.detail
-    await reviewSubmitApi({ decisionId: this.data.reviewId, option, content })
-    this.setData({ showReview: false })
-    wx.$toast('评议已提交')
-    this.reloadPageData()
+    try {
+      await reviewSubmitApi({ decisionId: this.data.reviewId, option, content })
+      this.setData({ showReview: false })
+      wx.$toast('评议已提交')
+      this.reloadPageData()
+    } finally {
+      this.setData({ submitting: false })
+    }
   },
 
   onMembersTap() {

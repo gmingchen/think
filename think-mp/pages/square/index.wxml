@@ -46,6 +46,7 @@
   options="{{ reviewOptions }}"
   myOption="{{ reviewPreselect }}"
   myContent=""
+  submitting="{{ submitting }}"
   bind:close="onReviewClose"
   bind:submit="onReviewSubmit"
 />

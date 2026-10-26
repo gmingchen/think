@@ -415,6 +415,12 @@ page {
   opacity: .9;
 }
 
+/* 提交中禁用态：降透明并阻止按压反馈 */
+.form__btn--disabled,
+.form__btn--disabled:active {
+  opacity: .5;
+}
+
 .form__btn--ghost {
   color: var(--ts-brand);
   background: var(--ts-tag-bg);

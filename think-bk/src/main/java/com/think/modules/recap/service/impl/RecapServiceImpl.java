@@ -17,6 +17,7 @@ import com.think.modules.recap.model.dto.RecapSaveDTO;
 import com.think.modules.recap.service.RecapService;
 import com.think.modules.wechat.service.AppletSecCheckService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +36,12 @@ public class RecapServiceImpl extends ServiceImplX<RecapMapper, RecapEntity> imp
     private DecisionMapper decisionMapper;
     @Autowired
     private AppletSecCheckService appletSecCheckService;
+    /**
+     * 自身代理：save（无事务，含同步审核）内跨方法调用 saveInTx 以开启事务
+     */
+    @Autowired
+    @Lazy
+    private RecapServiceImpl self;
 
     @Override
     public RecapDTO infoByDecision(Long decisionId) {
@@ -46,7 +53,6 @@ public class RecapServiceImpl extends ServiceImplX<RecapMapper, RecapEntity> imp
     }
 
     @Override
-    @Transactional(rollbackFor = RunException.class)
     public RecapDTO save(RecapSaveDTO dto) {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         if (loginUser == null) {
@@ -71,8 +77,31 @@ public class RecapServiceImpl extends ServiceImplX<RecapMapper, RecapEntity> imp
                 throw new RunException("最终选择不合法");
             }
         }
-        // 实际结局文本送审（命中违规抛异常→本次回填回滚；空文本由 checkText 内部跳过）
+        // 实际结局文本送审移出事务：不占用数据库连接等微信审核；命中违规抛异常拒绝，
+        // 此时尚未落库（空文本由 checkText 内部跳过）
         appletSecCheckService.checkText(dto.getActualResult(), loginUser.getOpenid(), AppletSecCheckService.SCENE_SOCIAL);
+        // 写库走事务：decision 行锁串行化「查已有 → 插入/更新 → 置已复盘」
+        return self.saveInTx(dto, loginUser.getId());
+    }
+
+    /**
+     * 回填复盘的写库事务（decision 行锁内执行，禁止直接调用）：行锁内复核归属与状态，
+     * 拦截送审期间被并发处理的窗口；已有复盘改 UPDATE（一条有效），无则插入，
+     * 并发重复提交在锁内天然串行为 UPDATE，不再撞 uk_decision 唯一键。
+     */
+    @Transactional(rollbackFor = RunException.class)
+    public RecapDTO saveInTx(RecapSaveDTO dto, Long userId) {
+        DecisionEntity decision = decisionMapper.selectByIdForUpdate(dto.getDecisionId());
+        if (decision == null) {
+            throw new RunException(ResultCodeEnum.NOT_EXIST);
+        }
+        if (!decision.getUserId().equals(userId)) {
+            throw new RunException(ResultCodeEnum.NOT_ALLOWED);
+        }
+        if (!DecisionStatusEnum.ENDED.getCode().equals(decision.getStatus())
+                && !DecisionStatusEnum.RECAPTURED.getCode().equals(decision.getStatus())) {
+            throw new RunException("决策单尚未截止，暂不能复盘");
+        }
         RecapEntity existing = baseMapper.selectOne(new LambdaQueryWrapper<RecapEntity>()
                 .eq(RecapEntity::getDecisionId, dto.getDecisionId()));
         RecapEntity recap = existing != null ? existing : new RecapEntity().setDecisionId(dto.getDecisionId());

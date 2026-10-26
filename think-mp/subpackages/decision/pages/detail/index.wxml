@@ -135,6 +135,7 @@
   options="{{ data.options }}"
   myOption="{{ data.myReview ? data.myReview.option : -1 }}"
   myContent="{{ data.myReview ? data.myReview.content : '' }}"
+  submitting="{{ submitting }}"
   bind:close="onReviewClose"
   bind:submit="onReviewSubmit"
 />
@@ -153,6 +154,7 @@
   options="{{ data.options }}"
   choice="{{ recap ? recap.finalChoice : null }}"
   result="{{ recap ? recap.actualResult : '' }}"
+  submitting="{{ submitting }}"
   bind:close="onRecapClose"
   bind:submit="onRecapSubmit"
 />

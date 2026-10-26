@@ -1,9 +1,0 @@
-{
-  "name": "image-proxy",
-  "version": "1.0.0",
-  "description": "AI 封面生成中转云函数（混元 HY-Image-3.0，消耗小程序成长计划赠送的图像生成额度）",
-  "main": "index.js",
-  "dependencies": {
-    "wx-server-sdk": "~3.0.5-beta.1"
-  }
-}
