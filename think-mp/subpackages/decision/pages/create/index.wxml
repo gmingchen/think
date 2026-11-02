@@ -156,7 +156,7 @@ module.exports.has = function (arr, id) {
     <view class="form__card">
       <view class="form__title-row">
         <view class="form__card-title font-serif">结束规则<text class="form__req">*</text></view>
-        <text class="form__counter">{{ form.coolDownMinutes === COOL_DOWN_ENUM.UNLIMITED ? '满员即出具报告' : '到期或满员即出具报告' }}</text>
+        <text class="form__counter">{{ form.coolDownMinutes === COOL_DOWN_ENUM.UNLIMITED ? '满员即出具报告' : (form.reviewLimit === REVIEW_LIMIT_ENUM.UNLIMITED ? '到期即出具报告' : '到期或满员即出具报告') }}</text>
       </view>
 
       <!-- 评议时限（两段式：小时 stepper + 分钟档，另「不限」开关；0=不限） -->
@@ -207,7 +207,8 @@ module.exports.has = function (arr, id) {
             </view>
           </view>
         </view>
-        <view class="form__limit-sub">{{ form.visibility === VISIBILITY_ENUM.PUBLIC ? '公开档上限 50 人' : '不超过受邀评议人数' }}；满员自动截止并出具报告</view>
+        <view wx:if="{{ form.reviewLimit === REVIEW_LIMIT_ENUM.UNLIMITED }}" class="form__limit-sub">不限人数，按时限截止或手动结束</view>
+        <view wx:else class="form__limit-sub">{{ form.visibility === VISIBILITY_ENUM.PUBLIC ? '公开档上限 ' + PUBLIC_REVIEW_LIMIT_MAX + ' 人' : (form.grpMemberCount > 0 ? '不超过当前群成员数 ' + form.grpMemberCount + ' 人' : '不超过受邀评议人数') }}；满员自动截止并出具报告</view>
       </view>
     </view>
 

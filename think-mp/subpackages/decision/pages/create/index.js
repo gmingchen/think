@@ -30,9 +30,10 @@ const OPTION_MAX = 6
 const OPTION_TEXT_MAX = 10
 const IMAGE_MAX = 3
 const TAG_MAX = 3
-// 评议人数上限：stepper 逐数（1~50，支持点击输入），0=不限（另由「不限」开关切换）
+// 评议人数上限：stepper 逐数（群内 ≤50、公开档 ≤100，支持点击输入），0=不限（另由「不限」开关切换）
 const REVIEW_LIMIT_MIN = 1
 const REVIEW_LIMIT_MAX = 50
+const PUBLIC_REVIEW_LIMIT_MAX = 100
 const DEFAULT_REVIEW_LIMIT = 5
 // 评议时限：两段式（小时 0~24 + 分钟 0/15/30/45），单位分钟；0=不限。默认 2 小时
 const DEFAULT_COOL_DOWN_MINUTES = 120
@@ -54,6 +55,7 @@ Page({
     OPTION_TEXT_MAX,
     IMAGE_MAX,
     TAG_MAX,
+    PUBLIC_REVIEW_LIMIT_MAX,
     form: {
       title: '',
       content: '',
@@ -62,6 +64,8 @@ Page({
       visibility: DEFAULT_VISIBILITY,
       grpId: null,
       grpName: '',
+      // 所选群当前成员数（群内档人数上限随其夹取；未选群/非群内档为 0）
+      grpMemberCount: 0,
       coolDownMinutes: DEFAULT_COOL_DOWN_MINUTES,
       reviewLimit: DEFAULT_REVIEW_LIMIT,
       tagIds: [],
@@ -114,6 +118,7 @@ Page({
           visibility: d.visibility || DEFAULT_VISIBILITY,
           grpId: d.grpId || null,
           grpName: '',
+          grpMemberCount: d.grpMemberCount || 0,
           coolDownMinutes: cdMin,
           reviewLimit: d.reviewLimit ?? DEFAULT_REVIEW_LIMIT,
           tagIds,
@@ -166,7 +171,8 @@ Page({
   onReviewLimitPlus() {
     const cur = this.data.form.reviewLimit
     const base = cur <= REVIEW_LIMIT_ENUM.UNLIMITED ? REVIEW_LIMIT_MIN - 1 : cur
-    this.setData({ 'form.reviewLimit': base + 1 > REVIEW_LIMIT_MAX ? REVIEW_LIMIT_MAX : base + 1 })
+    const max = this._reviewLimitMax()
+    this.setData({ 'form.reviewLimit': base + 1 > max ? max : base + 1 })
   },
   onReviewLimitUnlimited() {
     const cur = this.data.form.reviewLimit
@@ -181,11 +187,18 @@ Page({
     }
     this.setData({ 'form.reviewLimit': REVIEW_LIMIT_ENUM.UNLIMITED })
   },
-  // 点击数字直接输入：失焦夹取到 1~50（非法/空回落最小值）
+  // 点击数字直接输入：失焦夹取到 1~档位上限（非法/空回落最小值）
   onReviewLimitBlur(e) {
     const n = parseInt(e.detail.value, 10)
-    const clamped = isNaN(n) ? REVIEW_LIMIT_MIN : Math.min(REVIEW_LIMIT_MAX, Math.max(REVIEW_LIMIT_MIN, n))
+    const max = this._reviewLimitMax()
+    const clamped = isNaN(n) ? REVIEW_LIMIT_MIN : Math.min(max, Math.max(REVIEW_LIMIT_MIN, n))
     this.setData({ 'form.reviewLimit': clamped })
+  },
+  // 人数上限随档位变化：公开档 ≤100（后端封顶），群内档 ≤ 所选群成员数（未选群回落固定上限）
+  _reviewLimitMax() {
+    if (this.data.form.visibility === VISIBILITY_ENUM.PUBLIC) return PUBLIC_REVIEW_LIMIT_MAX
+    const cnt = this.data.form.grpMemberCount
+    return cnt > 0 ? cnt : REVIEW_LIMIT_MAX
   },
 
   // ── 评议时限：两段式（小时 ± + 分钟档），form.coolDownMinutes 为唯一真值 ──
@@ -226,10 +239,15 @@ Page({
     if (value !== VISIBILITY_ENUM.GRP) {
       patch['form.grpId'] = null
       patch['form.grpName'] = ''
+      patch['form.grpMemberCount'] = 0
     }
     if (value !== VISIBILITY_ENUM.PUBLIC) {
       patch['form.tagIds'] = []
     }
+    // 档位切换后人数回落夹取（公开 100 ↔ 群内 群成员数），不限(0)不受影响
+    const max = value === VISIBILITY_ENUM.PUBLIC ? PUBLIC_REVIEW_LIMIT_MAX : REVIEW_LIMIT_MAX
+    const limit = this.data.form.reviewLimit
+    if (limit > 0 && limit > max) patch['form.reviewLimit'] = max
     this.setData(patch)
   },
 
@@ -256,8 +274,12 @@ Page({
     this.selectComponent('#grpPicker').open()
   },
   onGrpSelect(e) {
-    const { id, name } = e.detail
-    this.setData({ 'form.grpId': id, 'form.grpName': name })
+    const { id, name, memberCount } = e.detail
+    const patch = { 'form.grpId': id, 'form.grpName': name, 'form.grpMemberCount': memberCount || 0 }
+    // 选群后人数上限回落夹取到群成员数（不限 0 不受影响）
+    const limit = this.data.form.reviewLimit
+    if (limit > 0 && memberCount > 0 && limit > memberCount) patch['form.reviewLimit'] = memberCount
+    this.setData(patch)
   },
 
   // ── 校验 ──
@@ -274,10 +296,6 @@ Page({
     if (publish) {
       if (form.visibility === VISIBILITY_ENUM.SELF) return '仅自己可见无法发布，请选择群内或公开'
       if (form.visibility === VISIBILITY_ENUM.GRP && !form.grpId) return '请选择目标群组'
-      // 公开档另需人数上限（后端 ≤100 封顶）
-      if (form.visibility === VISIBILITY_ENUM.PUBLIC && form.reviewLimit === REVIEW_LIMIT_ENUM.UNLIMITED) {
-        return '公开档请设置评议人数上限'
-      }
     }
     return null
   },

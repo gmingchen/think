@@ -310,6 +310,9 @@ public class DecisionServiceImpl extends ServiceImplX<DecisionMapper, DecisionEn
                 .setTags(loadTagNames(id))
                 .setVisibility(decision.getVisibility())
                 .setGrpId(decision.getGrpId())
+                // 群内档带回实时成员数，供前端人数上限随群成员数夹取（编辑回显同用）
+                .setGrpMemberCount(VisibilityEnum.GRP.getCode().equals(visibility)
+                        ? grpMemberService.countByGrp(decision.getGrpId()) : null)
                 .setCoolDownMinutes(decision.getCoolDownMinutes())
                 .setCoolDownEndAt(decision.getCoolDownEndAt())
                 .setReviewLimit(decision.getReviewLimit())
@@ -461,9 +464,7 @@ public class DecisionServiceImpl extends ServiceImplX<DecisionMapper, DecisionEn
         if (VisibilityEnum.GRP.getCode().equals(visibility)) {
             validateGrp(decision.getGrpId(), loginUser.getId(), decision.getReviewLimit());
         } else if (VisibilityEnum.PUBLIC.getCode().equals(visibility)) {
-            if (countUnlimited) {
-                throw new RunException("公开档需设置评议人数上限（不超过100人）");
-            }
+            // 公开档人数不限=靠时限到期或手动结束收口（双不限已在上方拦截），只保留上限封顶
             if (decision.getReviewLimit() > 100) {
                 throw new RunException("公开档评议人数上限不能超过100");
             }

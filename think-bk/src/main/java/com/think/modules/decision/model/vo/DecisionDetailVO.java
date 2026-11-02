@@ -57,6 +57,10 @@ public class DecisionDetailVO {
      */
     private Long grpId;
     /**
+     * 目标群当前成员数（仅群内档返回，供人数上限随群成员数夹取）
+     */
+    private Integer grpMemberCount;
+    /**
      * 评议时限(分钟)：1~1440；0=不限
      */
     private Integer coolDownMinutes;

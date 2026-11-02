@@ -29,9 +29,9 @@ Component({
       this.close()
     },
     onSelect(e) {
-      const { id, name } = e.currentTarget.dataset
+      const { id, name, memberCount } = e.currentTarget.dataset
       this.close()
-      this.triggerEvent('select', { id, name })
+      this.triggerEvent('select', { id, name, memberCount: Number(memberCount) || 0 })
     },
   },
 })

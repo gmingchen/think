@@ -9,6 +9,7 @@
         wx:key="id"
         data-id="{{ item.id }}"
         data-name="{{ item.name }}"
+        data-member-count="{{ item.memberCount }}"
         bindtap="onSelect"
       >
         <text class="grp-picker__name">{{ item.name }}</text>
