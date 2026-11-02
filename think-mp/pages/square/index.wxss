@@ -2,6 +2,12 @@ page {
   background: var(--ts-bg);
 }
 
+/* 解开容器 body 的 overflow:hidden：它会作为“滚动容器”陷阱使 sticky 失效。
+   container 为 styleIsolation:shared，故页面样式可直接作用；仅限本页。 */
+.container__body {
+  overflow: visible !important;
+}
+
 /* navbar 左侧品牌（与三思首页一致） */
 .square__nav-brand {
   font-size: 40rpx;
@@ -10,13 +16,16 @@ page {
   font-weight: var(--font-weight-6);
 }
 
-/* 随机入口横幅 */
+/* 随机入口横幅：粘性布局，滚动时钉在 scroll-view 顶部（navbar 下方），卡片从其下方滚过 */
 .square__banner {
+  position: sticky;
+  top: 0rpx;
+  z-index: 5;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 20rpx;
-  margin: 24rpx 32rpx 0;
+  margin: 0rpx 32rpx 0;
   padding: 28rpx 32rpx;
   background: var(--ts-tag-bg);
   border-radius: var(--ts-radius);

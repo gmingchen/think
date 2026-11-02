@@ -26,8 +26,8 @@ const TITLE_MAX = 30
 const CONTENT_MAX = 1000
 const OPTION_MIN = 2
 const OPTION_MAX = 6
-// 单个选项文案上限：10 字
-const OPTION_TEXT_MAX = 10
+// 单个选项文案上限：30 字
+const OPTION_TEXT_MAX = 30
 const IMAGE_MAX = 3
 const TAG_MAX = 3
 // 评议人数上限：stepper 逐数（群内 ≤50、公开档 ≤100，支持点击输入），0=不限（另由「不限」开关切换）
