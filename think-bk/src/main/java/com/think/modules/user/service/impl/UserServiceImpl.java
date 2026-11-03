@@ -66,6 +66,16 @@ public class UserServiceImpl extends ServiceImplX<UserMapper, UserEntity> implem
                 .orElse(null);
     }
 
+    // 锁定读（当前读）：绕过 RR 快照读最新已提交数据，专供撞唯一键后的兜底重查
+    private UserDTO currentReadByOpenid(String openid) {
+        LambdaQueryWrapper<UserEntity> wrapper = new LambdaQueryWrapper<UserEntity>()
+                .eq(UserEntity::getOpenid, openid)
+                .last("for update");
+        return Optional.ofNullable(baseMapper.selectOne(wrapper))
+                .map(UserConvert.INSTANCE::convert)
+                .orElse(null);
+    }
+
     @Override
     public Long create(UserCreateDTO dto) {
         UserEntity userEntity = new UserEntity()
@@ -76,9 +86,10 @@ public class UserServiceImpl extends ServiceImplX<UserMapper, UserEntity> implem
         try {
             baseMapper.insert(userEntity);
         } catch (DuplicateKeyException e) {
-            // 并发首次登录双建档撞 uk_openid：以先落库者为准，重查返回既有用户，
+            // 并发首次登录双建档撞 uk_openid：以先落库者为准。RR 隔离级下普通重查读的是本事务旧快照，
+            // 看不到胜者刚提交的行，必须用锁定读（当前读）拿最新已提交数据，
             // 避免后到请求登录失败（重试才成功）伤害首次体验
-            UserDTO existing = infoByOpenid(dto.getOpenid());
+            UserDTO existing = currentReadByOpenid(dto.getOpenid());
             if (existing != null) {
                 return existing.getId();
             }

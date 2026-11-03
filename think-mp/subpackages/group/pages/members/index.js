@@ -25,6 +25,12 @@ Page({
   async onLoad(options) {
     this.bindStore({ fields: ['user', 'system'] })
     await wx.$onLogined
+    // 入口缺参（爬虫/扫码等直开场景）：不带 undefined 发请求，提示后离开
+    if (!options.grpId) {
+      wx.$toast('参数缺失，无法打开')
+      wx.$navigateBack()
+      return
+    }
     this.setData({ grpId: options.grpId })
     await this.getGroupInfo()
     this.reloadPageData()
