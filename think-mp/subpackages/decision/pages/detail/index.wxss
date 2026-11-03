@@ -307,12 +307,14 @@ page {
 }
 
 .detail__review-opt {
+  /* 换行展示：与昵称左对齐（头像 56 + 间距 16） */
+  display: inline-block;
+  margin-bottom: 12rpx;
   font-size: 20rpx;
   color: var(--ts-brand);
   background: var(--ts-tag-bg);
   padding: 4rpx 14rpx;
   border-radius: var(--ts-radius-pill);
-  flex-shrink: 0;
 }
 
 .detail__review-content {

@@ -86,8 +86,8 @@
             <image wx:if="{{ item.user.avatar }}" class="detail__review-avatar" src="{{ item.user.avatar }}" mode="aspectFill" />
             <view wx:else class="detail__review-avatar detail__review-avatar--text">{{ s.first(item.user.nickname) }}</view>
             <text class="detail__review-nick">{{ item.user.nickname }}</text>
-            <text wx:if="{{ item.option >= 0 }}" class="detail__review-opt">倾向 · {{ data.options[item.option] }}</text>
           </view>
+          <text wx:if="{{ item.option >= 0 }}" class="detail__review-opt">倾向 · {{ data.options[item.option] }}</text>
           <view class="detail__review-content {{ item.content ? '' : 'detail__review-content--empty' }}">{{ item.content || noContentText }}</view>
         </view>
         <view wx:if="{{ !data.reviews.length }}" class="detail__reviews-empty">还没有其他人评议</view>
