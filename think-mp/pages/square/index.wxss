@@ -65,15 +65,20 @@ page {
 }
 
 .square__loading,
-.square__more {
+.square__loading-more {
   padding: 60rpx 0;
   text-align: center;
   font-size: 26rpx;
   color: var(--ts-text-sub);
 }
 
-.square__more {
-  color: var(--ts-brand);
+/* 已到底收尾提示 */
+.square__nomore {
+  padding: 32rpx 0;
+  text-align: center;
+  font-size: 22rpx;
+  color: var(--ts-text-sub);
+  letter-spacing: 2rpx;
 }
 
 /* 底部留白（tabbar 上方透气） */

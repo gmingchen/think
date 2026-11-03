@@ -1,4 +1,5 @@
 import { storePageBehavior, paginationBehavior, sharePageBehavior } from '../../behaviors/index'
+import { consumePreview } from '../../utils/index'
 import { decisionPagePlazaApi, decisionRandomPlazaApi, decisionChangePlazaApi, reviewSubmitApi } from '../../apis/index'
 import { ROUTE, decisionDetailUrl } from '../../common/constants/index'
 
@@ -37,6 +38,9 @@ Page({
   async onShow() {
     // 每次页面显示都重拉首页数据（首次进入 onLoad 仅 bindStore，避免重复请求）
     await wx.$onLogined
+    // 关闭图片预览也会触发本页 onShow（并非重新进入页面），这一次不重拉，
+    // 否则白请求一次接口还把列表重置回第一页，丢掉用户刚滑到的位置
+    if (consumePreview(this)) return
     this.reloadPageData()
   },
 

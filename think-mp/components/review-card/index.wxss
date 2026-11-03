@@ -177,16 +177,16 @@
   flex: 1 1 calc(50% - 8rpx);
   min-width: calc(50% - 8rpx);
   height: 68rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  /* 居中改为「固定行高 + 文本居中」：容器为 flex 时文本落在匿名 flex 项里，
+     text-overflow 不生效，长选项文案会被直接裁掉而不显示省略号 */
+  line-height: 68rpx;
+  text-align: center;
   padding: 0 20rpx;
   box-sizing: border-box;
   font-size: 26rpx;
   color: var(--ts-brand);
   background: var(--ts-tag-bg);
   border-radius: var(--ts-radius-pill);
-  line-height: 1;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

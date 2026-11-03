@@ -1,5 +1,6 @@
 import dayjs from 'dayjs'
 import { DECISION_STATUS_ENUM, decisionStatusList } from '../../common/enums/index'
+import { previewImage } from '../../utils/index'
 
 Component({
   properties: {
@@ -61,7 +62,7 @@ Component({
       const { url } = e.currentTarget.dataset
       const urls = this.data.item.images || []
       if (!urls.length) return
-      wx.previewImage({ current: url, urls })
+      previewImage({ current: url, urls })
     },
     onTap() {
       this.triggerEvent('click', { id: this.data.item.id })

@@ -1,5 +1,5 @@
 <wxs src="../../../../wxs/index.wxs" module="s" />
-<container title="决策详情" use-back use-scroll use-footer="{{ data.canReview }}">
+<container title="决策详情" use-back use-scroll use-footer="{{ data.canReview || canShare }}">
   <view class="detail">
     <!-- 决策主体卡 -->
     <view class="detail__card">
@@ -25,7 +25,7 @@
       <view class="detail__title font-serif">{{ data.title }}</view>
       <view class="detail__content">{{ data.content }}</view>
 
-      <!-- 图片：统一用通用 previewer 组件（内置点击预览 wx.previewMedia），尺寸/圆角与创建页 uploader 一致 -->
+      <!-- 图片：统一用通用 previewer 组件（内置点击预览，纯图片走 previewImage），尺寸/圆角与创建页 uploader 一致 -->
       <previewer
         wx:if="{{ data.images && data.images.length }}"
         class="detail__thumbs"
@@ -56,13 +56,15 @@
       <view wx:if="{{ !countUnlimited }}" class="detail__track"><view class="detail__fill" style="width: {{ percent }}%;"></view></view>
     </view>
 
-    <!-- 你会怎么选 -->
+    <!-- 你会怎么选（可评议时选项可点，点击直接弹评议表单并预选该项） -->
     <view class="detail__card">
       <view class="detail__section-title">你会怎么选</view>
       <view
         wx:for="{{ data.options }}"
         wx:key="index"
-        class="detail__option {{ data.myReview && data.myReview.option === index ? 'detail__option--mine' : '' }}"
+        class="detail__option {{ data.myReview && data.myReview.option === index ? 'detail__option--mine' : '' }} {{ data.canReview ? 'detail__option--tap' : '' }}"
+        data-index="{{ index }}"
+        bindtap="onOptionTap"
       >
         <text class="detail__option-text">{{ index + 1 }}. {{ item }}</text>
         <text wx:if="{{ data.myReview && data.myReview.option === index }}" class="detail__option-mine">你的倾向</text>
@@ -124,16 +126,23 @@
     <view wx:if="{{ !data.owner && data.visibility === 3 }}" class="detail__report" bindtap="onReportTap">举报此内容</view>
   </view>
 
-  <view wx:if="{{ data.canReview }}" slot="footer" class="detail__review-btn" bindtap="onReviewTap">
-    <text>{{ data.myReview ? '修改我的评议' : '撰写评议' }}</text>
-    <view class="detail__review-seal"></view>
+  <!-- 底部操作条：左侧小尺寸分享（仅公开档且已过审，其余档位后端拒绝非相关人访问）+ 右侧撰写评议（可评议时） -->
+  <view wx:if="{{ data.canReview || canShare }}" slot="footer" class="detail__footer">
+    <button wx:if="{{ canShare }}" class="detail__share-btn" open-type="share">
+      <iconfont name="share" size="{{ 24 }}" color="#3B5BA5" />
+      <text>分享</text>
+    </button>
+    <view wx:if="{{ data.canReview }}" class="detail__review-btn" bindtap="onReviewTap">
+      <text>{{ data.myReview ? '修改我的评议' : '撰写评议' }}</text>
+      <view class="detail__review-seal"></view>
+    </view>
   </view>
 </container>
 
 <review-popup
   show="{{ showReview }}"
   options="{{ data.options }}"
-  myOption="{{ data.myReview ? data.myReview.option : -1 }}"
+  myOption="{{ reviewPreselect }}"
   myContent="{{ data.myReview ? data.myReview.content : '' }}"
   submitting="{{ submitting }}"
   bind:close="onReviewClose"

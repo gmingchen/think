@@ -1,4 +1,4 @@
-<container use-navbar-left use-scroll use-footer use-refresher="{{ true }}" refresher-triggered="{{ refreshing }}" bind:refresherrefresh="onPullRefresh">
+<container use-navbar-left use-scroll use-footer use-refresher="{{ true }}" refresher-triggered="{{ refreshing }}" bind:refresherrefresh="onPullRefresh" bind:on-scroll-lower="loadPageData">
   <view slot="navbar-left" class="square__nav-brand font-serif">众三思</view>
   <!-- 随机入口横幅（置于 header 插槽：固定不随列表滚动） -->
   <view class="square__banner" bindtap="onRandomTap">
@@ -17,7 +17,9 @@
     <view class="square__item" wx:for="{{ list }}" wx:key="id">
       <review-card item="{{ item }}" bind:click="onCardTap" bind:review="onReviewFromCard" bind:report="onReportFromCard" />
     </view>
-    <view wx:if="{{ list.length < page.total }}" class="square__more" bindtap="loadPageData">加载更多</view>
+    <!-- 分页尾部：尚未加载完时显示加载中（保留点击可兜底：内容不足一屏时触底事件不触发），已到底则收尾提示 -->
+    <view wx:if="{{ list.length < page.total }}" class="square__loading-more" bindtap="loadPageData">加载中...</view>
+    <view wx:else class="square__nomore">— 三思笃行 —</view>
   </view>
 
   <!-- 缺省（空态）：引导发布决策单（页面私有组件，绝对定位撑满 body 居中） -->

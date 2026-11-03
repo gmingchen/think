@@ -11,8 +11,10 @@ import {
 import {
   DECISION_STATUS_ENUM,
   CHECK_STATUS_ENUM,
+  VISIBILITY_ENUM,
 } from '../../../../common/enums/index'
 import {
+  decisionDetailUrl,
   decisionReportUrl,
   ROUTE,
 } from '../../../../common/constants/index'
@@ -20,6 +22,7 @@ import dayjs from 'dayjs'
 
 const STATUS = DECISION_STATUS_ENUM
 const CHECK = CHECK_STATUS_ENUM
+const VISIBILITY = VISIBILITY_ENUM
 // 到期后补拉间隔（ms）：后端到期扫描每分钟第 0 秒跑一次，10s 一次能较快跟上
 const END_POLL_DELAY = 10000
 // 补拉次数上限：共约 70s（足够覆盖一个完整扫描周期），超过则停止，避免后端异常时无限轮询
@@ -43,6 +46,8 @@ Page({
     STATUS,
     CHECK,
     showReview: false,
+    // 评议表单预选倾向下标：底部按钮进入时取我的评议（未评则 -1），点「你会怎么选」选项时取该项下标
+    reviewPreselect: -1,
     // 评议提交中（防连点重复提交，同步传 review-popup 禁用按钮）
     submitting: false,
     showReport: false,
@@ -51,6 +56,8 @@ Page({
     recap: null,
     recapChoiceText: '',
     showRecap: false,
+    // 可分享：仅公开档且审核通过（群内/仅自己档后端会拒绝非群成员访问，未过审同理，分享了对方也打不开）
+    canShare: false,
   },
 
   async onLoad(options) {
@@ -97,6 +104,7 @@ Page({
       countUnlimited: !limit,
       percent: limit ? Math.min(100, Math.round((count / limit) * 100)) : 0,
       timeText: this._formatPublishTime(data.publishedAt || data.createdAt),
+      canShare: data.visibility === VISIBILITY.PUBLIC && data.checkStatus === CHECK.PASS,
       recap,
       recapChoiceText,
     })
@@ -174,7 +182,13 @@ Page({
 
   // ── 评议（禁自评/先评后看：canReview 才可撰写，提交后刷新可见他人观点） ──
   onReviewTap() {
-    this.setData({ showReview: true })
+    const { myReview } = this.data.data
+    this.setData({ showReview: true, reviewPreselect: myReview ? myReview.option : -1 })
+  },
+  // 选项卡直接选倾向：弹出同一评议表单并预选该项；不可评议（非评议中/发起人自评/满员）时不响应
+  onOptionTap(e) {
+    if (!this.data.data.canReview) return
+    this.setData({ showReview: true, reviewPreselect: Number(e.currentTarget.dataset.index) })
   },
   onReviewClose() {
     this.setData({ showReview: false })
@@ -257,5 +271,16 @@ Page({
   },
   onReportClose() {
     this.setData({ showReport: false })
+  },
+
+  // ── 分享：公开档且已过审时卡片直达本决策（携 inviterId 保留拉新归因），
+  //    其余场景回落到行为默认的首页分享，避免递出对方打不开的链接 ──
+  onShareAppMessage() {
+    const { canShare, data } = this.data
+    if (!canShare) return this._baseShare()
+    return this._baseShare({
+      title: `${ data.title }`,
+      path: decisionDetailUrl(this.data.id),
+    })
   },
 })

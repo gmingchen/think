@@ -227,3 +227,63 @@ export const showShareImageMenu = (options = {}) => {
     )
   })
 }
+
+/**
+ * 全屏预览拉开后会自动触发当前页的 onHide / onShow（并非真的重新进入页面），
+ * 在 onShow 里做自动刷新的列表页因此会在关掉预览时白白重拉一次接口。
+ * 只在 success（预览确实拉开了，后续必定跟一次伪 onShow）时打点，开启失败不会留脏标记；
+ * 标记只记在最上层页面实例上而不是模块全局变量，避开“预览后切页、目标页下一次 onShow 被误跳过”
+ */
+const markPreview = () => {
+  const pages = getCurrentPages()
+  const page = pages[pages.length - 1]
+  if (page) {
+    page._fromPreview = true
+  }
+}
+
+/**
+ * 认领一次“由关闭全屏预览触发的 onShow”，认领后自动复位
+ * @param {Object} page 页面实例（页面里传 this）
+ * @returns {Boolean} true 表示本次 onShow 来自关闭预览，页面应跳过自动刷新
+ */
+export const consumePreview = (page) => {
+  if (!page || !page._fromPreview) {
+    return false
+  }
+  page._fromPreview = false
+  return true
+}
+
+/**
+ * 图片预览（fire-and-forget：预览结果无需业务处理，不返回 Promise，调用方无需挂 catch）
+ * @param {Object} options { current, urls } 当前图地址与可左右滑看的全部地址
+ */
+export const previewImage = (options = {}) => {
+  const { success, ...rest } = options
+  wx.previewImage({
+    ...rest,
+    // 预览确实拉开了才会连带触发一次伪 onShow，故在 success 里打点，开启失败不留脏标记
+    success: res => {
+      markPreview()
+      if (success) success(res)
+    },
+    complete: r => print('previewImage', r),
+  })
+}
+
+/**
+ * 多媒体预览（含视频）
+ * @param {Object} options { current, sources } current 为资源下标，sources 每项需带可识别的 type
+ */
+export const previewMedia = (options = {}) => {
+  const { success, ...rest } = options
+  wx.previewMedia({
+    ...rest,
+    success: res => {
+      markPreview()
+      if (success) success(res)
+    },
+    complete: r => print('previewMedia', r),
+  })
+}

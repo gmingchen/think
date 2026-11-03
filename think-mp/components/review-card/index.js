@@ -1,4 +1,5 @@
 import dayjs from 'dayjs'
+import { previewImage } from '../../utils/index'
 
 Component({
   properties: {
@@ -72,7 +73,7 @@ Component({
       const { url } = e.currentTarget.dataset
       const urls = this.data.item.images || []
       if (!urls.length) return
-      wx.previewImage({ current: url, urls })
+      previewImage({ current: url, urls })
     },
     // 相对时间：刚刚 / N分钟前 / N小时前 / 昨天 HH:mm / N天前 / YYYY年M月D日
     _formatPublishTime(time) {

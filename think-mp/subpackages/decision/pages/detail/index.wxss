@@ -70,7 +70,7 @@ page {
 
 .detail__badges {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   gap: 12rpx;
   flex-shrink: 0;
 }
@@ -203,6 +203,11 @@ page {
 .detail__option--mine {
   border: 2rpx solid var(--ts-primary);
   background: var(--ts-fill-blue);
+}
+
+/* 可评议时选项可点：按压缩态提示 */
+.detail__option--tap:active {
+  opacity: .85;
 }
 
 .detail__option-text {
@@ -422,14 +427,24 @@ page {
   padding: 20rpx 0 0;
 }
 
+/* 底部操作条：外边距与安全区由此容器承担，分享按钮按内容贴左、评议按钮占满剩余宽度 */
+.detail__footer {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin: 16rpx 28rpx calc(16rpx + env(safe-area-inset-bottom));
+}
+
 /* 底部撰写评议 */
 .detail__review-btn {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 12rpx;
-  height: 92rpx;
-  margin: 16rpx 28rpx calc(16rpx + env(safe-area-inset-bottom));
+  flex: 1;
+  min-width: 0;
+  height: 72rpx;
+  margin: 0;
   font-size: 30rpx;
   font-weight: 500;
   color: #FFFFFF;
@@ -443,4 +458,30 @@ page {
   height: 12rpx;
   background: var(--ts-seal);
   border-radius: 50%;
+}
+
+/* 分享按钮：与撰写评议同排的小号胶囊，重置原生 button 默认宽度/描边/行高/外边距 */
+.detail__share-btn {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4rpx;
+  width: 200rpx !important;
+  height: 72rpx;
+  margin: 0;
+  padding: 0 16rpx;
+  font-size: 26rpx;
+  line-height: 1;
+  color: var(--ts-brand);
+  background: var(--ts-tag-bg);
+  border-radius: var(--ts-radius-pill);
+}
+
+.detail__share-btn::after {
+  border: none;
+}
+
+.detail__share-btn:active {
+  opacity: .9;
 }

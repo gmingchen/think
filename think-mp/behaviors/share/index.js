@@ -20,14 +20,18 @@ const getInviterId = () => store.user?.id || "";
 // 分享配置
 export const sharePageBehavior = Behavior({
   methods: {
-    _baseShare(params = {}) {
-      params.inviterId = getInviterId();
-      const query = parseJsonToUrlParam(params);
-      const path = `/pages/index/index?${query}`;
-      const title = params.title || getRandomTitle();
-      const imageUrl = params.imageUrl || "/common/images/share.jpg";
-      print("onShareAppMessage", { title, path, imageUrl });
-      return { title, path, imageUrl };
+    // 分享配置：path 可选，指定落地页（如决策详情分享直达该决策单），不传则落首页；
+    // 落地页已带查询串时用 & 续接，避免第二个 ? 使 inviterId 丢失；
+    // title / imageUrl 只作用于分享卡片，不进 query，以免用户标题里的 = & # 破坏参数解析
+    _baseShare(options = {}) {
+      const { title, imageUrl, path: target = "/pages/index/index", ...rest } = options;
+      rest.inviterId = getInviterId();
+      const query = parseJsonToUrlParam(rest);
+      const path = `${ target }${ target.includes("?") ? "&" : "?" }${ query }`;
+      const shareTitle = title || getRandomTitle();
+      const shareImageUrl = imageUrl || "/common/images/share.jpg";
+      print("onShareAppMessage", { title: shareTitle, path, imageUrl: shareImageUrl });
+      return { title: shareTitle, path, imageUrl: shareImageUrl };
     },
 
     // 分享给好友
