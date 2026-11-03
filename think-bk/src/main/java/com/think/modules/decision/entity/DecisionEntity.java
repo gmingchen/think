@@ -69,6 +69,10 @@ public class DecisionEntity extends BasePO {
      */
     private Integer reviewLimit;
     /**
+     * 评议观点是否必填：0-选填（只表倾向） 1-必填；创建时由发起人选定，提交评议时据此校验
+     */
+    private Integer requireContent;
+    /**
      * 状态：0-草稿 1-评议中 2-已截止 3-已复盘 4-已关闭（DecisionStatusEnum）
      */
     private Integer status;

@@ -87,6 +87,11 @@ public class DecisionServiceImpl extends ServiceImplX<DecisionMapper, DecisionEn
      */
     private static final String CHECK_PROVIDER = "wx";
 
+    /**
+     * 评议观点必填标记默认值：客户端未传（老版本）时保持与历史一致的「必填」
+     */
+    private static final int REQUIRE_CONTENT_DEFAULT = 1;
+
     @Autowired
     private GrpMemberService grpMemberService;
     @Autowired
@@ -316,6 +321,7 @@ public class DecisionServiceImpl extends ServiceImplX<DecisionMapper, DecisionEn
                 .setCoolDownMinutes(decision.getCoolDownMinutes())
                 .setCoolDownEndAt(decision.getCoolDownEndAt())
                 .setReviewLimit(decision.getReviewLimit())
+                .setRequireContent(decision.getRequireContent())
                 .setStatus(decision.getStatus())
                 .setCheckStatus(decision.getCheckStatus())
                 .setEndedEarly(decision.getEndedEarly())
@@ -417,6 +423,7 @@ public class DecisionServiceImpl extends ServiceImplX<DecisionMapper, DecisionEn
                 .setGrpId(dto.getGrpId())
                 .setCoolDownMinutes(dto.getCoolDownMinutes())
                 .setReviewLimit(dto.getReviewLimit())
+                .setRequireContent(dto.getRequireContent() == null ? REQUIRE_CONTENT_DEFAULT : dto.getRequireContent())
                 .setStatus(DecisionStatusEnum.DRAFT.getCode())
                 .setCheckStatus(CheckStatusEnum.NONE.getCode())
                 .setEndedEarly(0)
@@ -441,7 +448,8 @@ public class DecisionServiceImpl extends ServiceImplX<DecisionMapper, DecisionEn
                 .setVisibility(dto.getVisibility())
                 .setGrpId(dto.getGrpId())
                 .setCoolDownMinutes(dto.getCoolDownMinutes())
-                .setReviewLimit(dto.getReviewLimit());
+                .setReviewLimit(dto.getReviewLimit())
+                .setRequireContent(dto.getRequireContent() == null ? REQUIRE_CONTENT_DEFAULT : dto.getRequireContent());
         baseMapper.updateById(decision);
         saveTags(decision.getId(), dto.getVisibility(), dto.getTagIds());
     }
@@ -786,6 +794,7 @@ public class DecisionServiceImpl extends ServiceImplX<DecisionMapper, DecisionEn
                 .setCreatedAt(decision.getCreatedAt())
                 .setReviewCount(countReviews(decision.getId()))
                 .setReviewLimit(decision.getReviewLimit())
+                .setRequireContent(decision.getRequireContent())
                 .setContent(decision.getContent())
                 .setImages(decision.getImages())
                 .setOptions(decision.getOptions())

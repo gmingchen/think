@@ -67,6 +67,12 @@ public class DecisionCreateDTO {
     @Min(value = 0, message = "评议人数上限不合法（0-不限，其余至少1人）")
     private Integer reviewLimit;
     /**
+     * 评议观点是否必填：0-选填 1-必填；可不传（老版本客户端不传按 1 处理，与历史行为一致）
+     */
+    @Min(value = 0, message = "评议观点必填标记不合法（0-选填 1-必填）")
+    @Max(value = 1, message = "评议观点必填标记不合法（0-选填 1-必填）")
+    private Integer requireContent;
+    /**
      * 标签ID数组，≤3 个（仅公开档）
      */
     @Size(max = 3, message = "标签最多3个")

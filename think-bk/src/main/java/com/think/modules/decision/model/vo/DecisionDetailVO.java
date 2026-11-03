@@ -73,6 +73,10 @@ public class DecisionDetailVO {
      */
     private Integer reviewLimit;
     /**
+     * 评议观点是否必填：0-选填 1-必填（决定评议弹窗是否强制填观点）
+     */
+    private Integer requireContent;
+    /**
      * 状态
      */
     private Integer status;

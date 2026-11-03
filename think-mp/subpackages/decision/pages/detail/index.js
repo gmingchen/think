@@ -28,6 +28,8 @@ const END_POLL_DELAY = 10000
 // 补拉次数上限：共约 70s（足够覆盖一个完整扫描周期），超过则停止，避免后端异常时无限轮询
 const END_POLL_MAX = 7
 const OTHER = -1 // 复盘最终选择「其他/暂缓」哨兵
+// 空观点占位文案：选填单只表倾向不写观点时，评议卡以此顶替正文
+const NO_CONTENT_TEXT = '未填写观点，仅表态'
 
 Page({
   behaviors: [storePageBehavior, sharePageBehavior],
@@ -35,6 +37,7 @@ Page({
     id: null,
     loading: true,
     data: {},
+    noContentText: NO_CONTENT_TEXT,
     percent: 0,
     countdown: '',
     // 发起人发表时间的友好相对文案（刚刚 / N分钟前 / …），展示于昵称下方

@@ -11,6 +11,7 @@ import {
   GRP_STATUS_ENUM,
   DECISION_STATUS_ENUM,
   DECISION_SCENE_ENUM,
+  REQUIRE_CONTENT_ENUM,
 } from '../../../../common/enums/index'
 import {
   decisionDetailUrl,
@@ -36,6 +37,8 @@ Page({
     reviewItem: {},
     reviewOptions: [],
     reviewPreselect: -1,
+    // 观点是否必填（跟随该决策单的发起人设置）：列表项带回 requireContent，仅 0 为选填
+    reviewRequireContent: REQUIRE_CONTENT_ENUM.YES,
   },
 
   async onLoad(options) {
@@ -75,6 +78,9 @@ Page({
       reviewItem: item || {},
       reviewOptions: options || [],
       reviewPreselect: option,
+      reviewRequireContent: item && item.requireContent === REQUIRE_CONTENT_ENUM.NO
+        ? REQUIRE_CONTENT_ENUM.NO
+        : REQUIRE_CONTENT_ENUM.YES,
     })
   },
   onReviewClose() {

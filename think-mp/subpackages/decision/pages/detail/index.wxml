@@ -74,7 +74,7 @@
     <!-- 我的评议 -->
     <view wx:if="{{ data.myReview }}" class="detail__card">
       <view class="detail__section-title">我的评议</view>
-      <view class="detail__mine-content">{{ data.myReview.content }}</view>
+      <view class="detail__mine-content {{ data.myReview.content ? '' : 'detail__mine-content--empty' }}">{{ data.myReview.content || noContentText }}</view>
     </view>
 
     <!-- 他人评议 / 先评后看锁 -->
@@ -88,7 +88,7 @@
             <text class="detail__review-nick">{{ item.user.nickname }}</text>
             <text wx:if="{{ item.option >= 0 }}" class="detail__review-opt">倾向 · {{ data.options[item.option] }}</text>
           </view>
-          <view class="detail__review-content">{{ item.content }}</view>
+          <view class="detail__review-content {{ item.content ? '' : 'detail__review-content--empty' }}">{{ item.content || noContentText }}</view>
         </view>
         <view wx:if="{{ !data.reviews.length }}" class="detail__reviews-empty">还没有其他人评议</view>
       </view>
@@ -144,6 +144,7 @@
   options="{{ data.options }}"
   myOption="{{ reviewPreselect }}"
   myContent="{{ data.myReview ? data.myReview.content : '' }}"
+  requireContent="{{ data.requireContent }}"
   submitting="{{ submitting }}"
   bind:close="onReviewClose"
   bind:submit="onReviewSubmit"

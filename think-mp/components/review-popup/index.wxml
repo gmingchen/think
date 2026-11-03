@@ -25,11 +25,11 @@
       >{{ item }}</view>
     </view>
 
-    <!-- 观点输入 -->
+    <!-- 观点输入：选填单换提示语，表示不写字也能只表倾向提交 -->
     <textarea
       class="review-popup__textarea"
       value="{{ content }}"
-      placeholder="写下你的严谨推演…"
+      placeholder="{{ contentOptional ? '观点选填，可只表倾向…' : '写下你的严谨推演…' }}"
       maxlength="500"
       bindinput="onInputContent"
     />

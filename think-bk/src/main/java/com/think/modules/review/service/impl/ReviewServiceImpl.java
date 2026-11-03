@@ -46,6 +46,11 @@ public class ReviewServiceImpl extends ServiceImplX<ReviewMapper, ReviewEntity> 
 
     private static final String CHECK_PROVIDER = "wx";
 
+    /**
+     * 评议观点选填标记（decision.require_content=0）：除该值之外（含 null）一律按必填处理，与历史口径一致
+     */
+    private static final Integer REVIEW_CONTENT_OPTIONAL = 0;
+
     @Autowired
     private DecisionMapper decisionMapper;
     @Autowired
@@ -104,9 +109,18 @@ public class ReviewServiceImpl extends ServiceImplX<ReviewMapper, ReviewEntity> 
         if (options == null || dto.getOption() < 0 || dto.getOption() >= options.size()) {
             throw new RunException("所选备选项不合法");
         }
+        // 观点是否必填由发起人建单时选定，仅取所属决策单的 require_content 为准
+        // 统一 trim 后回填 dto：选填的空表态落 ""（review.content 列 NOT NULL，不能落 null）
+        dto.setContent(StringUtils.trimToEmpty(dto.getContent()));
+        if (!REVIEW_CONTENT_OPTIONAL.equals(decision.getRequireContent()) && StringUtils.isBlank(dto.getContent())) {
+            throw new RunException("请填写评议观点");
+        }
         // 同步送审移出事务：不占用数据库连接等微信审核；命中违规时 checkText 抛 RunException，
-        // 此时尚未落库、不占名额（与昵称/群名/复盘的拒绝口径一致）
-        appletSecCheckService.checkText(dto.getContent(), loginUser.getOpenid(), AppletSecCheckService.SCENE_COMMENT);
+        // 此时尚未落库、不占名额（与昵称/群名/复盘的拒绝口径一致）。
+        // 空观点（选填单只表倾向）无内容可审，且微信 msgSecCheck 的 content 为必填参数、传空会直接报错，故跳过
+        if (StringUtils.isNotBlank(dto.getContent())) {
+            appletSecCheckService.checkText(dto.getContent(), loginUser.getOpenid(), AppletSecCheckService.SCENE_COMMENT);
+        }
         // 写库走事务：decision 行锁串行化「查已有/满员校验/插入/满员收口」
         ReviewDTO review = self.submitInTx(dto, userId);
         // 满员收口的通知必须在事务提交后再发（发送是外部 HTTP，不占行锁、失败不回滚评议）：
@@ -140,7 +154,7 @@ public class ReviewServiceImpl extends ServiceImplX<ReviewMapper, ReviewEntity> 
                 .eq(ReviewEntity::getUserId, userId));
         // 已有评议：修改（一条有效，UPDATE）。审核已在外层通过，直接落闸门态
         if (existing != null) {
-            existing.setOption(dto.getOption()).setContent(dto.getContent())
+            existing.setOption(dto.getOption()).setContent(StringUtils.defaultString(dto.getContent()))
                     .setCheckStatus(CheckStatusEnum.PASS.getCode());
             baseMapper.updateById(existing);
             writeCheck(existing.getId(), ContentCheckResultEnum.PASS, "pass", "");
@@ -158,7 +172,7 @@ public class ReviewServiceImpl extends ServiceImplX<ReviewMapper, ReviewEntity> 
                 .setDecisionId(dto.getDecisionId())
                 .setUserId(userId)
                 .setOption(dto.getOption())
-                .setContent(dto.getContent())
+                .setContent(StringUtils.defaultString(dto.getContent()))
                 .setCheckStatus(CheckStatusEnum.PASS.getCode());
         baseMapper.insert(entity);
         writeCheck(entity.getId(), ContentCheckResultEnum.PASS, "pass", "");

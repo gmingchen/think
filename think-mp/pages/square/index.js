@@ -1,6 +1,7 @@
 import { storePageBehavior, paginationBehavior, sharePageBehavior } from '../../behaviors/index'
 import { consumePreview } from '../../utils/index'
 import { decisionPagePlazaApi, decisionRandomPlazaApi, decisionChangePlazaApi, reviewSubmitApi } from '../../apis/index'
+import { REQUIRE_CONTENT_ENUM } from '../../common/enums/index'
 import { ROUTE, decisionDetailUrl } from '../../common/constants/index'
 
 Page({
@@ -22,6 +23,8 @@ Page({
     reviewId: null,
     reviewOptions: [],
     reviewPreselect: -1,
+    // 观点是否必填（跟随该决策单的发起人设置）：列表项带回 requireContent，仅 0 为选填
+    reviewRequireContent: REQUIRE_CONTENT_ENUM.YES,
     // 「去看看」内容浏览弹窗（decision-view-popup 居中）：展示随机决策内容+选项，点选项再弹评议表单
     showView: false,
     viewItem: {},
@@ -63,12 +66,15 @@ Page({
 
   // 卡片选项 / 去看看内容弹窗选选项 → 打开底部评议表单，预选中的倾向已带下（myOption=点击下标）
   onReviewFromCard(e) {
-    const { id, option, options } = e.detail
+    const { id, option, options, item } = e.detail
     this.setData({
       showReview: true,
       reviewId: id,
       reviewOptions: options || [],
       reviewPreselect: option,
+      reviewRequireContent: item && item.requireContent === REQUIRE_CONTENT_ENUM.NO
+        ? REQUIRE_CONTENT_ENUM.NO
+        : REQUIRE_CONTENT_ENUM.YES,
     })
   },
   onReviewClose() {

@@ -72,6 +72,17 @@ export const reviewLimitList = [
   { label: '不限', value: REVIEW_LIMIT_ENUM.UNLIMITED },
 ]
 
+// 评议观点是否必填（decision.require_content）：1-必填（默认，与历史行为一致） 0-选填（只表倾向）
+export const REQUIRE_CONTENT_ENUM = {
+  NO: 0,
+  YES: 1,
+}
+
+export const requireContentList = [
+  { label: '观点必填', value: REQUIRE_CONTENT_ENUM.YES },
+  { label: '观点选填', value: REQUIRE_CONTENT_ENUM.NO },
+]
+
 // 决策单列表场景（subpackages/decision/list ?scene=）
 export const DECISION_SCENE_ENUM = {
   GROUP: 'group',

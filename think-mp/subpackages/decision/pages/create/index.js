@@ -13,6 +13,7 @@ import {
   VISIBILITY_ENUM,
   COOL_DOWN_ENUM,
   REVIEW_LIMIT_ENUM,
+  REQUIRE_CONTENT_ENUM,
   COOL_DOWN_MAX_MINUTES,
   COOL_DOWN_MIN_MINUTES,
   COOL_DOWN_MINUTE_OPTIONS,
@@ -39,6 +40,8 @@ const DEFAULT_REVIEW_LIMIT = 5
 const DEFAULT_COOL_DOWN_MINUTES = 120
 // 默认可见范围：群内评议（草稿由 status 区分，不再提供「仅自己」选项）
 const DEFAULT_VISIBILITY = VISIBILITY_ENUM.GRP
+// 评议观点默认必填：与历史行为一致，也兜住后端未返回该字段的老数据
+const DEFAULT_REQUIRE_CONTENT = REQUIRE_CONTENT_ENUM.YES
 
 // uploader 组件透传 uploadMedia 的选项（凭证与背景图：仅图片，存储目录 decision）
 const UPLOAD_OPTIONS = { mediaTypes: ['image'], prefix: 'decision' }
@@ -68,6 +71,7 @@ Page({
       grpMemberCount: 0,
       coolDownMinutes: DEFAULT_COOL_DOWN_MINUTES,
       reviewLimit: DEFAULT_REVIEW_LIMIT,
+      requireContent: DEFAULT_REQUIRE_CONTENT,
       tagIds: [],
     },
     // 时长两段式展示位（由 form.coolDownMinutes 派生；form.coolDownMinutes 为唯一真值）
@@ -79,6 +83,7 @@ Page({
     VISIBILITY_ENUM,
     COOL_DOWN_ENUM,
     REVIEW_LIMIT_ENUM: REVIEW_LIMIT_ENUM,
+    REQUIRE_CONTENT_ENUM,
     GRP_ROLE_ENUM,
     uploadOptions: UPLOAD_OPTIONS,
   },
@@ -121,6 +126,7 @@ Page({
           grpMemberCount: d.grpMemberCount || 0,
           coolDownMinutes: cdMin,
           reviewLimit: d.reviewLimit ?? DEFAULT_REVIEW_LIMIT,
+          requireContent: d.requireContent ?? DEFAULT_REQUIRE_CONTENT,
           tagIds,
         },
       })
@@ -158,6 +164,15 @@ Page({
     const { index } = e.currentTarget.dataset
     const options = this.data.form.options.filter((_, i) => i !== index)
     this.setData({ 'form.options': options })
+  },
+  // 评议要求开关：必填（默认）/ 选填（评议人只表倾向、不强制写观点）
+  onRequireContentToggle() {
+    const { requireContent } = this.data.form
+    this.setData({
+      'form.requireContent': requireContent === REQUIRE_CONTENT_ENUM.YES
+        ? REQUIRE_CONTENT_ENUM.NO
+        : REQUIRE_CONTENT_ENUM.YES,
+    })
   },
   onReviewLimitMinus() {
     const cur = this.data.form.reviewLimit
@@ -311,6 +326,7 @@ Page({
       grpId: form.visibility === VISIBILITY_ENUM.GRP ? form.grpId : null,
       coolDownMinutes: form.coolDownMinutes,
       reviewLimit: form.reviewLimit,
+      requireContent: form.requireContent,
       tagIds: form.visibility === VISIBILITY_ENUM.PUBLIC ? form.tagIds : [],
     }
   },

@@ -3,7 +3,6 @@ package com.think.modules.review.model.dto;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -26,9 +25,9 @@ public class ReviewSubmitDTO {
     @NotNull(message = "请选择倾向的备选项")
     private Integer option;
     /**
-     * 评议观点文字（强制填写，不能为空）
+     * 评议观点文字；是否必填不在此声明，由所属决策单的 require_content 在 service 层校验
+     * （选填单允许只表倾向，空内容落库为 ""）
      */
-    @NotBlank(message = "请填写评议观点")
     @Size(max = 500, message = "评议观点不能超过500字")
     private String content;
 }

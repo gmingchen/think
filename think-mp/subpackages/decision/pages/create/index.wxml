@@ -95,6 +95,20 @@ module.exports.has = function (arr, id) {
         >✕</text>
       </view>
       <view class="form__option-add" bindtap="onOptionAdd">＋ 添加一个选择</view>
+
+      <!-- 评议要求（默认必填，与历史行为一致）：切成选填后评议人可只点选项表态，不强制写观点 -->
+      <view class="form__limit">
+        <view class="form__limit-head">
+          <view class="form__sub-label form__sub-label--mb0">评议要求</view>
+          <view class="form__limit-ctrl">
+            <view
+              class="form__unlimit {{ form.requireContent === REQUIRE_CONTENT_ENUM.NO ? 'form__unlimit--active' : '' }}"
+              bindtap="onRequireContentToggle"
+            >{{ form.requireContent === REQUIRE_CONTENT_ENUM.NO ? '观点选填' : '观点必填' }}</view>
+          </view>
+        </view>
+        <view class="form__limit-sub">{{ form.requireContent === REQUIRE_CONTENT_ENUM.NO ? '评议人可只选倾向，不强制写观点' : '评议人必须写明观点文字' }}</view>
+      </view>
     </view>
 
     <!-- 卡片 3：可见范围与分发 -->

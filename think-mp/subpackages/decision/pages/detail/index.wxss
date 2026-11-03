@@ -321,6 +321,12 @@ page {
   line-height: 1.6;
 }
 
+/* 空观点占位（选填单只表倾向）：降灰以示区别于真实观点文字 */
+.detail__mine-content--empty,
+.detail__review-content--empty {
+  color: var(--ts-text-sub);
+}
+
 .detail__reviews-empty {
   padding: 24rpx 0;
   text-align: center;

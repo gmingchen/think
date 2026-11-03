@@ -64,6 +64,10 @@ public class DecisionListItemVO {
      */
     private Integer reviewLimit;
     /**
+     * 评议观点是否必填：0-选填 1-必填（列表卡片直接弹评议表单时依此校验，无需回请求详情）
+     */
+    private Integer requireContent;
+    /**
      * 发起人简要信息
      */
     private UserBriefVO initiator;
