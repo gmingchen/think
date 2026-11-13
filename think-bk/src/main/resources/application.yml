@@ -122,7 +122,7 @@ storage:
   qiniu:
     access-key: ${qiniu.accessKey:}
     secret-key: ${qiniu.secretKey:}
-    bucket: mx-think
+    bucket: mx-mp
     region: huadong
     domain: ${qiniu.domain:}
 

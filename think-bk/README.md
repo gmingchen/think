@@ -24,7 +24,7 @@
 think-bk/
 ├── src/main/java/com/think/
 │   ├── core/           # 核心模块（安全、数据源、Redis、校验等）
-│   ├── modules/        # 业务模块（auth/user/wechat/os/subscribe/ai/stats）
+│   ├── modules/        # 业务模块（auth/user/wechat/oss/subscribe/ai）
 │   └── common/         # 公共模块（工具类、枚举、异常等）
 ├── src/main/resources/
 │   ├── application.yml

@@ -43,8 +43,8 @@ const DEFAULT_VISIBILITY = VISIBILITY_ENUM.GRP
 // 评议观点默认必填：与历史行为一致，也兜住后端未返回该字段的老数据
 const DEFAULT_REQUIRE_CONTENT = REQUIRE_CONTENT_ENUM.YES
 
-// uploader 组件透传 uploadMedia 的选项（凭证与背景图：仅图片，存储目录 decision）
-const UPLOAD_OPTIONS = { mediaTypes: ['image'], prefix: 'decision' }
+// uploader 组件透传 uploadMedia 的选项（凭证与背景图：仅图片，存储目录 think/decision）
+const UPLOAD_OPTIONS = { mediaTypes: ['image'], prefix: 'think/decision' }
 
 Page({
   behaviors: [storePageBehavior, fileBehavior, sharePageBehavior],

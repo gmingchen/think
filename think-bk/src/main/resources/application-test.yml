@@ -28,7 +28,7 @@ redis:
 qiniu:
   accessKey: Xf4rsuKMm4F-wSBzBJVi4VW0vLBR46LPLFx83voK
   secretKey: 7IWWQuTIwcecu4N3OiKXKcevnHGhdahxCjqvJXqX
-  domain: https://os.think.mx-studio.cn
+  domain: https://oss.mp.mx-studio.cn
 # AI 参考：llm-proxy 云函数 HTTP 访问地址 + 与云函数一致的共享密钥
 ai-llm:
   url: https://ccj-d8govrx3z867b6b72-1497228990.ap-shanghai.app.tcloudbase.com/llm-proxy

@@ -44,7 +44,7 @@ Page({
     const { avatarUrl } = e.detail
     if (!avatarUrl) return
     try {
-      const url = await uploadAvatar(avatarUrl, 'avatar')
+      const url = await uploadAvatar(avatarUrl, 'think/avatar')
       this.setData({ avatar: url })
     } catch (err) {
       wx.$toast('上传失败')

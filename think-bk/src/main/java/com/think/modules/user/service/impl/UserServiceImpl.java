@@ -6,7 +6,7 @@ import com.think.common.constant.RedisConstant;
 import com.think.common.enums.MediaBizTypeEnum;
 import com.think.core.mybatisplus.service.ServiceImplX;
 import com.think.core.security.utils.SecurityUtils;
-import com.think.modules.os.service.StorageService;
+import com.think.modules.oss.service.StorageService;
 import com.think.modules.user.convert.UserConvert;
 import com.think.modules.user.entity.UserEntity;
 import com.think.modules.user.mapper.UserMapper;

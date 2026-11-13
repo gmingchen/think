@@ -15,7 +15,7 @@ export const getUploadToken = async () => {
   if (_tokenCache && Date.now() < _tokenCache.expireAt) {
     return _tokenCache.data
   }
-  const res = await service({ url: '/os/uploadToken', method: 'GET' })
+  const res = await service({ url: '/oss/uploadToken', method: 'GET' })
   wx.$print('uploadToken', res.data)
   _tokenCache = {
     data: res.data,

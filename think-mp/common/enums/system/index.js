@@ -14,10 +14,10 @@ export const ENV_ENUM = {
 
 // 接口 host
 export const HOST_ENUM = {
-  [ENV_ENUM.DEVELOPMENT]: 'https://think.mx-studio.cn',
+  [ENV_ENUM.DEVELOPMENT]: 'https://mp.mx-studio.cn',
   // [ENV_ENUM.DEVELOPMENT]: 'http://localhost:8820',
-  [ENV_ENUM.TESTING]: 'https://think.mx-studio.cn',
-  [ENV_ENUM.PRODUCTION]: 'https://think.mx-studio.cn',
+  [ENV_ENUM.TESTING]: 'https://mp.mx-studio.cn',
+  [ENV_ENUM.PRODUCTION]: 'https://mp.mx-studio.cn',
 }
 
 // 客户端平台（wx.getDeviceInfo().platform 的返回值，落库于 store.system.platform）

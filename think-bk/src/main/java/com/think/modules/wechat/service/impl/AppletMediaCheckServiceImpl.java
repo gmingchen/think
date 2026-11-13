@@ -10,7 +10,7 @@ import com.think.common.enums.MediaBizTypeEnum;
 import com.think.core.redis.utils.RedisUtils;
 import com.think.modules.decision.entity.DecisionEntity;
 import com.think.modules.decision.mapper.DecisionMapper;
-import com.think.modules.os.service.StorageService;
+import com.think.modules.oss.service.StorageService;
 import com.think.modules.user.entity.UserEntity;
 import com.think.modules.user.mapper.UserMapper;
 import com.think.modules.wechat.entity.MediaCheckEntity;
